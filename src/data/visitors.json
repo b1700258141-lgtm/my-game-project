@@ -1,0 +1,140 @@
+{
+  "visitors": [
+    {
+      "id": "visit_retired_teacher_day1",
+      "npcId": "visitor_teacher",
+      "startDay": 1,
+      "endDay": 1,
+      "chance": 1.0,
+      "dialogueId": "visitor_teacher_intro",
+      "requiredFlags": [],
+      "blockedFlags": [],
+      "items": [
+        {
+          "itemId": "alchemy_material_001",
+          "itemName": "古旧铜片",
+          "obtainMethod": "gift",
+          "giftCondition": "first_visit",
+          "description": "【占位】老者赠送的古旧铜片，似乎有些年头了。"
+        }
+      ]
+    },
+    {
+      "id": "visit_chef_day3",
+      "npcId": "visitor_chef",
+      "startDay": 3,
+      "endDay": 10,
+      "chance": 0.4,
+      "dialogueId": "visitor_chef_intro",
+      "requiredFlags": [],
+      "blockedFlags": [],
+      "items": [
+        {
+          "itemId": "alchemy_material_002",
+          "itemName": "褪色绸缎",
+          "obtainMethod": "buy",
+          "cost": 50,
+          "description": "【占位】厨师从旧衣物上剪下的一小块绸缎。"
+        },
+        {
+          "itemId": "key_item_001",
+          "itemName": "【占位】家族纹章碎片A",
+          "obtainMethod": "temporary_commission",
+          "tempCommissionId": "temp_commission_chef",
+          "description": "【占位】完成厨师的委托后可获得的关键物品。"
+        }
+      ]
+    },
+    {
+      "id": "visit_courier_day5",
+      "npcId": "visitor_courier",
+      "startDay": 5,
+      "endDay": 15,
+      "chance": 0.3,
+      "dialogueId": "visitor_courier_intro",
+      "requiredFlags": [],
+      "blockedFlags": [],
+      "items": [
+        {
+          "itemId": "alchemy_material_003",
+          "itemName": "旧钥匙",
+          "obtainMethod": "buy",
+          "cost": 30,
+          "description": "【占位】快递员在整理包裹时发现的一把旧钥匙。"
+        },
+        {
+          "itemId": "clue_item_001",
+          "itemName": "【占位】褪色照片",
+          "obtainMethod": "affinity_gift",
+          "requiredAffinity": 20,
+          "description": "【占位】与快递员建立一定好感后可获得的线索物品。"
+        }
+      ]
+    },
+    {
+      "id": "visit_antique_day8",
+      "npcId": "visitor_antique",
+      "startDay": 8,
+      "endDay": 20,
+      "chance": 0.25,
+      "dialogueId": "visitor_antique_intro",
+      "requiredFlags": [],
+      "blockedFlags": [],
+      "items": [
+        {
+          "itemId": "alchemy_material_004",
+          "itemName": "干枯草药",
+          "obtainMethod": "buy",
+          "cost": 40,
+          "description": "【占位】古玩店老板珍藏的稀有草药样本。"
+        },
+        {
+          "itemId": "alchemy_material_005",
+          "itemName": "石英碎片",
+          "obtainMethod": "buy",
+          "cost": 60,
+          "description": "【占位】晶莹剔透的石英碎片，可用于炼金反应。"
+        },
+        {
+          "itemId": "key_item_002",
+          "itemName": "【占位】家族纹章碎片B",
+          "obtainMethod": "exchange",
+          "requiredItem": "alchemy_product_001",
+          "description": "【占位】用炼金成品交换获得的关键物品。"
+        },
+        {
+          "itemId": "key_item_003",
+          "itemName": "【占位】家族纹章碎片C",
+          "obtainMethod": "temporary_commission",
+          "tempCommissionId": "temp_commission_antique",
+          "description": "【占位】完成古玩店老板的委托后可获得的关键物品。"
+        }
+      ]
+    }
+  ],
+  "temporaryCommissions": [
+    {
+      "id": "temp_commission_chef",
+      "title": "【占位】寻找炼金成品",
+      "npcId": "visitor_chef",
+      "expireDays": 3,
+      "requiredItems": ["alchemy_product_001"],
+      "rewardItems": ["key_item_001"],
+      "rewardFunds": 0,
+      "rewardPopularity": 5,
+      "description": "【占位】厨师希望你能帮他找到一份特殊的炼金成品。"
+    },
+    {
+      "id": "temp_commission_antique",
+      "title": "【占位】鉴定老物件",
+      "npcId": "visitor_antique",
+      "expireDays": 5,
+      "requiredItems": [],
+      "rewardItems": ["key_item_003"],
+      "rewardFunds": 100,
+      "rewardPopularity": 10,
+      "requiredFlags": ["antique_trust_established"],
+      "description": "【占位】古玩店老板有一个需要鉴定的东西。"
+    }
+  ]
+}

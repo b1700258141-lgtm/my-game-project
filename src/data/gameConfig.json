@@ -1,0 +1,21 @@
+{
+  "display": {
+    "width": 800,
+    "height": 600,
+    "pixelScale": 1
+  },
+  "player": {
+    "speed": 200,
+    "size": 32,
+    "startX": 400,
+    "startY": 300
+  },
+  "initial": {
+    "funds": 300,
+    "popularity": 10,
+    "day": 1
+  },
+  "game": {
+    "maxDays": 30
+  }
+}

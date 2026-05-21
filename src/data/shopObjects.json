@@ -1,0 +1,70 @@
+{
+  "objects": [
+    {
+      "id": "counter",
+      "name": "柜台",
+      "x": 400,
+      "y": 480,
+      "width": 200,
+      "height": 40,
+      "interactionType": "counter",
+      "description": "接待客人的地方。来访的客人会在这里等候委托。",
+      "color": 8557360,
+      "borderColor": 12565702
+    },
+    {
+      "id": "alchemy_table",
+      "name": "炼金釜",
+      "x": 150,
+      "y": 200,
+      "width": 100,
+      "height": 60,
+      "interactionType": "alchemy",
+      "description": "古老的炼金釜，炉火日夜不熄，散发着神秘的光芒。",
+      "color": 6209500,
+      "borderColor": 8496913
+    },
+    {
+      "id": "bookshelf",
+      "name": "书架",
+      "x": 650,
+      "y": 200,
+      "width": 100,
+      "height": 80,
+      "interactionType": "codex",
+      "description": "记载着历代万事屋传承的记忆与炼金配方。",
+      "color": 10693772,
+      "borderColor": 11822173
+    },
+    {
+      "id": "bed",
+      "name": "床铺",
+      "x": 680,
+      "y": 400,
+      "width": 80,
+      "height": 60,
+      "interactionType": "bed",
+      "description": "万事屋的床铺，可以睡觉跳过时间。",
+      "color": 5964934,
+      "borderColor": 9803157
+    },
+    {
+      "id": "door",
+      "name": "门",
+      "x": 100,
+      "y": 520,
+      "width": 60,
+      "height": 40,
+      "interactionType": "door",
+      "description": "万事屋的大门，可以前往不同的地点。",
+      "color": 4956090,
+      "borderColor": 8454127
+    }
+  ],
+  "interactionDistance": 70,
+  "colors": {
+    "highlight": 16777215,
+    "promptBg": 4956090,
+    "promptBorder": 8454127
+  }
+}

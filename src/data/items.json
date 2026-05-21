@@ -1,0 +1,472 @@
+{
+  "items": [
+    {
+      "id": "alchemy_material_001",
+      "name": "古旧铜片",
+      "description": "【占位】一块带有古老纹路的铜片，具体来历由用户填写。",
+      "type": "alchemy_material",
+      "icon": "material_copper",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "alchemy_material_002",
+      "name": "褪色绸缎",
+      "description": "【占位】一小块褪色的绸缎碎片，似乎有特殊用途。",
+      "type": "alchemy_material",
+      "icon": "material_silk",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "alchemy_material_003",
+      "name": "旧钥匙",
+      "description": "【占位】一把不知能开什么的旧钥匙。",
+      "type": "alchemy_material",
+      "icon": "material_key",
+      "stackable": false,
+      "maxStack": 1
+    },
+    {
+      "id": "alchemy_material_004",
+      "name": "干枯草药",
+      "description": "【占位】一些常见的草药，炼金术的基础材料。",
+      "type": "alchemy_material",
+      "icon": "material_herb",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "alchemy_material_005",
+      "name": "石英碎片",
+      "description": "【占位】晶莹剔透的石英碎片，可用于某些炼金反应。",
+      "type": "alchemy_material",
+      "icon": "material_quartz",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "alchemy_product_001",
+      "name": "净化药剂",
+      "description": "【占位】使用炼金术制成的净化药剂。",
+      "type": "alchemy_product",
+      "icon": "product_potion_purify",
+      "stackable": true,
+      "maxStack": 10,
+      "craftFrom": ["alchemy_material_001", "alchemy_material_004"]
+    },
+    {
+      "id": "alchemy_product_002",
+      "name": "记忆提取液",
+      "description": "【占位】能够提取物品记忆的特殊炼金产物。",
+      "type": "alchemy_product",
+      "icon": "product_potion_memory",
+      "stackable": true,
+      "maxStack": 5,
+      "craftFrom": ["alchemy_material_002", "alchemy_material_005"]
+    },
+    {
+      "id": "usable_item_001",
+      "name": "体力恢复药",
+      "description": "【占位】恢复少量体力。",
+      "type": "usable_item",
+      "icon": "item_potion_health",
+      "stackable": true,
+      "maxStack": 20
+    },
+    {
+      "id": "key_item_001",
+      "name": "【占位】家族纹章碎片A",
+      "description": "【占位】关键结局物品A，具体设定由用户填写。",
+      "type": "key_item",
+      "icon": "keyitem_charm_a",
+      "stackable": false,
+      "maxStack": 1,
+      "relatedEndingFlags": ["ending_family_truth"]
+    },
+    {
+      "id": "key_item_002",
+      "name": "【占位】家族纹章碎片B",
+      "description": "【占位】关键结局物品B，具体设定由用户填写。",
+      "type": "key_item",
+      "icon": "keyitem_charm_b",
+      "stackable": false,
+      "maxStack": 1,
+      "relatedEndingFlags": ["ending_family_truth"]
+    },
+    {
+      "id": "key_item_003",
+      "name": "【占位】家族纹章碎片C",
+      "description": "【占位】关键结局物品C，具体设定由用户填写。",
+      "type": "key_item",
+      "icon": "keyitem_charm_c",
+      "stackable": false,
+      "maxStack": 1,
+      "relatedEndingFlags": ["ending_family_truth"]
+    },
+    {
+      "id": "key_item_004",
+      "name": "【占位】神秘纸条",
+      "description": "【占位】一张写有神秘文字的纸条，似乎是某个线索。",
+      "type": "key_item",
+      "icon": "keyitem_note",
+      "stackable": false,
+      "maxStack": 1,
+      "relatedEndingFlags": ["ending_mystery_traces"]
+    },
+    {
+      "id": "clue_item_001",
+      "name": "【占位】褪色照片",
+      "description": "【占位】一张褪色的老照片，上面有模糊的人影。",
+      "type": "clue_item",
+      "icon": "clue_photo",
+      "stackable": false,
+      "maxStack": 1
+    },
+    {
+      "id": "clue_item_002",
+      "name": "【占位】旧信件",
+      "description": "【占位】一封泛黄的信件，字迹已模糊不清。",
+      "type": "clue_item",
+      "icon": "clue_letter",
+      "stackable": false,
+      "maxStack": 1
+    },
+    {
+      "id": "quest_item_001",
+      "name": "【占位】委托道具样本",
+      "description": "【占位】某个委托所需的道具，具体设定由用户填写。",
+      "type": "quest_item",
+      "icon": "quest_item_sample",
+      "stackable": true,
+      "maxStack": 10
+    },
+    {
+      "id": "material_beetle",
+      "name": "甲壳虫",
+      "description": "占位炼金材料，后续由用户补充用途",
+      "type": "alchemy_material",
+      "icon": "material_beetle",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "material_carrot",
+      "name": "萝卜",
+      "description": "占位炼金材料，后续由用户补充用途",
+      "type": "alchemy_material",
+      "icon": "material_carrot",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "material_bellflower",
+      "name": "风铃草",
+      "description": "占位炼金材料，后续由用户补充用途",
+      "type": "alchemy_material",
+      "icon": "material_bellflower",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "material_foxtail_grass",
+      "name": "狗尾巴草",
+      "description": "占位炼金材料，后续由用户补充用途",
+      "type": "alchemy_material",
+      "icon": "material_foxtail_grass",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "material_night_dew",
+      "name": "夜露",
+      "description": "占位炼金材料，后续由用户补充用途。",
+      "type": "alchemy_material",
+      "icon": "material_night_dew",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "material_old_coin",
+      "name": "旧铜钱",
+      "description": "占位炼金材料，后续由用户补充用途。",
+      "type": "alchemy_material",
+      "icon": "material_old_coin",
+      "stackable": true,
+      "maxStack": 99
+    },
+    {
+      "id": "digestive_tablet_perfect",
+      "name": "完美品质 消食片",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_digestive_tablet",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "perfect",
+      "baseRecipeId": "digestive_tablet"
+    },
+    {
+      "id": "digestive_tablet_excellent",
+      "name": "优秀品质 消食片",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_digestive_tablet",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "excellent",
+      "baseRecipeId": "digestive_tablet"
+    },
+    {
+      "id": "digestive_tablet_normal",
+      "name": "普通品质 消食片",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_digestive_tablet",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "normal",
+      "baseRecipeId": "digestive_tablet"
+    },
+    {
+      "id": "digestive_tablet_poor",
+      "name": "劣等品质 消食片",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_digestive_tablet",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "poor",
+      "baseRecipeId": "digestive_tablet"
+    },
+    {
+      "id": "herbal_powder_perfect",
+      "name": "完美品质 中药粉末",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_herbal_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "perfect",
+      "baseRecipeId": "herbal_powder"
+    },
+    {
+      "id": "herbal_powder_excellent",
+      "name": "优秀品质 中药粉末",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_herbal_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "excellent",
+      "baseRecipeId": "herbal_powder"
+    },
+    {
+      "id": "herbal_powder_normal",
+      "name": "普通品质 中药粉末",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_herbal_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "normal",
+      "baseRecipeId": "herbal_powder"
+    },
+    {
+      "id": "herbal_powder_poor",
+      "name": "劣等品质 中药粉末",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_herbal_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "poor",
+      "baseRecipeId": "herbal_powder"
+    },
+    {
+      "id": "calming_incense_perfect",
+      "name": "完美品质 安神香",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_calming_incense",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "perfect",
+      "baseRecipeId": "calming_incense"
+    },
+    {
+      "id": "calming_incense_excellent",
+      "name": "优秀品质 安神香",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_calming_incense",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "excellent",
+      "baseRecipeId": "calming_incense"
+    },
+    {
+      "id": "calming_incense_normal",
+      "name": "普通品质 安神香",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_calming_incense",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "normal",
+      "baseRecipeId": "calming_incense"
+    },
+    {
+      "id": "calming_incense_poor",
+      "name": "劣等品质 安神香",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_calming_incense",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "poor",
+      "baseRecipeId": "calming_incense"
+    },
+    {
+      "id": "fortune_pill_perfect",
+      "name": "完美品质 招财丸",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_fortune_pill",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "perfect",
+      "baseRecipeId": "fortune_pill"
+    },
+    {
+      "id": "fortune_pill_excellent",
+      "name": "优秀品质 招财丸",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_fortune_pill",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "excellent",
+      "baseRecipeId": "fortune_pill"
+    },
+    {
+      "id": "fortune_pill_normal",
+      "name": "普通品质 招财丸",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_fortune_pill",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "normal",
+      "baseRecipeId": "fortune_pill"
+    },
+    {
+      "id": "fortune_pill_poor",
+      "name": "劣等品质 招财丸",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_fortune_pill",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "poor",
+      "baseRecipeId": "fortune_pill"
+    },
+    {
+      "id": "cleansing_powder_perfect",
+      "name": "完美品质 驱秽粉",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_cleansing_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "perfect",
+      "baseRecipeId": "cleansing_powder"
+    },
+    {
+      "id": "cleansing_powder_excellent",
+      "name": "优秀品质 驱秽粉",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_cleansing_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "excellent",
+      "baseRecipeId": "cleansing_powder"
+    },
+    {
+      "id": "cleansing_powder_normal",
+      "name": "普通品质 驱秽粉",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_cleansing_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "normal",
+      "baseRecipeId": "cleansing_powder"
+    },
+    {
+      "id": "cleansing_powder_poor",
+      "name": "劣等品质 驱秽粉",
+      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "type": "alchemy_product",
+      "icon": "product_cleansing_powder",
+      "stackable": true,
+      "maxStack": 99,
+      "quality": "poor",
+      "baseRecipeId": "cleansing_powder"
+    },
+    {
+      "id": "normal_item_001",
+      "name": "【占位】普通物品样本",
+      "description": "【占位】NPC给予的普通物品，具体设定由用户填写。",
+      "type": "normal_item",
+      "icon": "normal_item_sample",
+      "stackable": true,
+      "maxStack": 99
+    }
+  ],
+  "itemTypes": {
+    "alchemy_material": {
+      "name": "炼金材料",
+      "canUse": false,
+      "canTrade": true,
+      "defaultPrice": 30
+    },
+    "alchemy_product": {
+      "name": "炼金成品",
+      "canUse": true,
+      "canTrade": true,
+      "defaultPrice": 80
+    },
+    "usable_item": {
+      "name": "可用道具",
+      "canUse": true,
+      "canTrade": true,
+      "defaultPrice": 50
+    },
+    "key_item": {
+      "name": "关键物品",
+      "canUse": false,
+      "canTrade": false,
+      "defaultPrice": 0
+    },
+    "clue_item": {
+      "name": "线索物品",
+      "canUse": false,
+      "canTrade": false,
+      "defaultPrice": 0
+    },
+    "quest_item": {
+      "name": "委托道具",
+      "canUse": false,
+      "canTrade": true,
+      "defaultPrice": 20
+    },
+    "normal_item": {
+      "name": "普通物品",
+      "canUse": true,
+      "canTrade": true,
+      "defaultPrice": 10
+    }
+  }
+}

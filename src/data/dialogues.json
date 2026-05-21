@@ -1,0 +1,818 @@
+{
+  "dialogues": {
+    "visitor_teacher_intro": {
+      "speaker": "退休教师",
+      "portrait": "portrait_teacher",
+      "lines": [
+        {
+          "id": "t1",
+          "text": "【占位】你好，请问这里是万事屋吗？"
+        },
+        {
+          "id": "t2",
+          "text": "【占位】我听说你们能帮忙处理一些...特殊的事情？"
+        }
+      ],
+      "choices": [
+        {
+          "text": "请进，请坐",
+          "effects": {
+            "npcAffinity": { "visitor_teacher": 5 }
+          },
+          "next": "visitor_teacher_talk"
+        },
+        {
+          "text": "我们确实能帮上忙",
+          "effects": {
+            "popularity": 1
+          },
+          "next": "visitor_teacher_talk"
+        }
+      ]
+    },
+    "visitor_teacher_talk": {
+      "speaker": "退休教师",
+      "portrait": "portrait_teacher",
+      "lines": [
+        {
+          "id": "t3",
+          "text": "【占位】我这里有一些老物件，一直想找人帮忙看看..."
+        },
+        {
+          "id": "t4",
+          "text": "【占位】不过今天只是先来打个招呼。改天再详细聊聊。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "这是给您的回礼",
+          "effects": {
+            "addItem": "alchemy_material_001",
+            "npcAffinity": { "visitor_teacher": 10 },
+            "flags": { "received_gift_from_teacher": true }
+          },
+          "next": "visitor_teacher_gift"
+        },
+        {
+          "text": "欢迎随时再来",
+          "effects": {
+            "flags": { "teacher_visited": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "visitor_teacher_gift": {
+      "speaker": "退休教师",
+      "portrait": "portrait_teacher",
+      "lines": [
+        {
+          "id": "tg1",
+          "text": "【占位】这...这是给我的？真是太感谢了。"
+        },
+        {
+          "id": "tg2",
+          "text": "【占位】作为回报，这个给你。是我整理旧物时发现的。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "这是什么？",
+          "effects": {
+            "addKeyItem": "key_item_001",
+            "flags": { "teacher_trust_established": true }
+          },
+          "next": "visitor_teacher_bye"
+        }
+      ]
+    },
+    "visitor_teacher_bye": {
+      "speaker": "退休教师",
+      "portrait": "portrait_teacher",
+      "lines": [
+        {
+          "id": "tbye1",
+          "text": "【占位】那我就先走了。以后有什么需要帮忙的尽管说。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "谢谢，慢走",
+          "effects": {
+            "flags": { "teacher_first_talk_done": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "visitor_chef_intro": {
+      "speaker": "饭馆厨师",
+      "portrait": "portrait_chef",
+      "lines": [
+        {
+          "id": "chef1",
+          "text": "【占位】打扰了，这里是万事屋吧？"
+        },
+        {
+          "id": "chef2",
+          "text": "【占位】我是附近饭馆的厨师，有点事情想请教..."
+        }
+      ],
+      "choices": [
+        {
+          "text": "请说，什么事？",
+          "effects": {
+            "npcAffinity": { "visitor_chef": 5 }
+          },
+          "next": "visitor_chef_talk"
+        },
+        {
+          "text": "请坐，慢慢说",
+          "effects": {
+            "popularity": 1
+          },
+          "next": "visitor_chef_talk"
+        }
+      ]
+    },
+    "visitor_chef_talk": {
+      "speaker": "饭馆厨师",
+      "portrait": "portrait_chef",
+      "lines": [
+        {
+          "id": "chef3",
+          "text": "【占位】我们店最近在整理一些老菜谱，想恢复传统的味道..."
+        },
+        {
+          "id": "chef4",
+          "text": "【占位】听说你们对传统的东西比较有研究？"
+        },
+        {
+          "id": "chef4b",
+          "text": "【占位】对了，我这里有些东西，也许对你有用。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "有什么我可以帮忙的吗？",
+          "effects": {
+            "npcAffinity": { "visitor_chef": 5 }
+          },
+          "next": "visitor_chef_commission"
+        },
+        {
+          "text": "看看你带来了什么",
+          "effects": {
+            "flags": { "chef_visited": true }
+          },
+          "next": "visitor_chef_items"
+        },
+        {
+          "text": "感兴趣，请详细说说",
+          "effects": {
+            "flags": { "chef_visited": true }
+          },
+          "next": "visitor_chef_bye"
+        }
+      ]
+    },
+    "visitor_chef_items": {
+      "speaker": "饭馆厨师",
+      "portrait": "portrait_chef",
+      "lines": [
+        {
+          "id": "ci1",
+          "text": "【占位】这是一块从旧衣物上剪下的绸缎，50元你拿走？"
+        }
+      ],
+      "choices": [
+        {
+          "text": "买下（-50资金）",
+          "effects": {
+            "funds": -50,
+            "addItem": "alchemy_material_002"
+          },
+          "next": "visitor_chef_bye"
+        },
+        {
+          "text": "太贵了，下次再说",
+          "effects": {},
+          "next": "visitor_chef_bye"
+        }
+      ]
+    },
+    "visitor_chef_commission": {
+      "speaker": "饭馆厨师",
+      "portrait": "portrait_chef",
+      "lines": [
+        {
+          "id": "cc1",
+          "text": "【占位】说起来，我确实有个小请求..."
+        },
+        {
+          "id": "cc2",
+          "text": "【占位】我在找一种特殊的炼金成品，如果你能帮我找到，我可以告诉你一些关于家族纹章的事。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "我接下这个委托",
+          "effects": {
+            "startTemporaryCommission": "temp_commission_chef",
+            "npcAffinity": { "visitor_chef": 10 }
+          },
+          "next": "visitor_chef_bye"
+        },
+        {
+          "text": "我考虑一下",
+          "effects": {},
+          "next": "visitor_chef_bye"
+        }
+      ]
+    },
+    "visitor_chef_bye": {
+      "speaker": "饭馆厨师",
+      "portrait": "portrait_chef",
+      "lines": [
+        {
+          "id": "chef5",
+          "text": "【占位】那改天我再来详细说说具体情况。谢谢！"
+        }
+      ],
+      "choices": [
+        {
+          "text": "好的，再见",
+          "effects": {
+            "flags": { "chef_first_talk_done": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "visitor_courier_intro": {
+      "speaker": "快递员",
+      "portrait": "portrait_courier",
+      "lines": [
+        {
+          "id": "cou1",
+          "text": "【占位】你好，有你们的快递！"
+        },
+        {
+          "id": "cou2",
+          "text": "【占位】哦？这店名挺有意思的，万事屋？"
+        }
+      ],
+      "choices": [
+        {
+          "text": "谢谢，慢走",
+          "effects": {
+            "popularity": 1
+          },
+          "next": "visitor_courier_talk"
+        },
+        {
+          "text": "进来坐坐？",
+          "effects": {
+            "npcAffinity": { "visitor_courier": 5 }
+          },
+          "next": "visitor_courier_talk"
+        }
+      ]
+    },
+    "visitor_courier_talk": {
+      "speaker": "快递员",
+      "portrait": "portrait_courier",
+      "lines": [
+        {
+          "id": "cou3",
+          "text": "【占位】不了不了，还要赶着送下一单..."
+        },
+        {
+          "id": "cou4",
+          "text": "【占位】不过你们这店挺有老味道的，和周围的店铺不太一样。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "有空常来",
+          "effects": {
+            "flags": { "courier_visited": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "visitor_antique_intro": {
+      "speaker": "古玩店老板",
+      "portrait": "portrait_antique",
+      "lines": [
+        {
+          "id": "ant1",
+          "text": "【占位】打扰了，请问你们这里收不收老物件？"
+        },
+        {
+          "id": "ant2",
+          "text": "【占位】我是附近古玩街的店主，想和你们建立点业务往来。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "请进来详谈",
+          "effects": {
+            "npcAffinity": { "visitor_antique": 5 }
+          },
+          "next": "visitor_antique_talk"
+        },
+        {
+          "text": "我们主要是帮人处理事情",
+          "effects": {
+            "flags": { "antique_explained": true }
+          },
+          "next": "visitor_antique_talk"
+        }
+      ]
+    },
+    "visitor_antique_talk": {
+      "speaker": "古玩店老板",
+      "portrait": "portrait_antique",
+      "lines": [
+        {
+          "id": "ant3",
+          "text": "【占位】哦？处理事情？比如说..."
+        },
+        {
+          "id": "ant4",
+          "text": "【占位】我这里有些稀有材料，还有一些特别的物件。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "有什么特别的？",
+          "effects": {
+            "npcAffinity": { "visitor_antique": 5 }
+          },
+          "next": "visitor_antique_trade"
+        },
+        {
+          "text": "我有东西想交换",
+          "effects": {
+            "flags": { "antique_trade_interest": true }
+          },
+          "next": "visitor_antique_exchange"
+        },
+        {
+          "text": "好的，再见",
+          "effects": {
+            "flags": { "antique_visited": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "visitor_antique_trade": {
+      "speaker": "古玩店老板",
+      "portrait": "portrait_antique",
+      "lines": [
+        {
+          "id": "at1",
+          "text": "【占位】干枯草药40元，石英碎片60元。你要哪个？"
+        }
+      ],
+      "choices": [
+        {
+          "text": "买草药（-40资金）",
+          "effects": {
+            "funds": -40,
+            "addItem": "alchemy_material_004"
+          },
+          "next": "visitor_antique_trade2"
+        },
+        {
+          "text": "买石英（-60资金）",
+          "effects": {
+            "funds": -60,
+            "addItem": "alchemy_material_005"
+          },
+          "next": "visitor_antique_trade2"
+        },
+        {
+          "text": "下次再说",
+          "effects": {},
+          "next": "visitor_antique_bye"
+        }
+      ]
+    },
+    "visitor_antique_trade2": {
+      "speaker": "古玩店老板",
+      "portrait": "portrait_antique",
+      "lines": [
+        {
+          "id": "at2",
+          "text": "【占位】还要别的吗？"
+        }
+      ],
+      "choices": [
+        {
+          "text": "买草药（-40资金）",
+          "effects": {
+            "funds": -40,
+            "addItem": "alchemy_material_004"
+          },
+          "next": "visitor_antique_trade2"
+        },
+        {
+          "text": "买石英（-60资金）",
+          "effects": {
+            "funds": -60,
+            "addItem": "alchemy_material_005"
+          },
+          "next": "visitor_antique_trade2"
+        },
+        {
+          "text": "够了，谢谢",
+          "effects": {},
+          "next": "visitor_antique_bye"
+        }
+      ]
+    },
+    "visitor_antique_exchange": {
+      "speaker": "古玩店老板",
+      "portrait": "portrait_antique",
+      "lines": [
+        {
+          "id": "ae1",
+          "text": "【占位】交换？让我想想..."
+        },
+        {
+          "id": "ae2",
+          "text": "【占位】如果你有一份净化药剂，我可以给你一块家族纹章碎片。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "成交（交付净化药剂）",
+          "effects": {
+            "removeItem": "alchemy_product_001",
+            "addKeyItem": "key_item_002",
+            "npcAffinity": { "visitor_antique": 15 },
+            "flags": { "antique_trade_done": true }
+          },
+          "next": "visitor_antique_bye"
+        },
+        {
+          "text": "我没有那种东西",
+          "effects": {},
+          "next": "visitor_antique_bye"
+        }
+      ]
+    },
+    "visitor_antique_bye": {
+      "speaker": "古玩店老板",
+      "portrait": "portrait_antique",
+      "lines": [
+        {
+          "id": "ab1",
+          "text": "【占位】好的，以后有好东西再来。我先走了。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "慢走",
+          "effects": {
+            "flags": { "antique_first_talk_done": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "commission_ring_start": {
+      "speaker": "委托客人",
+      "portrait": "portrait_ring_boy",
+      "lines": [
+        {
+          "id": "r1",
+          "text": "【占位】请问...这里是万事屋吗？"
+        },
+        {
+          "id": "r2",
+          "text": "【占位】我...我在寻找一个人。能帮我吗？"
+        }
+      ],
+      "choices": [
+        {
+          "text": "请坐，慢慢说",
+          "effects": {
+            "popularity": 1,
+            "npcAffinity": { "guest_ring_boy": 5 }
+          },
+          "next": "commission_ring_quest"
+        },
+        {
+          "text": "什么情况？",
+          "effects": {
+            "flags": { "asked_ring": true }
+          },
+          "next": "commission_ring_quest"
+        }
+      ]
+    },
+    "commission_ring_quest": {
+      "speaker": "委托客人",
+      "portrait": "portrait_ring_boy",
+      "lines": [
+        {
+          "id": "r3",
+          "text": "【占位】这里填写客人说明委托原因的台词。"
+        },
+        {
+          "id": "r4",
+          "text": "【占位】这里填写客人展示委托物品或说明具体需求的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "让我看看那件物品",
+          "effects": {
+            "flags": { "seen_ring_item": true },
+            "npcAffinity": { "guest_ring_boy": 3 }
+          },
+          "next": "commission_ring_after"
+        },
+        {
+          "text": "我明白了，委托我接下了",
+          "effects": {
+            "flags": { "accept_ring_quest": true },
+            "funds": 30,
+            "npcAffinity": { "guest_ring_boy": 10 }
+          },
+          "next": "commission_ring_end"
+        }
+      ]
+    },
+    "commission_ring_after": {
+      "speaker": "委托客人",
+      "portrait": "portrait_ring_boy",
+      "lines": [
+        {
+          "id": "ra1",
+          "text": "【占位】这里填写玩家看完物品后的对话。"
+        },
+        {
+          "id": "ra2",
+          "text": "【占位】这里填写客人询问玩家是否看到什么的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "委托我接下了",
+          "effects": {
+            "flags": { "accept_ring_quest": true },
+            "funds": 30
+          },
+          "next": "commission_ring_end"
+        }
+      ]
+    },
+    "commission_ring_end": {
+      "speaker": "委托客人",
+      "portrait": "portrait_ring_boy",
+      "lines": [
+        {
+          "id": "re1",
+          "text": "【占位】这里填写客人感谢并表示会再来听取消息的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "我会尽力而为",
+          "effects": {
+            "flags": { "ring_commission_accepted": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "commission_cat_start": {
+      "speaker": "委托客人",
+      "portrait": "portrait_little_girl",
+      "lines": [
+        {
+          "id": "c1",
+          "text": "【占位】这里填写委托人进门的台词。"
+        },
+        {
+          "id": "c2",
+          "text": "【占位】这里填写委托人说明委托内容的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "别着急，慢慢说",
+          "effects": {
+            "npcAffinity": { "guest_little_girl": 5 }
+          },
+          "next": "commission_cat_quest"
+        },
+        {
+          "text": "什么情况？",
+          "effects": {
+            "flags": { "asked_cat": true }
+          },
+          "next": "commission_cat_quest"
+        }
+      ]
+    },
+    "commission_cat_quest": {
+      "speaker": "委托客人",
+      "portrait": "portrait_little_girl",
+      "lines": [
+        {
+          "id": "c3",
+          "text": "【占位】这里填写委托人详细说明委托细节的台词。"
+        },
+        {
+          "id": "c4",
+          "text": "【占位】这里填写委托人表达期望或提供线索的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "委托我接下了",
+          "effects": {
+            "flags": { "accept_cat_quest": true },
+            "funds": 10,
+            "popularity": 1
+          },
+          "next": "commission_cat_end"
+        }
+      ]
+    },
+    "commission_cat_end": {
+      "speaker": "委托客人",
+      "portrait": "portrait_little_girl",
+      "lines": [
+        {
+          "id": "ce1",
+          "text": "【占位】这里填写委托人表示感谢并告别的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "有消息会通知你",
+          "effects": {
+            "flags": { "cat_commission_accepted": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "commission_photo_start": {
+      "speaker": "委托客人",
+      "portrait": "portrait_elder_lady",
+      "lines": [
+        {
+          "id": "p1",
+          "text": "【占位】年轻人，能帮我看看这个东西吗？"
+        },
+        {
+          "id": "p2",
+          "text": "【占位】这里填写委托人展示某样老物件的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "让我仔细看看",
+          "effects": {
+            "npcAffinity": { "guest_elder_lady": 5 }
+          },
+          "next": "commission_photo_quest"
+        },
+        {
+          "text": "您能说说详情吗？",
+          "effects": {
+            "flags": { "interested_in_photo": true }
+          },
+          "next": "commission_photo_quest"
+        }
+      ]
+    },
+    "commission_photo_quest": {
+      "speaker": "委托客人",
+      "portrait": "portrait_elder_lady",
+      "lines": [
+        {
+          "id": "p3",
+          "text": "【占位】这里填写委托人说明背景故事的台词。"
+        },
+        {
+          "id": "p4",
+          "text": "【占位】这里填写委托人表达期望的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "这个委托我接了",
+          "effects": {
+            "flags": { "accept_photo_quest": true },
+            "funds": 20,
+            "popularity": 2
+          },
+          "next": "commission_photo_end"
+        }
+      ]
+    },
+    "commission_photo_end": {
+      "speaker": "委托客人",
+      "portrait": "portrait_elder_lady",
+      "lines": [
+        {
+          "id": "pe1",
+          "text": "【占位】这里填写委托人表示感谢并告别的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "一定会的",
+          "effects": {
+            "flags": { "photo_commission_accepted": true }
+          },
+          "next": null
+        }
+      ]
+    },
+    "commission_clock_start": {
+      "speaker": "委托客人",
+      "portrait": "portrait_clockmaker",
+      "lines": [
+        {
+          "id": "ck1",
+          "text": "【占位】听说你们万事屋能处理一些...特殊的事情？"
+        },
+        {
+          "id": "ck2",
+          "text": "【占位】这里填写委托人说明来意的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "什么样的问题？",
+          "effects": {
+            "npcAffinity": { "guest_clockmaker": 5 }
+          },
+          "next": "commission_clock_quest"
+        },
+        {
+          "text": "请详细说说",
+          "effects": {
+            "flags": { "curious_about_clock": true }
+          },
+          "next": "commission_clock_quest"
+        }
+      ]
+    },
+    "commission_clock_quest": {
+      "speaker": "委托客人",
+      "portrait": "portrait_clockmaker",
+      "lines": [
+        {
+          "id": "ck3",
+          "text": "【占位】这里填写委托人详细说明问题的台词。"
+        },
+        {
+          "id": "ck4",
+          "text": "【占位】这里填写委托人提供物品或线索的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "让我检查一下",
+          "effects": {
+            "flags": { "accept_clock_quest": true },
+            "funds": 30,
+            "popularity": 3
+          },
+          "next": "commission_clock_end"
+        }
+      ]
+    },
+    "commission_clock_end": {
+      "speaker": "委托客人",
+      "portrait": "portrait_clockmaker",
+      "lines": [
+        {
+          "id": "cke1",
+          "text": "【占位】这里填写委托人表示感谢并提供联系方式的台词。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "我会尽快处理",
+          "effects": {
+            "flags": { "clock_commission_accepted": true }
+          },
+          "next": null
+        }
+      ]
+    }
+  }
+}

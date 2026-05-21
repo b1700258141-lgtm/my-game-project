@@ -1,0 +1,17 @@
+{
+  "name": "万事屋炼金物语",
+  "version": "1.0.0",
+  "description": "像素风格现代万事屋模拟经营叙事游戏",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.88.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

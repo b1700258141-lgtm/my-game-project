@@ -1,0 +1,102 @@
+{
+  "commissions": [
+    {
+      "id": "commission_placeholder_digestive",
+      "title": "占位消食片委托",
+      "clientNpcId": "guest_placeholder_customer",
+      "type": "short",
+      "startDay": 1,
+      "expireDay": 3,
+      "description": "【委托描述待补充】",
+      "status": "available",
+      "startDialogueId": null,
+      "requiredFlags": [],
+      "requiredItemText": "交付任意品质 消食片 x1",
+      "requiredAnyItemIds": [
+        "digestive_tablet_poor",
+        "digestive_tablet_normal",
+        "digestive_tablet_excellent",
+        "digestive_tablet_perfect"
+      ],
+      "reward": {
+        "funds": 50,
+        "popularity": 5,
+        "spiritMemoryProgress": 0
+      }
+    },
+    {
+      "id": "commission_001",
+      "title": "传家宝溯源",
+      "clientNpcId": "guest_ring_boy",
+      "type": "long",
+      "startDay": 1,
+      "expireDay": 20,
+      "description": "【占位】一位年轻人希望万事屋帮忙调查一枚祖传戒指的来历。",
+      "status": "available",
+      "startDialogueId": "commission_ring_start",
+      "requiredFlags": [],
+      "reward": {
+        "funds": 80,
+        "popularity": 10
+      }
+    },
+    {
+      "id": "commission_002",
+      "title": "老照片调查",
+      "clientNpcId": "guest_elder_lady",
+      "type": "long",
+      "startDay": 2,
+      "expireDay": 25,
+      "description": "【占位】一位老人家希望能找到老照片中的人物。",
+      "status": "available",
+      "startDialogueId": "commission_photo_start",
+      "requiredFlags": [],
+      "reward": {
+        "funds": 60,
+        "popularity": 8
+      }
+    },
+    {
+      "id": "commission_003",
+      "title": "寻猫委托",
+      "clientNpcId": "guest_little_girl",
+      "type": "short",
+      "startDay": 1,
+      "expireDay": 3,
+      "description": "【占位】小女孩的猫咪走丢了，希望万事屋帮忙寻找。",
+      "status": "available",
+      "startDialogueId": "commission_cat_start",
+      "requiredFlags": [],
+      "reward": {
+        "funds": 30,
+        "popularity": 5
+      }
+    },
+    {
+      "id": "commission_004",
+      "title": "古董修复",
+      "clientNpcId": "guest_clockmaker",
+      "type": "short",
+      "startDay": 3,
+      "expireDay": 5,
+      "description": "【占位】古董店老板有一件需要修复的老物件。",
+      "status": "available",
+      "startDialogueId": "commission_clock_start",
+      "requiredFlags": [],
+      "reward": {
+        "funds": 100,
+        "popularity": 12
+      }
+    }
+  ],
+  "commissionTypes": {
+    "long": {
+      "name": "长期委托",
+      "expireDays": 20
+    },
+    "short": {
+      "name": "短期委托",
+      "expireDays": 3
+    }
+  }
+}

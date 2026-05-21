@@ -1,0 +1,221 @@
+{
+  "memories": [
+    {
+      "id": "ring_ancient_memory",
+      "title": "【占位】戒指相关记忆",
+      "triggerFlag": "ring_ancient_memory",
+      "description": "【占位】关于那枚戒指的记忆，具体内容由用户后续填写。",
+      "background": "memory_placeholder",
+      "dialogueId": "ring_memory_dialogue",
+      "unlockCodex": true,
+      "rewards": {
+        "funds": 100,
+        "popularity": 5,
+        "flags": { "ring_memory_unlocked": true },
+        "npcAffinity": { "guest_ring_boy": 20 }
+      }
+    },
+    {
+      "id": "elder_wisdom_memory",
+      "title": "【占位】老者相关记忆",
+      "triggerFlag": "elder_wisdom_memory",
+      "description": "【占位】关于某位来访客人的记忆，具体内容由用户后续填写。",
+      "background": "memory_placeholder",
+      "dialogueId": "elder_memory_dialogue",
+      "unlockCodex": true,
+      "rewards": {
+        "funds": 50,
+        "popularity": 3,
+        "flags": { "elder_wisdom_unlocked": true },
+        "npcAffinity": { "visitor_teacher": 15 }
+      }
+    },
+    {
+      "id": "cat_memory",
+      "title": "【占位】猫咪相关记忆",
+      "triggerFlag": "cat_memory",
+      "description": "【占位】关于那只失踪猫咪的记忆，具体内容由用户后续填写。",
+      "background": "memory_placeholder",
+      "dialogueId": "cat_memory_dialogue",
+      "unlockCodex": true,
+      "rewards": {
+        "funds": 50,
+        "popularity": 8,
+        "flags": { "cat_memory_unlocked": true },
+        "npcAffinity": { "guest_little_girl": 25 }
+      }
+    },
+    {
+      "id": "photo_memory",
+      "title": "【占位】老照片相关记忆",
+      "triggerFlag": "photo_memory",
+      "description": "【占位】老照片中隐藏的记忆，具体内容由用户后续填写。",
+      "background": "memory_placeholder",
+      "dialogueId": "photo_memory_dialogue",
+      "unlockCodex": true,
+      "rewards": {
+        "funds": 80,
+        "popularity": 10,
+        "flags": { "photo_memory_unlocked": true },
+        "npcAffinity": { "guest_elder_lady": 20 }
+      }
+    },
+    {
+      "id": "clock_memory",
+      "title": "【占位】钟表相关记忆",
+      "triggerFlag": "clock_memory",
+      "description": "【占位】古老钟表中封印的记忆，具体内容由用户后续填写。",
+      "background": "memory_placeholder",
+      "dialogueId": "clock_memory_dialogue",
+      "unlockCodex": true,
+      "rewards": {
+        "funds": 120,
+        "popularity": 15,
+        "flags": { "clock_memory_unlocked": true },
+        "npcAffinity": { "guest_clockmaker": 30 }
+      }
+    }
+  ],
+  "dialogues": {
+    "ring_memory_dialogue": {
+      "speaker": "旁白",
+      "lines": [
+        {
+          "id": "rm1",
+          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+        },
+        {
+          "id": "rm2",
+          "text": "【占位】这里填写记忆中的对话或场景。"
+        },
+        {
+          "id": "rm3",
+          "text": "【占位】这里填写精魂传达的信息。"
+        },
+        {
+          "id": "rm4",
+          "text": "【占位】这里填写记忆结束前的最后信息。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "（结束记忆）",
+          "effects": {},
+          "next": null
+        }
+      ]
+    },
+    "elder_memory_dialogue": {
+      "speaker": "旁白",
+      "lines": [
+        {
+          "id": "em1",
+          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+        },
+        {
+          "id": "em2",
+          "text": "【占位】这里填写记忆中的对话或场景。"
+        },
+        {
+          "id": "em3",
+          "text": "【占位】这里填写精魂传达的信息。"
+        },
+        {
+          "id": "em4",
+          "text": "【占位】这里填写记忆结束前的最后信息。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "（结束记忆）",
+          "effects": {},
+          "next": null
+        }
+      ]
+    },
+    "cat_memory_dialogue": {
+      "speaker": "旁白",
+      "lines": [
+        {
+          "id": "cm1",
+          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+        },
+        {
+          "id": "cm2",
+          "text": "【占位】这里填写记忆中的对话或场景。"
+        },
+        {
+          "id": "cm3",
+          "text": "【占位】这里填写精魂传达的信息。"
+        },
+        {
+          "id": "cm4",
+          "text": "【占位】这里填写记忆结束前的最后信息。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "（结束记忆）",
+          "effects": {},
+          "next": null
+        }
+      ]
+    },
+    "photo_memory_dialogue": {
+      "speaker": "旁白",
+      "lines": [
+        {
+          "id": "pm1",
+          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+        },
+        {
+          "id": "pm2",
+          "text": "【占位】这里填写记忆中的对话或场景。"
+        },
+        {
+          "id": "pm3",
+          "text": "【占位】这里填写精魂传达的信息。"
+        },
+        {
+          "id": "pm4",
+          "text": "【占位】这里填写记忆结束前的最后信息。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "（结束记忆）",
+          "effects": {},
+          "next": null
+        }
+      ]
+    },
+    "clock_memory_dialogue": {
+      "speaker": "旁白",
+      "lines": [
+        {
+          "id": "clm1",
+          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+        },
+        {
+          "id": "clm2",
+          "text": "【占位】这里填写记忆中的对话或场景。"
+        },
+        {
+          "id": "clm3",
+          "text": "【占位】这里填写精魂传达的信息。"
+        },
+        {
+          "id": "clm4",
+          "text": "【占位】这里填写记忆结束前的最后信息。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "（结束记忆）",
+          "effects": {},
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "endings": [
+    {
+      "id": "ending_normal_1",
+      "title": "【占位】普通结局A",
+      "description": "【占位】普通结局的描述，具体内容由用户填写。",
+      "type": "normal",
+      "priority": 1,
+      "isTrueEnding": false,
+      "triggerDay": 30,
+      "requiredFlags": [],
+      "blockedFlags": [],
+      "requiredKeyItems": [],
+      "minFunds": 0,
+      "minPopularity": 0,
+      "rewards": {}
+    },
+    {
+      "id": "ending_normal_2",
+      "title": "【占位】普通结局B",
+      "description": "【占位】普通结局的描述，具体内容由用户填写。",
+      "type": "normal",
+      "priority": 1,
+      "isTrueEnding": false,
+      "triggerDay": 30,
+      "requiredFlags": [],
+      "blockedFlags": [],
+      "requiredKeyItems": [],
+      "minFunds": 0,
+      "minPopularity": 0,
+      "rewards": {}
+    },
+    {
+      "id": "ending_family_truth",
+      "title": "【占位】家族真相结局",
+      "description": "【占位】收集齐家族纹章碎片后解锁的特殊结局。具体内容由用户填写。",
+      "type": "special",
+      "priority": 10,
+      "isTrueEnding": false,
+      "triggerDay": 30,
+      "requiredFlags": ["unlocked_memory_001"],
+      "blockedFlags": [],
+      "requiredKeyItems": ["key_item_001", "key_item_002", "key_item_003"],
+      "minFunds": 0,
+      "minPopularity": 50,
+      "rewards": {
+        "funds": 500,
+        "popularity": 100
+      }
+    },
+    {
+      "id": "ending_mystery_traces",
+      "title": "【占位】神秘痕迹结局",
+      "description": "【占位】追寻神秘线索后解锁的结局。具体内容由用户填写。",
+      "type": "special",
+      "priority": 8,
+      "isTrueEnding": false,
+      "triggerDay": 30,
+      "requiredFlags": [],
+      "blockedFlags": [],
+      "requiredKeyItems": ["key_item_004"],
+      "minFunds": 0,
+      "minPopularity": 30,
+      "rewards": {
+        "funds": 300,
+        "popularity": 50
+      }
+    },
+    {
+      "id": "ending_true",
+      "title": "【占位】真结局",
+      "description": "【占位】达成所有条件后解锁的真结局。具体内容由用户填写。",
+      "type": "true",
+      "priority": 100,
+      "isTrueEnding": true,
+      "triggerDay": 30,
+      "requiredFlags": [
+        "completed_all_commissions",
+        "unlocked_all_memories"
+      ],
+      "blockedFlags": [],
+      "requiredKeyItems": [
+        "key_item_001",
+        "key_item_002",
+        "key_item_003",
+        "key_item_004"
+      ],
+      "minFunds": 1000,
+      "minPopularity": 100,
+      "rewards": {
+        "funds": 1000,
+        "popularity": 200
+      }
+    }
+  ]
+}

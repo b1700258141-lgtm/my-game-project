@@ -1,0 +1,52 @@
+{
+  "shopItems": [
+    {
+      "itemId": "material_beetle",
+      "itemName": "甲壳虫",
+      "itemType": "alchemy_material",
+      "price": 10,
+      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "stock": null
+    },
+    {
+      "itemId": "material_carrot",
+      "itemName": "萝卜",
+      "itemType": "alchemy_material",
+      "price": 8,
+      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "stock": null
+    },
+    {
+      "itemId": "material_bellflower",
+      "itemName": "风铃草",
+      "itemType": "alchemy_material",
+      "price": 12,
+      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "stock": null
+    },
+    {
+      "itemId": "material_foxtail_grass",
+      "itemName": "狗尾巴草",
+      "itemType": "alchemy_material",
+      "price": 6,
+      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "stock": null
+    },
+    {
+      "itemId": "material_night_dew",
+      "itemName": "夜露",
+      "itemType": "alchemy_material",
+      "price": 15,
+      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "stock": null
+    },
+    {
+      "itemId": "material_old_coin",
+      "itemName": "旧铜钱",
+      "itemType": "alchemy_material",
+      "price": 20,
+      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "stock": null
+    }
+  ]
+}

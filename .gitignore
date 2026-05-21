@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+Build/
+Builds/
+
+# Vite / cache
+.vite/
+.cache/
+
+# Logs and temporary files
+*.log
+dev-server*.log
+*.tmp
+*.bak
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.vs/
+
+# Unity generated folders, in case this project is migrated or mixed later
+Library/
+Temp/
+Obj/
+Logs/
+UserSettings/
+*.csproj
+*.sln
+*.user
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+sysinfo.txt
+
+# Large model and generated AI artifact files
+*.ckpt
+*.safetensors
+*.pt
+*.pth
+*.onnx
+*.bin
