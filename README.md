@@ -1,145 +1,123 @@
-﻿# Modern Odd Jobs Alchemy Sim
+﻿# 现代万事屋炼金叙事经营游戏
 
-现代万事屋 + 炼金术 + 精魂记忆 + 模拟经营叙事游戏项目。
+临时英文名：Modern Odd Jobs Alchemy Sim
 
-## Current Status
+这是一个面向腾讯黑客松风格的现代万事屋 + 炼金术 + 精魂记忆 + 模拟经营叙事游戏项目。
 
-This is a Vite + Phaser prototype. Current systems include player movement, inventory, shop, random visitors, commissions, alchemy cauldron, bookshelf archive, daily summary, furniture upgrades, time progression, and scrollable UI lists.
+> 重要：Codex、CodeBuddy 或其他 AI Agent 在修改项目之前，必须先阅读 `AGENTS.md`。
 
-## Run Locally
+## 项目概念
+
+玩家继承家族留下的现代万事屋，通过接待现代来客、接取委托、购买或准备炼金材料、使用炼金釜制作物品、完成委托、获得资金与人气，并逐步解锁寄宿在现代人身上的古代精魂记忆。
+
+当前重点不是扩写正式剧情，而是搭建一个可以跑通的经营 Demo 闭环。
+
+## 当前开发状态
+
+项目基于 Vite + Phaser 开发，当前已经包含或正在推进以下系统：
+
+- 万事屋主场景与玩家移动
+- 随机来访 NPC
+- 对话系统
+- 背包系统
+- 集市商店系统
+- 委托系统
+- 炼金釜 4x4 宫格炼金系统
+- 每日时间流逝与睡觉跳时间
+- 每日结算系统
+- 家具升级系统
+- 书架 / 万事屋档案系统
+- 通用可滚动 UI 列表组件
+
+## 技术栈
+
+- Vite 5.x
+- Phaser 3.88
+- JavaScript ES Module
+
+## 运行项目
+
+安装依赖：
 
 ```bash
 npm install
+```
+
+启动开发服务器：
+
+```bash
 npm run dev
 ```
 
-Build:
+构建生产版本：
 
 ```bash
 npm run build
 ```
 
-## AI Agent Rule
+预览构建结果：
 
-Before Codex, CodeBuddy, or any other AI agent modifies this project, it must read `AGENTS.md` first.
+```bash
+npm run preview
+```
 
-## Git Workflow
+## 项目结构
 
-Recommended update flow:
+```text
+public/                 # 静态资源目录
+src/
+  data/                 # 游戏数据配置
+  scenes/               # Phaser 场景
+  systems/              # 游戏系统逻辑
+  config.js             # Phaser 配置
+  main.js               # 游戏入口
+index.html
+vite.config.js
+package.json
+AGENTS.md               # AI Agent 项目记忆与开发规范
+```
+
+## 重要开发规范
+
+请先阅读 `AGENTS.md`，其中包含：
+
+- 项目背景
+- 禁止自动编写正式剧情的规则
+- 当前炼金配方与计分规则
+- 背包、商店、委托、书架、家具升级等系统说明
+- UI 状态管理要求
+- Git 协作规则
+
+简要规则：
+
+- 不要擅自编写正式 NPC 对话。
+- 不要擅自编写正式古代精魂记忆文本。
+- 不要擅自编写正式结局内容。
+- 不要破坏背包、商店、炼金、委托、书架、每日结算等已有系统。
+- 不要提交 `node_modules/`、`dist/`、日志、环境文件、模型权重或密钥。
+
+## Git 协作方式
+
+推荐每次功能开发使用独立分支：
 
 ```bash
 git status
 git pull --rebase
 git checkout -b codex/feature-name
+# 修改项目
 git add <changed-files>
 git commit -m "feat: describe feature"
 git push -u origin codex/feature-name
 ```
 
-Do not use `git reset --hard`, `git clean -fd`, or `git push --force` unless the user explicitly authorizes it.
-
----
-# 涓囦簨灞嬬偧閲戠墿璇?
-
-鍍忕礌椋庢牸鐨勭幇浠ｄ竾浜嬪眿妯℃嫙缁忚惀鍙欎簨娓告垙銆?
-
-## 鎶€鏈爤
-
-- Vite 5.x
-- Phaser 3.88
-- JavaScript (ES Module)
-
-## 椤圭洰缁撴瀯
-
-```
-鈹溾攢鈹€ public/
-鈹?  鈹斺攢鈹€ assets/           # 缇庢湳璧勬簮鐩綍
-鈹?      鈹溾攢鈹€ backgrounds/  # 鑳屾櫙鍥?
-鈹?      鈹溾攢鈹€ pixel/        # 鍍忕礌绮剧伒鍥?
-鈹?      鈹溾攢鈹€ portraits/    # 瑙掕壊绔嬬粯
-鈹?      鈹溾攢鈹€ audio/       # 闊虫晥闊充箰
-鈹?      鈹斺攢鈹€ ui/           # UI 璧勬簮
-鈹溾攢鈹€ src/
-鈹?  鈹溾攢鈹€ scenes/           # 娓告垙鍦烘櫙
-鈹?  鈹?  鈹溾攢鈹€ BootScene.js      # 鍚姩鍦烘櫙
-鈹?  鈹?  鈹溾攢鈹€ TitleScene.js     # 鏍囬鐣岄潰
-鈹?  鈹?  鈹溾攢鈹€ ShopScene.js      # 涓囦簨灞嬩富鍦烘櫙
-鈹?  鈹?  鈹溾攢鈹€ DialogueScene.js  # 瀵硅瘽鍦烘櫙
-鈹?  鈹?  鈹溾攢鈹€ MemoryScene.js    # 璁板繂鍦烘櫙
-鈹?  鈹?  鈹斺攢鈹€ DayEndScene.js    # 鏃ョ粓缁撶畻
-鈹?  鈹溾攢鈹€ systems/          # 娓告垙绯荤粺
-鈹?  鈹?  鈹斺攢鈹€ GameState.js      # 娓告垙鐘舵€佺鐞?
-鈹?  鈹溾攢鈹€ data/             # 鏁版嵁閰嶇疆
-鈹?  鈹?  鈹斺攢鈹€ gameConfig.json   # 娓告垙閰嶇疆
-鈹?  鈹溾攢鈹€ config.js         # Phaser 閰嶇疆
-鈹?  鈹斺攢鈹€ main.js           # 娓告垙鍏ュ彛
-鈹溾攢鈹€ index.html
-鈹溾攢鈹€ vite.config.js
-鈹斺攢鈹€ package.json
-```
-
-## 蹇€熷紑濮?
+不要使用以下命令，除非用户明确授权：
 
 ```bash
-# 瀹夎渚濊禆
-npm install
-
-# 寮€鍙戞ā寮?
-npm run dev
-
-# 鐢熶骇鏋勫缓
-npm run build
-
-# 棰勮鏋勫缓
-npm run preview
+git reset --hard
+git clean -fd
+git push --force
 ```
 
-## 娓告垙鎿嶄綔
+## 编码说明
 
-- **WASD / 鏂瑰悜閿?*: 绉诲姩瑙掕壊
-- **E 閿?*: 涓庣墿浣撲氦浜?
-- **绌烘牸閿?*: 鍦ㄥ璇濅腑缁х画
-
-## 褰撳墠宸插疄鐜板姛鑳?
-
-1. **鏍囬鐣岄潰** - 娓告垙鏍囬銆佸紑濮嬫父鎴忔寜閽?
-2. **涓囦簨灞嬪満鏅?* - 绾壊鑳屾櫙 + 鍙Щ鍔ㄧ帺瀹舵柟鍧?
-3. **鐜╁瑙掕壊** - WASD/鏂瑰悜閿Щ鍔紝鍗犱綅绮剧伒
-4. **UI 鏄剧ず** - 鍙充笂瑙掓樉绀哄ぉ鏁般€佽祫閲戙€佷汉姘?
-5. **浜や簰绯荤粺** - 闈犺繎鐗╀綋鏄剧ず浜や簰鎻愮ず
-6. **棰勭暀鍦烘櫙** - DialogueScene銆丮emoryScene銆丏ayEndScene
-
-## 涓嬩竴姝ヨ鍒?
-
-- [ ] AlchemyScene - 鐐奸噾绯荤粺
-- [ ] 鍓ф儏鏁版嵁绯荤粺
-- [ ] NPC 濂芥劅搴︾郴缁?
-- [ ] 濮旀墭浠诲姟绯荤粺
-- [ ] 鍍忕礌缇庢湳璧勬簮
-
-## 鎵╁睍鎸囧崡
-
-### 娣诲姞鏂板満鏅?
-
-1. 鍦?`src/scenes/` 鍒涘缓鏂板満鏅枃浠?
-2. 鍦?`src/main.js` 涓鍏ュ苟娉ㄥ唽鍦烘櫙
-
-### 淇敼娓告垙鏁板€?
-
-缂栬緫 `src/data/gameConfig.json`:
-- `display`: 娓告垙绐楀彛灏哄
-- `player`: 鐜╁閫熷害銆佸昂瀵?
-- `initial`: 鍒濆璧勯噾銆佷汉姘?
-- `game`: 娓告垙澶╂暟绛?
-
-### 娣诲姞鍓ф儏鏁版嵁
-
-鍦?`src/data/` 涓嬪垱寤?JSON 鏂囦欢锛屾牸寮忓弬鑰冿細
-```json
-{
-  "dialogue": [
-    { "name": "瑙掕壊鍚?, "text": "瀵硅瘽鍐呭" }
-  ]
-}
-```
-
+仓库文本文件统一使用 UTF-8。`.gitattributes` 已约束常见文本文件使用 LF 行尾，避免 Windows 环境下再次出现乱码或行尾混乱。
