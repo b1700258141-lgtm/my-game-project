@@ -16,10 +16,14 @@ Builds/
 dev-server*.log
 *.tmp
 *.bak
+.codex-preview-server.mjs
+CONTENT_SYNC_LOG.md
+process/
 
 # Environment and secrets
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 id_rsa
@@ -57,3 +61,5 @@ sysinfo.txt
 *.pth
 *.onnx
 *.bin
+cloudfunctions/*.zip
+cloudfunctions/**/*.zip

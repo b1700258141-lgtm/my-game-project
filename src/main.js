@@ -16,6 +16,8 @@ import InventoryScene from './scenes/InventoryScene.js';
 import AlchemyScene from './scenes/AlchemyScene.js';
 import FurnitureUpgradeScene from './scenes/FurnitureUpgradeScene.js';
 import BookshelfArchiveScene from './scenes/BookshelfArchiveScene.js';
+import SaveLoadScene from './scenes/SaveLoadScene.js';
+import PlayerNameScene from './scenes/PlayerNameScene.js';
 
 // 注册场景
 config.scene = [
@@ -30,7 +32,9 @@ config.scene = [
   InventoryScene,
   AlchemyScene,
   FurnitureUpgradeScene,
-  BookshelfArchiveScene
+  BookshelfArchiveScene,
+  SaveLoadScene,
+  PlayerNameScene
 ];
 
 // 初始化游戏状态

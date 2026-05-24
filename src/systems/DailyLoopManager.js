@@ -140,6 +140,7 @@ export default class DailyLoopManager {
       timeManager._syncToGameState();
     }
 
+    this.gameState.checkWanShiWuLevelUp?.();
     return this.resetForCurrentDay();
   }
 }

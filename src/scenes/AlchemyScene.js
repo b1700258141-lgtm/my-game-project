@@ -488,6 +488,7 @@ class AlchemyScene extends Phaser.Scene {
     const lines = [
       `目标产物：${recipeName}`,
       `材料状态：${availability ? (availability.canCraft ? '可以制作' : '素材不足') : '未选择配方'}`,
+      `预计花费：${recipe?.craftHours || '待设定'} 小时`,
       `当前分数：${scoreResult.currentScore} / ${maxScore}`,
       `当前品质：${maxScore > 0 && this.placedMaterials.length > 0 ? qualityResult.qualityName : '未放入素材'}`,
       `重叠格子：${scoreResult.overlapCells.length}`

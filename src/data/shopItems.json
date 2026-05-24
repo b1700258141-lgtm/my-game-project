@@ -5,7 +5,7 @@
       "itemName": "甲壳虫",
       "itemType": "alchemy_material",
       "price": 10,
-      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "itemDescription": "一只黑黝黝的甲壳虫，背上的盔甲亮的能反光。",
       "stock": null
     },
     {
@@ -13,7 +13,7 @@
       "itemName": "萝卜",
       "itemType": "alchemy_material",
       "price": 8,
-      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "itemDescription": "脆爽可口的食材，也可以充当炼金素材使用",
       "stock": null
     },
     {
@@ -21,7 +21,7 @@
       "itemName": "风铃草",
       "itemType": "alchemy_material",
       "price": 12,
-      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "itemDescription": "一株紫色的风铃草，据说花语是【温柔的爱】",
       "stock": null
     },
     {
@@ -29,7 +29,7 @@
       "itemName": "狗尾巴草",
       "itemType": "alchemy_material",
       "price": 6,
-      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "itemDescription": "路边随处可见的草，拿来挠痒痒似乎也不错",
       "stock": null
     },
     {
@@ -37,7 +37,7 @@
       "itemName": "夜露",
       "itemType": "alchemy_material",
       "price": 15,
-      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "itemDescription": "夜间凝结在叶子上的露珠，采集起来要费一番功夫",
       "stock": null
     },
     {
@@ -45,7 +45,7 @@
       "itemName": "旧铜钱",
       "itemType": "alchemy_material",
       "price": 20,
-      "itemDescription": "占位炼金材料，后续由用户补充用途",
+      "itemDescription": "褪色的旧铜钱，炼金术赋予了它除了收藏价值以外的用处",
       "stock": null
     }
   ]

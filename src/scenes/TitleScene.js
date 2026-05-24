@@ -1,5 +1,7 @@
 // 标题场景
 import { resetTimeManager } from '../systems/TimeManager';
+import SaveLoadManager from '../systems/SaveLoadManager';
+import AchievementManager from '../systems/AchievementManager';
 
 class TitleScene extends Phaser.Scene {
   constructor() {
@@ -53,12 +55,18 @@ class TitleScene extends Phaser.Scene {
       this.startGame();
     });
 
-    // 继续游戏按钮（暂时禁用）
+    // 继续游戏按钮
     this.continueButton = this.createButton(centerX, 460, '继续游戏', () => {
-      // TODO: 实现存档读取
+      this.openLoadGame();
     });
-    this.continueButton.setAlpha(0.5);
-    this.continueButton.disableInteractive();
+
+    if (!new SaveLoadManager(window.gameState).getAllSaveSlots().some(slot => slot.hasSave)) {
+      this.add.text(centerX, 505, '暂无存档时仍可进入读档界面查看空槽位', {
+        fontSize: '12px',
+        fontFamily: 'Courier New',
+        color: '#4c566a'
+      }).setOrigin(0.5);
+    }
 
     // 底部提示
     this.add.text(centerX, 550, '© 2026 万事屋工作室', {
@@ -120,8 +128,19 @@ class TitleScene extends Phaser.Scene {
       window.gameState.reset();
       // 重置时间管理器
       resetTimeManager();
-      // 切换到商店场景
-      this.scene.start('ShopScene');
+      // 重置成就追踪
+      AchievementManager.resetTracking();
+      // 先输入主角名字，再进入主界面
+      this.scene.start('PlayerNameScene', {
+        returnScene: 'ShopScene'
+      });
+    });
+  }
+
+  openLoadGame() {
+    this.scene.start('SaveLoadScene', {
+      mode: 'load',
+      returnScene: 'TitleScene'
     });
   }
 }

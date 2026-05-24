@@ -1,5 +1,6 @@
 // 游戏状态管理
 import gameConfig from '../data/gameConfig.json';
+import { getWanShiWuLevelByPopularity } from './WanShiWuLevelSystem';
 
 // 委托状态常量
 export const COMMISSION_STATUS = {
@@ -25,6 +26,8 @@ export const GAME_STATE = {
   SLEEP_CHOICE: 'sleepChoice',  // 睡觉选择状态
   LOCATION_CHOICE: 'locationChoice', // 地点选择状态
   SHOP: 'shop',                 // 商店状态
+  SAVE_LOAD: 'saveLoad',        // 存档 / 读档界面状态
+  NAME_INPUT: 'nameInput',      // 主角名字输入状态
   TRANSITION: 'transition'      // 场景过渡状态
 };
 
@@ -33,6 +36,11 @@ class GameState {
     this.day = gameConfig.initial.day;
     this.funds = gameConfig.initial.funds;
     this.popularity = gameConfig.initial.popularity;
+    this.wanShiWuLevel = gameConfig.initial.wanShiWuLevel || 1;
+    this.shopLevel = this.wanShiWuLevel;
+    this.playerName = gameConfig.initial.playerName || '';
+    this.pendingSystemMessages = [];
+    this.shortCommissionRefresh = null;
     
     // 剧情标记，用于控制分支
     this.flags = {};
@@ -179,6 +187,41 @@ class GameState {
   modifyPopularity(amount) {
     this.popularity += amount;
     if (this.popularity < 0) this.popularity = 0;
+    this.checkWanShiWuLevelUp();
+  }
+
+  setPlayerName(name) {
+    this.playerName = String(name || '').trim();
+  }
+
+  getPlayerName() {
+    return this.playerName || '';
+  }
+
+  addSystemMessage(message) {
+    if (!message) return;
+    this.pendingSystemMessages = this.pendingSystemMessages || [];
+    this.pendingSystemMessages.push(message);
+  }
+
+  consumeSystemMessages() {
+    const messages = this.pendingSystemMessages || [];
+    this.pendingSystemMessages = [];
+    return messages;
+  }
+
+  checkWanShiWuLevelUp() {
+    const currentLevel = this.wanShiWuLevel || this.shopLevel || 1;
+    const reachableLevel = getWanShiWuLevelByPopularity(this.popularity);
+    if (reachableLevel > currentLevel) {
+      this.wanShiWuLevel = reachableLevel;
+      this.shopLevel = reachableLevel;
+      this.addSystemMessage(`【系统】：万事屋等级提升至Lv${reachableLevel}！委托收益提高了。`);
+      return true;
+    }
+    this.wanShiWuLevel = currentLevel;
+    this.shopLevel = currentLevel;
+    return false;
   }
 
   // 设置剧情标记
@@ -207,12 +250,14 @@ class GameState {
   // ========== 委托相关方法 ==========
 
   // 接受委托 — 存储为对象，包含状态和接取天数
-  acceptCommission(commissionId) {
+  acceptCommission(commissionId, options = {}) {
     if (!this.acceptedCommissions.some(c => c.id === commissionId)) {
       this.acceptedCommissions.push({
         id: commissionId,
         status: COMMISSION_STATUS.IN_PROGRESS,
-        acceptedDay: this.day
+        acceptedDay: this.day,
+        deadlineDaysAfterAccept: options.deadlineDaysAfterAccept || null,
+        deadlineDay: options.deadlineDay || null
       });
     }
     this.currentCommissionId = commissionId;
@@ -532,6 +577,11 @@ class GameState {
     this.day = gameConfig.initial.day;
     this.funds = gameConfig.initial.funds;
     this.popularity = gameConfig.initial.popularity;
+    this.wanShiWuLevel = gameConfig.initial.wanShiWuLevel || 1;
+    this.shopLevel = this.wanShiWuLevel;
+    this.playerName = gameConfig.initial.playerName || '';
+    this.pendingSystemMessages = [];
+    this.shortCommissionRefresh = null;
     this.flags = {};
     this.npcAffinity = {};
     this.codex = [];
@@ -564,12 +614,15 @@ class GameState {
       currentHour: 8,
       currentMinute: 0
     };
+    this.checkWanShiWuLevelUp();
   }
   getSummary() {
     return {
       day: this.day,
       funds: this.funds,
       popularity: this.popularity,
+      wanShiWuLevel: this.wanShiWuLevel,
+      playerName: this.playerName,
       acceptedCommissions: this.acceptedCommissions,
       completedCommissions: this.completedCommissions,
       codexCount: this.codex.length,

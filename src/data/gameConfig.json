@@ -11,9 +11,28 @@
     "startY": 300
   },
   "initial": {
-    "funds": 300,
-    "popularity": 10,
-    "day": 1
+    "funds": 1000,
+    "popularity": 100,
+    "day": 1,
+    "wanShiWuLevel": 1,
+    "playerName": ""
+  },
+  "wanShiWuLevels": [
+    { "level": 1, "popularityGreaterThan": 0, "commissionRewardMultiplier": 1 },
+    { "level": 2, "popularityGreaterThan": 2000, "commissionRewardMultiplier": 3 },
+    { "level": 3, "popularityGreaterThan": 10000, "commissionRewardMultiplier": 6 },
+    { "level": 4, "popularityGreaterThan": 30000, "commissionRewardMultiplier": 11 },
+    { "level": 5, "popularityGreaterThan": 100000, "commissionRewardMultiplier": 21 }
+  ],
+  "commissions": {
+    "shortTermDailyRefreshLimitByReceptionDeskLevel": {
+      "1": 2,
+      "2": 5,
+      "3": 5,
+      "4": 5,
+      "5": 10,
+      "6": 10
+    }
   },
   "game": {
     "maxDays": 30

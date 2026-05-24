@@ -1,4 +1,47 @@
 {
-  "npcs": [],
-  "note": "NPC 现在通过来访系统（visitors.json）动态出现在场景中，不再从静态列表生成"
+  "npcs": [
+    {
+      "npcId": "guest_ring_boy",
+      "npcName": "看上去有点腼腆的年轻人",
+      "modernJob": "年轻职员",
+      "npcType": "commissionClient",
+      "personality": "腼腆",
+      "dialogueSetId": "commission_ring_start",
+      "questIds": ["commission_001"],
+      "spiritMemoryIds": [],
+      "isRandomVisitor": false,
+      "unlockCondition": "第1天起可接取委托",
+      "portraitId": "portrait_ring_boy",
+      "description": "想要委托万事屋调查一枚祖传戒指的来历。"
+    },
+    {
+      "npcId": "guest_chef_digestive",
+      "npcName": "肚子很大的厨师",
+      "modernJob": "城镇饭店大厨",
+      "npcType": "commissionClient",
+      "personality": "爽快，有点尴尬",
+      "dialogueSetId": "commission_digestive_start",
+      "questIds": ["commission_digestive_tablet"],
+      "spiritMemoryIds": [],
+      "isRandomVisitor": false,
+      "unlockCondition": "第1天起可接取委托",
+      "portraitId": "portrait_chef_digestive",
+      "description": "因为长期试吃菜品而希望获得消食片。"
+    },
+    {
+      "npcId": "guest_little_girl",
+      "npcName": "看上去很焦急的女孩",
+      "modernJob": "学生",
+      "npcType": "commissionClient",
+      "personality": "焦急，担心猫咪",
+      "dialogueSetId": "commission_cat_start",
+      "questIds": ["commission_003"],
+      "spiritMemoryIds": [],
+      "isRandomVisitor": false,
+      "unlockCondition": "第1天起可接取委托",
+      "portraitId": "portrait_little_girl",
+      "description": "正在寻找走丢的猫小黑。"
+    }
+  ],
+  "note": "NPC 现在主要通过来访系统（visitors.json）和委托系统动态出现在场景中，此文件用于记录设定稿中的正式 NPC 数据。"
 }

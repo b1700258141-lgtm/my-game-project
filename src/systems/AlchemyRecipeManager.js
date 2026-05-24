@@ -7,6 +7,7 @@ import {
   matchRecipe
 } from './AlchemyScoreCalculator';
 import DailyLoopManager from './DailyLoopManager';
+import { getTimeManager } from './TimeManager';
 
 export default class AlchemyRecipeManager {
   constructor(gameState) {
@@ -141,6 +142,9 @@ export default class AlchemyRecipeManager {
 
     dailyLoop.recordItemGained(resultItemId, 1);
     dailyLoop.recordAlchemyFinished(qualityResult);
+    if (recipe.craftHours) {
+      getTimeManager(this.gameState)?.advanceGameTime(recipe.craftHours);
+    }
 
     return {
       success: true,

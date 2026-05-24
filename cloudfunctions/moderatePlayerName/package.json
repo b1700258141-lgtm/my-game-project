@@ -1,0 +1,9 @@
+{
+  "name": "moderatePlayerName",
+  "version": "1.0.0",
+  "description": "CloudBase 云函数 - 玩家名字内容安全审核",
+  "main": "index.js",
+  "dependencies": {
+    "tencentcloud-sdk-nodejs-tms": "^4.0.0"
+  }
+}

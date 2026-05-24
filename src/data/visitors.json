@@ -11,11 +11,11 @@
       "blockedFlags": [],
       "items": [
         {
-          "itemId": "alchemy_material_001",
-          "itemName": "古旧铜片",
+          "itemId": "material_old_coin",
+          "itemName": "旧铜钱",
           "obtainMethod": "gift",
           "giftCondition": "first_visit",
-          "description": "【占位】老者赠送的古旧铜片，似乎有些年头了。"
+          "description": "褪色的旧铜钱，炼金术赋予了它除了收藏价值以外的用处"
         }
       ]
     },
@@ -38,10 +38,10 @@
         },
         {
           "itemId": "key_item_001",
-          "itemName": "【占位】家族纹章碎片A",
+          "itemName": "家族纹章碎片A",
           "obtainMethod": "temporary_commission",
           "tempCommissionId": "temp_commission_chef",
-          "description": "【占位】完成厨师的委托后可获得的关键物品。"
+          "description": "神秘的一个纹章碎片，似乎是来自破碎的什么东西的一角"
         }
       ]
     },

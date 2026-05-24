@@ -106,6 +106,8 @@ export const ALCHEMY_RECIPES = [
     ],
     resultBaseItemId: 'digestive_tablet',
     resultName: '消食片',
+    description: '能够疏通肠道的药片，按照科学的话说，充满了益生菌',
+    craftHours: 6,
     knownByDefault: true
   },
   {
@@ -117,6 +119,8 @@ export const ALCHEMY_RECIPES = [
     ],
     resultBaseItemId: 'herbal_powder',
     resultName: '中药粉末',
+    description: '能进一步加工成特定中药的粉末，像极了还未经社会雕琢的大学生',
+    craftHours: 3,
     knownByDefault: true
   },
   {
@@ -128,6 +132,8 @@ export const ALCHEMY_RECIPES = [
     ],
     resultBaseItemId: 'calming_incense',
     resultName: '安神香',
+    description: '闻起来就让人放松下来的熏香，成分似乎是...(旁白已经睡着)',
+    craftHours: 12,
     knownByDefault: true
   },
   {
@@ -139,6 +145,8 @@ export const ALCHEMY_RECIPES = [
     ],
     resultBaseItemId: 'fortune_pill',
     resultName: '招财丸',
+    description: '有着奇怪气味的丸子，好像猫咪对这个没有抵抗力？',
+    craftHours: 8,
     knownByDefault: true
   },
   {
@@ -151,6 +159,8 @@ export const ALCHEMY_RECIPES = [
     ],
     resultBaseItemId: 'cleansing_powder',
     resultName: '驱秽粉',
+    description: '风水大师平时会用的那种做法粉末，具体原理和成分不明',
+    craftHours: 24,
     knownByDefault: true
   }
 ];

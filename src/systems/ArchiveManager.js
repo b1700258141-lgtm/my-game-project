@@ -22,6 +22,24 @@ const QUALITY_NAME = {
   perfect: '完美品质'
 };
 
+const ACHIEVEMENT_DEFINITIONS = {
+  achievement_start_revival: {
+    achievementId: 'achievement_start_revival',
+    title: '万事屋复兴开启！',
+    description: '开始游玩万事屋炼金物语！'
+  },
+  achievement_hidden_quest_solution: {
+    achievementId: 'achievement_hidden_quest_solution',
+    title: '原来还能这样？',
+    description: '发现了隐藏的完成委托的方法'
+  },
+  achievement_popularity_2000: {
+    achievementId: 'achievement_popularity_2000',
+    title: '小有规模！',
+    description: '万事屋的人气值超过了2000'
+  }
+};
+
 function safeText(value, fallback = '待补充') {
   if (value === null || value === undefined || value === '') {
     return fallback;
@@ -47,6 +65,7 @@ export default class ArchiveManager {
     archiveData.completedQuests = archiveData.completedQuests || {};
     archiveData.spiritMemories = archiveData.spiritMemories || {};
     archiveData.keyItems = archiveData.keyItems || {};
+    archiveData.achievements = archiveData.achievements || {};
 
     return archiveData;
   }
@@ -107,7 +126,7 @@ export default class ArchiveManager {
     const record = {
       productBaseId,
       productName: finalProductName,
-      description: PRODUCT_TEXT_PLACEHOLDER,
+      description: safeText(recipe?.description, PRODUCT_TEXT_PLACEHOLDER),
       firstCraftedDay: this.getCurrentDay(),
       firstCraftedQuality: normalizedQuality,
       bestQualityCrafted: normalizedQuality,
@@ -238,6 +257,47 @@ export default class ArchiveManager {
     });
   }
 
+  getAchievementDefinition(achievementId) {
+    return ACHIEVEMENT_DEFINITIONS[achievementId] || null;
+  }
+
+  unlockAchievement(achievementId) {
+    const definition = this.getAchievementDefinition(achievementId);
+    if (!definition) {
+      console.warn(`成就 ${achievementId} 不存在`);
+      return null;
+    }
+
+    const archiveData = this.ensureData();
+    if (archiveData.achievements[achievementId]) {
+      return archiveData.achievements[achievementId];
+    }
+
+    const unlockedDay = this.getCurrentDay();
+    const record = {
+      achievementId,
+      title: definition.title,
+      description: definition.description,
+      isUnlocked: true,
+      unlockedDay,
+      unlockedTimeText: `第 ${unlockedDay} 天解锁`
+    };
+
+    archiveData.achievements[achievementId] = record;
+    return record;
+  }
+
+  isAchievementUnlocked(achievementId) {
+    return Boolean(this.ensureData().achievements[achievementId]?.isUnlocked);
+  }
+
+  checkPopularityAchievements(currentPopularity) {
+    if (Number(currentPopularity) >= 2000) {
+      return this.unlockAchievement('achievement_popularity_2000');
+    }
+    return null;
+  }
+
   getMaterials() {
     if (Array.isArray(this.gameState.inventory)) {
       this.gameState.inventory.forEach(item => {
@@ -328,6 +388,12 @@ export default class ArchiveManager {
     return Object.values(this.ensureData().keyItems)
       .filter(item => item.isUnlocked)
       .sort((a, b) => a.acquiredDay - b.acquiredDay || a.keyItemName.localeCompare(b.keyItemName));
+  }
+
+  getUnlockedAchievements() {
+    return Object.values(this.ensureData().achievements)
+      .filter(item => item.isUnlocked)
+      .sort((a, b) => a.unlockedDay - b.unlockedDay || a.title.localeCompare(b.title));
   }
 
   getQualityName(quality) {

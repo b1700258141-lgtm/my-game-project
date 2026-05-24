@@ -48,9 +48,9 @@ class DayEndScene extends Phaser.Scene {
       fontStyle: 'bold'
     }).setOrigin(0.5);
 
-    const panel = this.add.container(width / 2, 300);
+    const panel = this.add.container(width / 2, 292);
 
-    const panelBg = this.add.rectangle(0, 0, 560, 380, 0x1c2128)
+    const panelBg = this.add.rectangle(0, 0, 560, 340, 0x1c2128)
       .setStrokeStyle(3, 0x4c566a);
     panel.add(panelBg);
 
@@ -64,13 +64,11 @@ class DayEndScene extends Phaser.Scene {
       ['今日花费资金', `-${this.daySummary.moneySpent}`, '#bf616a'],
       ['今日人气变化', `+${this.daySummary.popularityGained}`, '#b48ead'],
       ['今日获得物品', this.formatItems(this.daySummary.itemsGained), '#a3be8c'],
-      ['今日消耗物品', this.formatItems(this.daySummary.itemsConsumed), '#bf616a'],
-      ['古代精魂记忆进度', `+${this.daySummary.spiritMemoryProgressGained}%`, '#b48ead'],
-      ['记忆内容', '待补充', '#4c566a']
+      ['今日消耗物品', this.formatItems(this.daySummary.itemsConsumed), '#bf616a']
     ];
 
     lines.forEach((line, index) => {
-      const y = -165 + index * 28;
+      const y = -138 + index * 28;
       panel.add(this.add.text(-250, y, `${line[0]}:`, {
         fontSize: '15px',
         fontFamily: 'Georgia, serif',

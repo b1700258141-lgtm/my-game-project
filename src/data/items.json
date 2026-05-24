@@ -1,15 +1,6 @@
 {
   "items": [
     {
-      "id": "alchemy_material_001",
-      "name": "古旧铜片",
-      "description": "【占位】一块带有古老纹路的铜片，具体来历由用户填写。",
-      "type": "alchemy_material",
-      "icon": "material_copper",
-      "stackable": true,
-      "maxStack": 99
-    },
-    {
       "id": "alchemy_material_002",
       "name": "褪色绸缎",
       "description": "【占位】一小块褪色的绸缎碎片，似乎有特殊用途。",
@@ -53,7 +44,7 @@
       "icon": "product_potion_purify",
       "stackable": true,
       "maxStack": 10,
-      "craftFrom": ["alchemy_material_001", "alchemy_material_004"]
+      "craftFrom": ["material_old_coin", "alchemy_material_004"]
     },
     {
       "id": "alchemy_product_002",
@@ -76,8 +67,8 @@
     },
     {
       "id": "key_item_001",
-      "name": "【占位】家族纹章碎片A",
-      "description": "【占位】关键结局物品A，具体设定由用户填写。",
+      "name": "家族纹章碎片A",
+      "description": "神秘的一个纹章碎片，似乎是来自破碎的什么东西的一角",
       "type": "key_item",
       "icon": "keyitem_charm_a",
       "stackable": false,
@@ -134,8 +125,8 @@
     },
     {
       "id": "quest_item_001",
-      "name": "【占位】委托道具样本",
-      "description": "【占位】某个委托所需的道具，具体设定由用户填写。",
+      "name": "老旧的戒指",
+      "description": "【关键物品说明待补充】",
       "type": "quest_item",
       "icon": "quest_item_sample",
       "stackable": true,
@@ -144,7 +135,7 @@
     {
       "id": "material_beetle",
       "name": "甲壳虫",
-      "description": "占位炼金材料，后续由用户补充用途",
+      "description": "一只黑黝黝的甲壳虫，背上的盔甲亮的能反光。",
       "type": "alchemy_material",
       "icon": "material_beetle",
       "stackable": true,
@@ -153,7 +144,7 @@
     {
       "id": "material_carrot",
       "name": "萝卜",
-      "description": "占位炼金材料，后续由用户补充用途",
+      "description": "脆爽可口的食材，也可以充当炼金素材使用",
       "type": "alchemy_material",
       "icon": "material_carrot",
       "stackable": true,
@@ -162,7 +153,7 @@
     {
       "id": "material_bellflower",
       "name": "风铃草",
-      "description": "占位炼金材料，后续由用户补充用途",
+      "description": "一株紫色的风铃草，据说花语是【温柔的爱】",
       "type": "alchemy_material",
       "icon": "material_bellflower",
       "stackable": true,
@@ -171,7 +162,7 @@
     {
       "id": "material_foxtail_grass",
       "name": "狗尾巴草",
-      "description": "占位炼金材料，后续由用户补充用途",
+      "description": "路边随处可见的草，拿来挠痒痒似乎也不错",
       "type": "alchemy_material",
       "icon": "material_foxtail_grass",
       "stackable": true,
@@ -180,7 +171,7 @@
     {
       "id": "material_night_dew",
       "name": "夜露",
-      "description": "占位炼金材料，后续由用户补充用途。",
+      "description": "夜间凝结在叶子上的露珠，采集起来要费一番功夫",
       "type": "alchemy_material",
       "icon": "material_night_dew",
       "stackable": true,
@@ -189,7 +180,7 @@
     {
       "id": "material_old_coin",
       "name": "旧铜钱",
-      "description": "占位炼金材料，后续由用户补充用途。",
+      "description": "褪色的旧铜钱，炼金术赋予了它除了收藏价值以外的用处",
       "type": "alchemy_material",
       "icon": "material_old_coin",
       "stackable": true,
@@ -198,7 +189,7 @@
     {
       "id": "digestive_tablet_perfect",
       "name": "完美品质 消食片",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能够疏通肠道的药片，按照科学的话说，充满了益生菌",
       "type": "alchemy_product",
       "icon": "product_digestive_tablet",
       "stackable": true,
@@ -209,7 +200,7 @@
     {
       "id": "digestive_tablet_excellent",
       "name": "优秀品质 消食片",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能够疏通肠道的药片，按照科学的话说，充满了益生菌",
       "type": "alchemy_product",
       "icon": "product_digestive_tablet",
       "stackable": true,
@@ -220,7 +211,7 @@
     {
       "id": "digestive_tablet_normal",
       "name": "普通品质 消食片",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能够疏通肠道的药片，按照科学的话说，充满了益生菌",
       "type": "alchemy_product",
       "icon": "product_digestive_tablet",
       "stackable": true,
@@ -231,7 +222,7 @@
     {
       "id": "digestive_tablet_poor",
       "name": "劣等品质 消食片",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能够疏通肠道的药片，按照科学的话说，充满了益生菌",
       "type": "alchemy_product",
       "icon": "product_digestive_tablet",
       "stackable": true,
@@ -242,7 +233,7 @@
     {
       "id": "herbal_powder_perfect",
       "name": "完美品质 中药粉末",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能进一步加工成特定中药的粉末，像极了还未经社会雕琢的大学生",
       "type": "alchemy_product",
       "icon": "product_herbal_powder",
       "stackable": true,
@@ -253,7 +244,7 @@
     {
       "id": "herbal_powder_excellent",
       "name": "优秀品质 中药粉末",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能进一步加工成特定中药的粉末，像极了还未经社会雕琢的大学生",
       "type": "alchemy_product",
       "icon": "product_herbal_powder",
       "stackable": true,
@@ -264,7 +255,7 @@
     {
       "id": "herbal_powder_normal",
       "name": "普通品质 中药粉末",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能进一步加工成特定中药的粉末，像极了还未经社会雕琢的大学生",
       "type": "alchemy_product",
       "icon": "product_herbal_powder",
       "stackable": true,
@@ -275,7 +266,7 @@
     {
       "id": "herbal_powder_poor",
       "name": "劣等品质 中药粉末",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "能进一步加工成特定中药的粉末，像极了还未经社会雕琢的大学生",
       "type": "alchemy_product",
       "icon": "product_herbal_powder",
       "stackable": true,
@@ -286,7 +277,7 @@
     {
       "id": "calming_incense_perfect",
       "name": "完美品质 安神香",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "闻起来就让人放松下来的熏香，成分似乎是...(旁白已经睡着)",
       "type": "alchemy_product",
       "icon": "product_calming_incense",
       "stackable": true,
@@ -297,7 +288,7 @@
     {
       "id": "calming_incense_excellent",
       "name": "优秀品质 安神香",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "闻起来就让人放松下来的熏香，成分似乎是...(旁白已经睡着)",
       "type": "alchemy_product",
       "icon": "product_calming_incense",
       "stackable": true,
@@ -308,7 +299,7 @@
     {
       "id": "calming_incense_normal",
       "name": "普通品质 安神香",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "闻起来就让人放松下来的熏香，成分似乎是...(旁白已经睡着)",
       "type": "alchemy_product",
       "icon": "product_calming_incense",
       "stackable": true,
@@ -319,7 +310,7 @@
     {
       "id": "calming_incense_poor",
       "name": "劣等品质 安神香",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "闻起来就让人放松下来的熏香，成分似乎是...(旁白已经睡着)",
       "type": "alchemy_product",
       "icon": "product_calming_incense",
       "stackable": true,
@@ -330,7 +321,7 @@
     {
       "id": "fortune_pill_perfect",
       "name": "完美品质 招财丸",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "有着奇怪气味的丸子，好像猫咪对这个没有抵抗力？",
       "type": "alchemy_product",
       "icon": "product_fortune_pill",
       "stackable": true,
@@ -341,7 +332,7 @@
     {
       "id": "fortune_pill_excellent",
       "name": "优秀品质 招财丸",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "有着奇怪气味的丸子，好像猫咪对这个没有抵抗力？",
       "type": "alchemy_product",
       "icon": "product_fortune_pill",
       "stackable": true,
@@ -352,7 +343,7 @@
     {
       "id": "fortune_pill_normal",
       "name": "普通品质 招财丸",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "有着奇怪气味的丸子，好像猫咪对这个没有抵抗力？",
       "type": "alchemy_product",
       "icon": "product_fortune_pill",
       "stackable": true,
@@ -363,7 +354,7 @@
     {
       "id": "fortune_pill_poor",
       "name": "劣等品质 招财丸",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "有着奇怪气味的丸子，好像猫咪对这个没有抵抗力？",
       "type": "alchemy_product",
       "icon": "product_fortune_pill",
       "stackable": true,
@@ -374,7 +365,7 @@
     {
       "id": "cleansing_powder_perfect",
       "name": "完美品质 驱秽粉",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "风水大师平时会用的那种做法粉末，具体原理和成分不明",
       "type": "alchemy_product",
       "icon": "product_cleansing_powder",
       "stackable": true,
@@ -385,7 +376,7 @@
     {
       "id": "cleansing_powder_excellent",
       "name": "优秀品质 驱秽粉",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "风水大师平时会用的那种做法粉末，具体原理和成分不明",
       "type": "alchemy_product",
       "icon": "product_cleansing_powder",
       "stackable": true,
@@ -396,7 +387,7 @@
     {
       "id": "cleansing_powder_normal",
       "name": "普通品质 驱秽粉",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "风水大师平时会用的那种做法粉末，具体原理和成分不明",
       "type": "alchemy_product",
       "icon": "product_cleansing_powder",
       "stackable": true,
@@ -407,7 +398,7 @@
     {
       "id": "cleansing_powder_poor",
       "name": "劣等品质 驱秽粉",
-      "description": "【占位】炼金釜产物，具体效果后续由用户补充。",
+      "description": "风水大师平时会用的那种做法粉末，具体原理和成分不明",
       "type": "alchemy_product",
       "icon": "product_cleansing_powder",
       "stackable": true,

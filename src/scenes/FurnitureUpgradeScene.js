@@ -58,7 +58,7 @@ class FurnitureUpgradeScene extends Phaser.Scene {
       y: 20,
       width: 670,
       height: 365,
-      rowHeight: 78,
+      rowHeight: 118,
       rowGap: 8
     });
 
@@ -98,34 +98,38 @@ class FurnitureUpgradeScene extends Phaser.Scene {
     this.listContainer.render(furnitureList, (item, index, width, rowHeight) => {
       const row = this.add.container(0, 0);
 
-      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 14, 66, 0x3b4252, 0.84)
+      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 14, 106, 0x3b4252, 0.84)
         .setStrokeStyle(2, 0x4c566a);
       row.add(bg);
 
-      row.add(this.add.text(20, rowHeight / 2 - 22, `${item.furnitureName} Lv.${item.level}`, {
+      row.add(this.add.text(20, rowHeight / 2 - 42, `${item.furnitureName} Lv.${item.level}`, {
         fontSize: '16px',
         fontFamily: 'Georgia, serif',
         color: '#eceff4',
         fontStyle: 'bold'
       }));
 
-      row.add(this.add.text(20, rowHeight / 2, `当前: ${item.currentEffect}`, {
+      row.add(this.add.text(20, rowHeight / 2 - 18, `当前: ${item.currentEffect}`, {
         fontSize: '12px',
         fontFamily: 'Georgia, serif',
-        color: '#d8dee9'
+        color: '#d8dee9',
+        wordWrap: { width: 450, useAdvancedWrap: true }
       }));
 
-      row.add(this.add.text(20, rowHeight / 2 + 20, `下级: ${item.nextEffect}`, {
+      row.add(this.add.text(20, rowHeight / 2 + 16, `下级: ${item.nextEffect}`, {
         fontSize: '12px',
         fontFamily: 'Georgia, serif',
-        color: item.isMaxLevel ? '#4c566a' : '#88c0d0'
+        color: item.isMaxLevel ? '#4c566a' : '#88c0d0',
+        wordWrap: { width: 450, useAdvancedWrap: true }
       }));
 
-      const costText = item.isMaxLevel ? '最高级' : `${item.nextCost} 金`;
-      row.add(this.add.text(width - 170, rowHeight / 2 - 8, costText, {
-        fontSize: '13px',
+      const costText = item.isMaxLevel ? '最高级' : `条件：${item.nextRequirementText || `${item.nextCost}资金`}`;
+      row.add(this.add.text(width - 180, rowHeight / 2 - 16, costText, {
+        fontSize: '12px',
         fontFamily: 'Courier New',
-        color: item.canAfford ? '#a3be8c' : '#bf616a'
+        color: item.canAfford ? '#a3be8c' : '#bf616a',
+        align: 'center',
+        wordWrap: { width: 150, useAdvancedWrap: true }
       }).setOrigin(0.5));
 
       const btn = this.createButton(width - 80, rowHeight / 2, item.isMaxLevel ? '已满级' : '升级', () => {

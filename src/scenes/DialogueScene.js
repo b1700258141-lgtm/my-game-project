@@ -83,20 +83,6 @@ class DialogueScene extends Phaser.Scene {
     // 对话框容器
     this.dialogBox = this.add.container(0, 0).setDepth(10);
 
-    // NPC 名字背景
-    const nameBg = this.add.rectangle(width / 2 - 180, 415, 120, 35, 0x2e3440)
-      .setStrokeStyle(2, 0x88c0d0);
-    this.dialogBox.add(nameBg);
-
-    // NPC 名字
-    this.nameText = this.add.text(width / 2 - 180, 415, '', {
-      fontSize: '16px',
-      fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
-      fontStyle: 'bold'
-    }).setOrigin(0.5);
-    this.dialogBox.add(this.nameText);
-
     // NPC 立绘区域（左侧）
     this.portraitContainer = this.add.container(100, height / 2 - 50).setDepth(11);
     this.dialogBox.add(this.portraitContainer);
@@ -116,19 +102,40 @@ class DialogueScene extends Phaser.Scene {
       .setStrokeStyle(3, 0x88c0d0);
     this.dialogBox.add(dialogBg);
 
+    const dialogLeft = 70;
+    const dialogTextWidth = width - 180;
+    const dialogTop = height - 190;
+
+    // 说话人名字区域放在对话框内部，并在背景之后绘制，避免被对话框遮挡。
+    const nameBg = this.add.rectangle(dialogLeft, dialogTop + 26, 240, 30, 0x2e3440)
+      .setOrigin(0, 0.5)
+      .setStrokeStyle(2, 0x88c0d0);
+    this.dialogBox.add(nameBg);
+
+    this.nameText = this.add.text(dialogLeft + 14, dialogTop + 26, '', {
+      fontSize: '16px',
+      fontFamily: 'Georgia, serif',
+      color: '#88c0d0',
+      fontStyle: 'bold',
+      wordWrap: { width: 210, useAdvancedWrap: true },
+      maxLines: 1
+    }).setOrigin(0, 0.5);
+    this.dialogBox.add(this.nameText);
+
     // 对话文本
-    this.dialogueText = this.add.text(width / 2 - 280, height - 160, '', {
+    this.dialogueText = this.add.text(dialogLeft + 42, dialogTop + 48, '', {
       fontSize: '18px',
       fontFamily: 'Georgia, serif',
       color: '#eceff4',
-      wordWrap: true,
-      wordWrapWidth: 560,
-      lineSpacing: 6
+      wordWrap: { width: dialogTextWidth, useAdvancedWrap: true },
+      lineSpacing: 6,
+      fixedWidth: dialogTextWidth,
+      maxLines: 3
     });
     this.dialogBox.add(this.dialogueText);
 
     // 选项容器
-    this.choicesContainer = this.add.container(width / 2, height - 60).setDepth(12);
+    this.choicesContainer = this.add.container(width / 2, height - 54).setDepth(12);
     this.dialogBox.add(this.choicesContainer);
 
     // 继续提示
@@ -218,7 +225,7 @@ class DialogueScene extends Phaser.Scene {
     this.continueHint.setVisible(false);
 
     // 更新名字
-    this.nameText.setText(entry.speakerName || '');
+    this.nameText.setText(this.getSpeakerName(entry.speakerName || ''));
 
     // 更新文本（显示历史文本，半透明效果表示是历史）
     if (entry.isPlayerChoice) {
@@ -245,7 +252,7 @@ class DialogueScene extends Phaser.Scene {
       const lines = this.currentDialogue.lines;
       if (lines && this.currentLineIndex < lines.length) {
         this.dialogueText.setText(this.fullText || lines[this.currentLineIndex].text);
-        this.nameText.setText(this.currentDialogue.speaker || '');
+        this.nameText.setText(this.getSpeakerName(this.currentDialogue.speaker || ''));
         // 如果之前有选项，重新显示
         if (this.currentLineIndex >= lines.length - 1 && this.currentChoices && this.currentChoices.length > 0) {
           this.showChoices();
@@ -273,6 +280,15 @@ class DialogueScene extends Phaser.Scene {
   }
 
   // ========== 对话逻辑 ==========
+
+  getSpeakerName(rawSpeaker) {
+    const speaker = String(rawSpeaker || '');
+    const playerName = window.gameState?.getPlayerName?.() || '玩家';
+    if (speaker === 'player' || speaker === '玩家' || speaker === '玩家id' || speaker === '【玩家id】') {
+      return playerName;
+    }
+    return speaker.replaceAll('【玩家id】', playerName);
+  }
 
   loadDialogue(dialogueId) {
     const dialogueData = dialogues.dialogues[dialogueId];
@@ -318,11 +334,15 @@ class DialogueScene extends Phaser.Scene {
     this.clearChoices();
 
     // 显示角色名
-    this.nameText.setText(this.currentDialogue.speaker || '');
+    const speakerName = this.getSpeakerName(this.currentDialogue.speaker || '');
+    this.nameText.setText(speakerName);
+    if (this.dialogueText?.setMaxLines) {
+      this.dialogueText.setMaxLines(3);
+    }
 
     // 记录到历史
     this.addToHistory({
-      speakerName: this.currentDialogue.speaker || '',
+      speakerName,
       text: line.text,
       isPlayerChoice: false,
       dialogueIndex: this.currentLineIndex
@@ -395,10 +415,14 @@ class DialogueScene extends Phaser.Scene {
       return;
     }
 
-    const startY = -(this.currentChoices.length - 1) * 25;
+    if (this.dialogueText?.setMaxLines) {
+      this.dialogueText.setMaxLines(this.currentChoices.length > 1 ? 2 : 3);
+    }
+
+    const startY = -(this.currentChoices.length - 1) * 22;
     
     this.currentChoices.forEach((choice, index) => {
-      const y = startY + index * 50;
+      const y = startY + index * 44;
       const btn = this.createChoiceButton(choice.text, y, index);
       this.choiceButtons.push(btn);
     });
@@ -407,25 +431,28 @@ class DialogueScene extends Phaser.Scene {
   createChoiceButton(text, y, index) {
     const btn = this.add.container(0, y);
 
-    const bg = this.add.rectangle(0, 0, 400, 40, 0x3b4252)
+    const bg = this.add.rectangle(0, 0, 520, 40, 0x3b4252)
       .setStrokeStyle(2, 0x4c566a);
     btn.add(bg);
 
-    const numText = this.add.text(-180, 0, `${index + 1}.`, {
+    const numText = this.add.text(-240, 0, `${index + 1}.`, {
       fontSize: '16px',
       fontFamily: 'Courier New',
       color: '#88c0d0'
     }).setOrigin(0, 0.5);
     btn.add(numText);
 
-    const choiceText = this.add.text(-150, 0, text, {
+    const choiceText = this.add.text(-205, 0, text, {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4'
+      color: '#eceff4',
+      wordWrap: { width: 430, useAdvancedWrap: true },
+      fixedWidth: 430,
+      maxLines: 2
     }).setOrigin(0, 0.5);
     btn.add(choiceText);
 
-    btn.setSize(400, 40);
+    btn.setSize(520, 40);
     btn.setInteractive({ useHandCursor: true });
 
     btn.on('pointerover', () => {
@@ -452,7 +479,7 @@ class DialogueScene extends Phaser.Scene {
 
     // 记录玩家选择到历史
     this.addToHistory({
-      speakerName: '玩家',
+      speakerName: this.getSpeakerName('玩家'),
       text: '',
       isPlayerChoice: true,
       choiceText: choice.text,

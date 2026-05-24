@@ -12,6 +12,8 @@ import TimeManager, { getTimeManager, resetTimeManager } from '../systems/TimeMa
 import DailyLoopManager from '../systems/DailyLoopManager';
 import FurnitureUpgradeManager from '../systems/FurnitureUpgradeManager';
 import SpiritMemoryManager from '../systems/SpiritMemoryManager';
+import AchievementManager from '../systems/AchievementManager';
+import AchievementToastUI from '../systems/AchievementToastUI';
 import { GAME_STATE } from '../systems/GameState';
 
 class ShopScene extends Phaser.Scene {
@@ -52,11 +54,22 @@ class ShopScene extends Phaser.Scene {
 
     // 商店物品数据
     this.shopItems = shopItemsData.shopItems;
+
+    // 成就系统
+    this.achievementManager = null;
+    this.achievementToastUI = null;
   }
 
   create() {
     // 重置相机状态，防止从其他场景切换回来时残留黑屏/遮罩
     this.cameras.main.resetFX();
+
+    if (!window.gameState.getPlayerName?.()) {
+      this.scene.start('PlayerNameScene', {
+        returnScene: 'ShopScene'
+      });
+      return;
+    }
 
     // 恢复游戏状态为正常
     window.gameState.setGameState(GAME_STATE.NORMAL);
@@ -167,6 +180,21 @@ class ShopScene extends Phaser.Scene {
     }
 
     new SpiritMemoryManager(window.gameState);
+    this.achievementManager = new AchievementManager(window.gameState);
+    this.achievementToastUI = new AchievementToastUI(this);
+
+    // 触发"万事屋复兴开启！"成就
+    const startResult = this.achievementManager.unlockAchievement('achievement_start_revival');
+    if (startResult.isNew) {
+      this.achievementToastUI.show({
+        achievementId: 'achievement_start_revival',
+        title: '万事屋复兴开启！',
+        description: '开始游玩万事屋炼金物语！'
+      });
+    }
+
+    // 检查人气成就
+    this._checkPopularityAchievement();
 
     // 初始化或获取 TimeManager
     this.timeManager = getTimeManager(window.gameState);
@@ -437,7 +465,7 @@ class ShopScene extends Phaser.Scene {
     });
     this.uiGroup.add(this.popularityText);
 
-    this.shopLevelText = this.add.text(615, 88, `万事屋等级: ${this.furnitureManager.getShopLevel()}`, {
+    this.shopLevelText = this.add.text(615, 88, `万事屋等级: Lv${window.gameState.wanShiWuLevel || 1}`, {
       fontSize: '14px',
       fontFamily: 'Courier New',
       color: '#ebcb8b'
@@ -736,12 +764,12 @@ class ShopScene extends Phaser.Scene {
     this.popupContainer.add(overlay);
 
     // 弹窗背景
-    const bg = this.add.rectangle(0, 0, 320, 260, 0x2e3440, 0.98)
+    const bg = this.add.rectangle(0, 0, 340, 340, 0x2e3440, 0.98)
       .setStrokeStyle(3, 0x5e81ac);
     this.popupContainer.add(bg);
 
     // 标题
-    const title = this.add.text(0, -100, '【床铺】', {
+    const title = this.add.text(0, -140, '【床铺】', {
       fontSize: '20px',
       fontFamily: 'Georgia, serif',
       color: '#88c0d0',
@@ -749,7 +777,7 @@ class ShopScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.popupContainer.add(title);
 
-    const desc = this.add.text(0, -70, '选择睡觉时间', {
+    const desc = this.add.text(0, -110, '选择睡觉时间或保存进度', {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
       color: '#d8dee9'
@@ -764,15 +792,21 @@ class ShopScene extends Phaser.Scene {
     ];
 
     options.forEach((opt, i) => {
-      const y = -25 + i * 50;
+      const y = -65 + i * 50;
       const btn = this.createPopupButton(0, y, opt.text, () => {
         this.onSleepSelected(opt.hours);
       });
       this.popupContainer.add(btn);
     });
 
+    // 存档按钮
+    const saveBtn = this.createPopupButton(0, -65 + 3 * 50, '存档', () => {
+      this.openSaveLoadUI();
+    }, 0xa3be8c);
+    this.popupContainer.add(saveBtn);
+
     // 取消按钮
-    const cancelBtn = this.createPopupButton(0, -25 + 3 * 50, '取消', () => {
+    const cancelBtn = this.createPopupButton(0, -65 + 4 * 50, '取消', () => {
       this.closePopup();
     }, 0xbf616a);
     this.popupContainer.add(cancelBtn);
@@ -781,6 +815,19 @@ class ShopScene extends Phaser.Scene {
   onSleepSelected(hours) {
     this.closePopup();
     this.endDay();
+  }
+
+  openSaveLoadUI() {
+    this.savePlayerPosition();
+    if (this.popupContainer) {
+      this.popupContainer.destroy();
+      this.popupContainer = null;
+    }
+    window.gameState.setGameState(GAME_STATE.SAVE_LOAD);
+    this.scene.start('SaveLoadScene', {
+      mode: 'save',
+      returnScene: 'ShopScene'
+    });
   }
 
   // ========== 门口交互：地点选择 UI ==========
@@ -1207,6 +1254,12 @@ class ShopScene extends Phaser.Scene {
     });
   }
 
+  showPendingSystemMessages() {
+    const messages = window.gameState.consumeSystemMessages?.() || [];
+    if (messages.length === 0) return;
+    this.showToast(messages[0], 2600);
+  }
+
   updateUI() {
     // 更新时间显示
     if (this.timeText) {
@@ -1218,7 +1271,44 @@ class ShopScene extends Phaser.Scene {
     this.fundsText.setText(`资金: ${window.gameState.funds}`);
     this.popularityText.setText(`人气: ${window.gameState.popularity}`);
     if (this.shopLevelText) {
-      this.shopLevelText.setText(`万事屋等级: ${this.furnitureManager.getShopLevel()}`);
+      this.shopLevelText.setText(`万事屋等级: Lv${window.gameState.wanShiWuLevel || 1}`);
+    }
+    this.showPendingSystemMessages();
+
+    // 检查人气成就
+    this._checkPopularityAchievement();
+
+    // 处理待显示的成就提示队列
+    this._processAchievementToastQueue();
+  }
+
+  // ========== 成就系统方法 ==========
+
+  /**
+   * 检查人气成就
+   */
+  _checkPopularityAchievement() {
+    if (!this.achievementManager) return;
+    const result = this.achievementManager.checkPopularityAchievements(window.gameState.popularity);
+    if (result.isNew && result.record) {
+      this.achievementToastUI.show({
+        achievementId: result.record.achievementId,
+        title: result.record.title,
+        description: result.record.description
+      });
+    }
+  }
+
+  /**
+   * 处理 AchievementManager 中的待显示成就队列
+   */
+  _processAchievementToastQueue() {
+    if (!this.achievementManager || !this.achievementToastUI) return;
+    while (this.achievementManager.hasPendingToasts()) {
+      const toast = this.achievementManager.dequeuePendingToast();
+      if (toast) {
+        this.achievementToastUI.show(toast);
+      }
     }
   }
 }

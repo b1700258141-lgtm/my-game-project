@@ -1,0 +1,29 @@
+{
+  "_description": "敏感词本地示例配置。真实生产环境请接入腾讯云TMS或外部合规词库，不要展开真实敏感词清单。",
+  "_note": "此文件仅包含少量示例占位词用于测试。请勿将真实政治敏感词写入。",
+
+  "sensitiveWords_low": [
+    "示例低俗词1",
+    "示例低俗词2",
+    "示例辱骂词"
+  ],
+
+  "sensitiveWords_medium": [
+    "示例违法词1",
+    "示例广告引流词1",
+    "example_badword"
+  ],
+
+  "sensitiveWords_high": [
+    "【生产环境请接入TMS审核，不在此处写死敏感词】"
+  ],
+
+  "patterns_adDetection": {
+    "_comment": "广告/引流正则检测规则",
+    "url": "(https?://|www\\.|[a-zA-Z0-9-]+\\.(com|cn|net|org|cc|xyz|top|info|tk|ml|ga|cf|gq))",
+    "phone_cn": "\\b1[3-9]\\d{9}\\b",
+    "email": "\\b[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}\\b",
+    "qq_number": "\\bqq\\s*[:：]?\\s*[1-9]\\d{4,10}\\b",
+    "wechat_id_suspect": "(微信|wechat|v信|wx|微[号訊信])\\s*[:：]?\\s*[a-zA-Z0-9_-]{6,}"
+  }
+}

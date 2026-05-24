@@ -12,6 +12,9 @@ const config = {
   parent: 'game-container',
   backgroundColor: '#1a1a2e',
   pixelArt: true, // 像素风格
+  dom: {
+    createContainer: true
+  },
   physics: {
     default: 'arcade',
     arcade: {

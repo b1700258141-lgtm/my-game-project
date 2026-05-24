@@ -12,7 +12,7 @@ class CommissionListScene extends Phaser.Scene {
     this.acceptedCommissions = [];
     this.availableCommissions = [];
     this.listItems = [];
-    this.currentTab = 'long'; // 'long' 或 'short'
+    this.currentTab = 'longTerm';
   }
 
   init(data) {
@@ -75,33 +75,33 @@ class CommissionListScene extends Phaser.Scene {
 
     // 分页点击事件
     this.longTabBg.on('pointerdown', () => {
-      this.switchTab('long');
+      this.switchTab('longTerm');
     });
     this.shortTabBg.on('pointerdown', () => {
-      this.switchTab('short');
+      this.switchTab('shortTerm');
     });
     this.longTabBg.on('pointerover', () => {
-      if (this.currentTab !== 'long') this.longTabBg.setFillStyle(0x4c566a, 0.9);
+      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(0x4c566a, 0.9);
     });
     this.longTabBg.on('pointerout', () => {
-      if (this.currentTab !== 'long') this.longTabBg.setFillStyle(0x3b4252, 0.9);
+      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(0x3b4252, 0.9);
     });
     this.shortTabBg.on('pointerover', () => {
-      if (this.currentTab !== 'short') this.shortTabBg.setFillStyle(0x4c566a, 0.9);
+      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(0x4c566a, 0.9);
     });
     this.shortTabBg.on('pointerout', () => {
-      if (this.currentTab !== 'short') this.shortTabBg.setFillStyle(0x3b4252, 0.9);
+      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(0x3b4252, 0.9);
     });
 
     // 委托列表容器
     this.listContainer = new ScrollableListUI(this, {
       parent: this.panel,
       x: 0,
-      y: 20,
+      y: 35,
       width: 640,
-      height: 345,
-      rowHeight: 85,
-      rowGap: 8
+      height: 330,
+      rowHeight: 88,
+      rowGap: 10
     });
 
     // 初始化委托系统
@@ -142,7 +142,7 @@ class CommissionListScene extends Phaser.Scene {
   }
 
   updateTabStyles() {
-    if (this.currentTab === 'long') {
+    if (this.currentTab === 'longTerm') {
       this.longTabBg.setFillStyle(0x5e81ac, 0.9);
       this.longTabBg.setStrokeStyle(2, 0x81a1c1);
       this.longTabText.setColor('#eceff4');
@@ -166,7 +166,7 @@ class CommissionListScene extends Phaser.Scene {
       this.listItems = [];
       const allAvailable = this.commissionSystem.getAvailableCommissions();
       const filtered = allAvailable.filter(c => c.type === this.currentTab);
-      const tabName = this.currentTab === 'long' ? '长期' : '短期';
+      const tabName = this.currentTab === 'longTerm' ? '长期' : '短期';
 
       this.listContainer.render(filtered, (commission, index, width, rowHeight) => {
         const row = this.add.container(0, 0);
@@ -186,7 +186,7 @@ class CommissionListScene extends Phaser.Scene {
     const filtered = allAvailable.filter(c => c.type === this.currentTab);
 
     if (filtered.length === 0) {
-      const tabName = this.currentTab === 'long' ? '长期' : '短期';
+      const tabName = this.currentTab === 'longTerm' ? '长期' : '短期';
       const noComm = this.add.text(0, 0, `目前没有${tabName}委托，\n请明天再来看看。`, {
         fontSize: '18px',
         fontFamily: 'Georgia, serif',
@@ -203,96 +203,75 @@ class CommissionListScene extends Phaser.Scene {
     
     filtered.forEach((commission, index) => {
       const itemY = startY + index * 85;
-      const item = this.createCommissionItem(commission, itemY, index);
+      const item = this.createCommissionItem(commission, 0, itemY, index);
       this.listContainer.add(item);
       this.listItems.push(item);
     });
   }
 
-  createCommissionItem(commission, y, index) {
-    const item = this.add.container(0, y);
+  createCommissionItem(commission, x, y, index) {
+    const item = this.add.container(x, y);
 
-    // 列表项背景
-    const bg = this.add.rectangle(0, 0, 620, 75, 0x3b4252, 0.8)
+    const fixedBg = this.add.rectangle(0, 0, 620, 75, 0x3b4252, 0.8)
       .setStrokeStyle(2, 0x4c566a);
-    item.add(bg);
+    item.add(fixedBg);
 
-    // 委托类型标签
-    const typeColor = commission.type === 'short' ? 0xbf616a : 0xa3be8c;
-    const typeText = commission.type === 'short' ? '短期' : '长期';
-    const typeLabel = this.add.rectangle(-230, -22, 50, 22, typeColor, 0.8)
-      .setStrokeStyle(1, typeColor);
-    item.add(typeLabel);
-    const typeLabelText = this.add.text(-230, -22, typeText, {
+    const fixedTypeColor = commission.type === 'shortTerm' ? 0xbf616a : 0xa3be8c;
+    const fixedTypeText = commission.type === 'shortTerm' ? '短期' : '长期';
+    item.add(this.add.rectangle(-260, -22, 50, 22, fixedTypeColor, 0.8).setStrokeStyle(1, fixedTypeColor));
+    item.add(this.add.text(-260, -22, fixedTypeText, {
       fontSize: '11px',
       fontFamily: 'Courier New',
       color: '#eceff4'
-    }).setOrigin(0.5);
-    item.add(typeLabelText);
+    }).setOrigin(0.5));
 
-    // 委托标题
-    const titleText = this.add.text(-170, -22, commission.title, {
-      fontSize: '16px',
+    item.add(this.add.text(-225, -23, commission.title || '未命名委托', {
+      fontSize: '15px',
       fontFamily: 'Georgia, serif',
       color: '#eceff4',
-      fontStyle: 'bold'
-    });
-    item.add(titleText);
+      fontStyle: 'bold',
+      wordWrap: { width: 285, useAdvancedWrap: true },
+      maxLines: 1
+    }).setOrigin(0, 0.5));
 
-    // 剩余过期时间 — 显示"待设定"（不写死具体天数）
-    const expireText = this.add.text(260, -22, '剩余时间：待设定', {
-      fontSize: '11px',
-      fontFamily: 'Courier New',
-      color: '#4c566a'
-    });
-    item.add(expireText);
-
-    // 描述
-    const descText = this.add.text(-260, 5, commission.description, {
+    item.add(this.add.text(-280, 4, commission.description || '【委托描述待补充】', {
       fontSize: '12px',
       fontFamily: 'Georgia, serif',
       color: '#d8dee9',
-      wordWrap: true,
-      wordWrapWidth: 500
-    });
-    item.add(descText);
+      wordWrap: { width: 360, useAdvancedWrap: true },
+      lineSpacing: 2,
+      maxLines: 2
+    }).setOrigin(0, 0));
 
-    // 奖励信息
-    const rewardText = this.add.text(260, 5, `+${commission.reward.funds}元 +${commission.reward.popularity}人气`, {
+    item.add(this.add.text(95, -18, `剩余时间：${commission.availableTimeText || `${commission.daysRemaining ?? '?'} 天`}`, {
       fontSize: '11px',
       fontFamily: 'Courier New',
-      color: '#a3be8c'
-    });
-    item.add(rewardText);
+      color: '#d8dee9'
+    }).setOrigin(0, 0.5));
 
-    // 接取按钮
-    const btn = this.add.container(240, 0);
-    const btnBg = this.add.rectangle(0, 0, 60, 30, 0x5e81ac, 0.9)
+    item.add(this.add.text(95, 10, `收益：+${commission.reward.funds}资金 +${commission.reward.popularity}人气`, {
+      fontSize: '11px',
+      fontFamily: 'Courier New',
+      color: '#a3be8c',
+      wordWrap: { width: 145, useAdvancedWrap: true },
+      maxLines: 1
+    }).setOrigin(0, 0.5));
+
+    const fixedBtn = this.add.container(270, 12);
+    const fixedBtnBg = this.add.rectangle(0, 0, 58, 42, 0x5e81ac, 0.9)
       .setStrokeStyle(1, 0x81a1c1);
-    btn.add(btnBg);
-    const btnText = this.add.text(0, 0, '接取', {
+    fixedBtn.add(fixedBtnBg);
+    fixedBtn.add(this.add.text(0, 0, '接取', {
       fontSize: '12px',
       fontFamily: 'Georgia, serif',
       color: '#eceff4'
-    }).setOrigin(0.5);
-    btn.add(btnText);
-
-    btn.setSize(60, 30);
-    btn.setInteractive({ useHandCursor: true });
-
-    btn.on('pointerover', () => {
-      btnBg.setFillStyle(0x81a1c1);
-    });
-
-    btn.on('pointerout', () => {
-      btnBg.setFillStyle(0x5e81ac);
-    });
-
-    btn.on('pointerdown', () => {
-      this.acceptCommission(commission);
-    });
-
-    item.add(btn);
+    }).setOrigin(0.5));
+    fixedBtn.setSize(58, 42);
+    fixedBtn.setInteractive({ useHandCursor: true });
+    fixedBtn.on('pointerover', () => fixedBtnBg.setFillStyle(0x81a1c1));
+    fixedBtn.on('pointerout', () => fixedBtnBg.setFillStyle(0x5e81ac));
+    fixedBtn.on('pointerdown', () => this.acceptCommission(commission));
+    item.add(fixedBtn);
 
     return item;
   }

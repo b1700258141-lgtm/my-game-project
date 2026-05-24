@@ -1,50 +1,80 @@
 {
   "commissions": [
     {
-      "id": "commission_placeholder_digestive",
-      "title": "占位消食片委托",
-      "clientNpcId": "guest_placeholder_customer",
-      "type": "short",
+      "id": "commission_digestive_tablet",
+      "title": "消食片委托",
+      "clientNpcId": "guest_chef_digestive",
+      "type": "shortTerm",
       "startDay": 1,
       "expireDay": 3,
-      "description": "【委托描述待补充】",
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 3,
+      "deadlineDaysAfterAccept": 3,
+      "expireText": "剩余时间：3 天",
+      "deadlineText": "完成限时：3 天",
+      "description": "一位在附近的城镇饭店工作的大厨似乎有什么需求...",
       "status": "available",
-      "startDialogueId": null,
+      "startDialogueId": "commission_digestive_start",
       "requiredFlags": [],
-      "requiredItemText": "交付任意品质 消食片 x1",
+      "requiredItemText": "交付消食片 x1",
+      "completionMethodText": "提交背包中的消食片 x1，根据品质判定完成档位",
       "requiredAnyItemIds": [
-        "digestive_tablet_poor",
-        "digestive_tablet_normal",
+        "digestive_tablet_perfect",
         "digestive_tablet_excellent",
-        "digestive_tablet_perfect"
+        "digestive_tablet_normal",
+        "digestive_tablet_poor"
       ],
       "reward": {
-        "funds": 50,
-        "popularity": 5,
+        "funds": 300,
+        "popularity": 100,
         "spiritMemoryProgress": 0
+      },
+      "qualityRewards": {
+        "digestive_tablet_perfect": { "result": "perfect", "funds": 300, "popularity": 100 },
+        "digestive_tablet_excellent": { "result": "normal", "funds": 200, "popularity": 80 },
+        "digestive_tablet_normal": { "result": "normal", "funds": 200, "popularity": 80 },
+        "digestive_tablet_poor": { "result": "barely", "funds": 100, "popularity": 50 }
+      },
+      "failurePenalty": {
+        "popularity": -50
       }
     },
     {
       "id": "commission_001",
       "title": "传家宝溯源",
       "clientNpcId": "guest_ring_boy",
-      "type": "long",
+      "type": "longTerm",
       "startDay": 1,
       "expireDay": 20,
-      "description": "【占位】一位年轻人希望万事屋帮忙调查一枚祖传戒指的来历。",
+      "availableDaysBeforeAccept": 20,
+      "deadlineDaysAfterAccept": 7,
+      "expireText": "剩余时间：20 天",
+      "deadlineText": "完成限时：7 天",
+      "description": "一位年轻职员似乎想要委托万事屋帮忙调查一枚祖传戒指的来历",
       "status": "available",
       "startDialogueId": "commission_ring_start",
       "requiredFlags": [],
+      "requiredItemText": "搞清楚【老旧的戒指】的来历",
+      "completionMethodText": "点击进行任务，看完剧情后完成",
+      "taskText": "点击进行任务后进入剧情，剧情内容待定",
       "reward": {
-        "funds": 80,
-        "popularity": 10
+        "funds": 1000,
+        "popularity": 300
+      },
+      "completionTiers": {
+        "perfect": {
+          "condition": "只要点击了进行任务，看完剧情就是完美达成",
+          "funds": 1000,
+          "popularity": 300
+        }
       }
     },
     {
       "id": "commission_002",
       "title": "老照片调查",
       "clientNpcId": "guest_elder_lady",
-      "type": "long",
+      "type": "longTerm",
       "startDay": 2,
       "expireDay": 25,
       "description": "【占位】一位老人家希望能找到老照片中的人物。",
@@ -60,23 +90,273 @@
       "id": "commission_003",
       "title": "寻猫委托",
       "clientNpcId": "guest_little_girl",
-      "type": "short",
+      "type": "shortTerm",
       "startDay": 1,
       "expireDay": 3,
-      "description": "【占位】小女孩的猫咪走丢了，希望万事屋帮忙寻找。",
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 3,
+      "deadlineDaysAfterAccept": 1,
+      "expireText": "剩余时间：3 天",
+      "deadlineText": "完成限时：1 天",
+      "description": "附近的小女孩似乎需要你帮忙寻找她走丢的猫",
       "status": "available",
       "startDialogueId": "commission_cat_start",
       "requiredFlags": [],
+      "requiredItemText": "找到小黑",
+      "completionMethodText": "选择寻找方式：花费资金委托附近的人，或用招财丸引诱小黑",
       "reward": {
-        "funds": 30,
-        "popularity": 5
-      }
+        "funds": 400,
+        "popularity": 150
+      },
+      "taskOptions": [
+        {
+          "id": "hire_neighbors",
+          "text": "花费100资金委托附近的人帮忙一起寻找",
+          "costFunds": 100,
+          "result": "normal",
+          "reward": { "funds": 300, "popularity": 100 }
+        },
+        {
+          "id": "use_fortune_pill",
+          "text": "利用招财丸引诱小黑出现",
+          "requiredItemIds": ["fortune_pill_poor", "fortune_pill_normal", "fortune_pill_excellent", "fortune_pill_perfect"],
+          "result": "perfect",
+          "reward": { "funds": 400, "popularity": 150 },
+          "unlockAchievementId": "achievement_hidden_quest_solution"
+        }
+      ],
+      "failurePenalty": {
+        "popularity": -50
+      },
+      "contentNotes": "设定稿中接取处写剩余时间3天，委托日志示例写剩余时间1天；当前数据按3天处理。"
+    },
+    {
+      "id": "commission_convenience_store_smell",
+      "title": "便利店夜班委托",
+      "clientNpcId": "guest_convenience_clerk",
+      "type": "shortTerm",
+      "startDay": 1,
+      "expireDay": 10,
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 2,
+      "deadlineDaysAfterAccept": 2,
+      "expireText": "剩余时间：2 天",
+      "deadlineText": "完成限时：2 天",
+      "description": "附近便利店的夜班店员似乎被仓库里的奇怪味道困扰着",
+      "status": "available",
+      "startDialogueId": "commission_convenience_store_start",
+      "requiredFlags": [],
+      "requiredItemText": "处理便利店仓库里的奇怪味道",
+      "completionMethodText": "选择一种方式处理仓库异味",
+      "reward": { "funds": 250, "popularity": 80 },
+      "taskOptions": [
+        {
+          "id": "clean_and_air",
+          "text": "亲自帮忙整理仓库并通风",
+          "result": "barely",
+          "reward": { "funds": 80, "popularity": 30 }
+        },
+        {
+          "id": "buy_deodorizer",
+          "text": "花费80资金购买普通除味用品",
+          "costFunds": 80,
+          "result": "normal",
+          "reward": { "funds": 180, "popularity": 60 }
+        },
+        {
+          "id": "use_cleansing_powder",
+          "text": "使用驱秽粉处理仓库异味",
+          "requiredItemIds": ["cleansing_powder_perfect", "cleansing_powder_excellent", "cleansing_powder_normal", "cleansing_powder_poor"],
+          "result": "perfect",
+          "reward": { "funds": 250, "popularity": 80 }
+        }
+      ],
+      "failurePenalty": { "popularity": -40 }
+    },
+    {
+      "id": "commission_calming_incense",
+      "title": "安神香委托",
+      "clientNpcId": "guest_ad_planner",
+      "type": "shortTerm",
+      "startDay": 1,
+      "expireDay": 10,
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 3,
+      "deadlineDaysAfterAccept": 3,
+      "expireText": "剩余时间：3 天",
+      "deadlineText": "完成限时：3 天",
+      "description": "一位广告公司的策划似乎需要能让人放松下来的东西",
+      "status": "available",
+      "startDialogueId": "commission_calming_incense_start",
+      "requiredFlags": [],
+      "requiredItemText": "交付安神香 x1",
+      "completionMethodText": "提交背包中的安神香 x1",
+      "requiredAnyItemIds": ["calming_incense_perfect", "calming_incense_excellent", "calming_incense_normal", "calming_incense_poor"],
+      "reward": { "funds": 350, "popularity": 120 },
+      "qualityRewards": {
+        "calming_incense_perfect": { "result": "perfect", "funds": 350, "popularity": 120 },
+        "calming_incense_excellent": { "result": "normal", "funds": 240, "popularity": 90 },
+        "calming_incense_normal": { "result": "normal", "funds": 240, "popularity": 90 },
+        "calming_incense_poor": { "result": "barely", "funds": 120, "popularity": 50 }
+      },
+      "failurePenalty": { "popularity": -50 }
+    },
+    {
+      "id": "commission_herbal_powder",
+      "title": "药房粉末委托",
+      "clientNpcId": "guest_pharmacy_clerk",
+      "type": "shortTerm",
+      "startDay": 1,
+      "expireDay": 10,
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 3,
+      "deadlineDaysAfterAccept": 3,
+      "expireText": "剩余时间：3 天",
+      "deadlineText": "完成限时：3 天",
+      "description": "社区药房的店员似乎想要一份特殊的中药粉末作为样品",
+      "status": "available",
+      "startDialogueId": "commission_herbal_powder_start",
+      "requiredFlags": [],
+      "requiredItemText": "交付中药粉末 x1",
+      "completionMethodText": "提交背包中的中药粉末 x1",
+      "requiredAnyItemIds": ["herbal_powder_perfect", "herbal_powder_excellent", "herbal_powder_normal", "herbal_powder_poor"],
+      "reward": { "funds": 300, "popularity": 100 },
+      "qualityRewards": {
+        "herbal_powder_perfect": { "result": "perfect", "funds": 300, "popularity": 100 },
+        "herbal_powder_excellent": { "result": "normal", "funds": 200, "popularity": 80 },
+        "herbal_powder_normal": { "result": "normal", "funds": 200, "popularity": 80 },
+        "herbal_powder_poor": { "result": "barely", "funds": 100, "popularity": 40 }
+      },
+      "failurePenalty": { "popularity": -50 }
+    },
+    {
+      "id": "commission_rideshare_deodorize",
+      "title": "网约车除味委托",
+      "clientNpcId": "guest_rideshare_driver",
+      "type": "shortTerm",
+      "startDay": 1,
+      "expireDay": 10,
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 2,
+      "deadlineDaysAfterAccept": 2,
+      "expireText": "剩余时间：2 天",
+      "deadlineText": "完成限时：2 天",
+      "description": "一位网约车司机似乎想处理车里挥之不去的怪味",
+      "status": "available",
+      "startDialogueId": "commission_rideshare_deodorize_start",
+      "requiredFlags": [],
+      "requiredItemText": "处理车内异味",
+      "completionMethodText": "提交背包中的驱秽粉 x1",
+      "emptySubmitMessage": "背包中没有可提交的驱秽粉",
+      "requiredAnyItemIds": ["cleansing_powder_perfect", "cleansing_powder_excellent", "cleansing_powder_normal", "cleansing_powder_poor"],
+      "reward": { "funds": 280, "popularity": 90 },
+      "qualityRewards": {
+        "cleansing_powder_perfect": { "result": "perfect", "funds": 280, "popularity": 90 },
+        "cleansing_powder_excellent": { "result": "normal", "funds": 200, "popularity": 70 },
+        "cleansing_powder_normal": { "result": "normal", "funds": 200, "popularity": 70 },
+        "cleansing_powder_poor": { "result": "barely", "funds": 100, "popularity": 40 }
+      },
+      "failurePenalty": { "popularity": -40 }
+    },
+    {
+      "id": "commission_diner_attract_customers",
+      "title": "小饭馆招客委托",
+      "clientNpcId": "guest_diner_owner",
+      "type": "shortTerm",
+      "startDay": 1,
+      "expireDay": 10,
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 4,
+      "deadlineDaysAfterAccept": 4,
+      "expireText": "剩余时间：4 天",
+      "deadlineText": "完成限时：4 天",
+      "description": "街角小饭馆的老板似乎想让店里多一点客人",
+      "status": "available",
+      "startDialogueId": "commission_diner_attract_customers_start",
+      "requiredFlags": [],
+      "requiredItemText": "帮小饭馆吸引客人",
+      "completionMethodText": "选择一种方式帮小饭馆招揽客人",
+      "reward": { "funds": 400, "popularity": 130 },
+      "taskOptions": [
+        {
+          "id": "print_flyers",
+          "text": "花费150资金帮老板印传单宣传",
+          "costFunds": 150,
+          "result": "normal",
+          "reward": { "funds": 280, "popularity": 90 }
+        },
+        {
+          "id": "shout_nearby",
+          "text": "在附近帮老板吆喝一下午",
+          "result": "barely",
+          "reward": { "funds": 120, "popularity": 50 }
+        },
+        {
+          "id": "place_fortune_pill",
+          "text": "把招财丸放在饭馆门口试试看",
+          "requiredItemIds": ["fortune_pill_perfect", "fortune_pill_excellent", "fortune_pill_normal", "fortune_pill_poor"],
+          "result": "perfect",
+          "reward": { "funds": 400, "popularity": 130 }
+        }
+      ],
+      "failurePenalty": { "popularity": -50 }
+    },
+    {
+      "id": "commission_law_office_noise",
+      "title": "资料室异响委托",
+      "clientNpcId": "guest_law_assistant",
+      "type": "shortTerm",
+      "startDay": 1,
+      "expireDay": 10,
+      "refreshPool": "firstTenShortTerm",
+      "poolEndDay": 10,
+      "availableDaysBeforeAccept": 3,
+      "deadlineDaysAfterAccept": 3,
+      "expireText": "剩余时间：3 天",
+      "deadlineText": "完成限时：3 天",
+      "description": "一位律师助理似乎被事务所资料室里的奇怪声音困扰着",
+      "status": "available",
+      "startDialogueId": "commission_law_office_noise_start",
+      "requiredFlags": [],
+      "requiredItemText": "处理资料室里的奇怪异响",
+      "completionMethodText": "选择一种方式处理资料室异响",
+      "reward": { "funds": 380, "popularity": 120 },
+      "taskOptions": [
+        {
+          "id": "hire_repairer",
+          "text": "花费120资金请维修师傅检查门窗",
+          "costFunds": 120,
+          "result": "barely",
+          "reward": { "funds": 120, "popularity": 50 }
+        },
+        {
+          "id": "use_cleansing_powder",
+          "text": "使用驱秽粉处理资料室",
+          "requiredItemIds": ["cleansing_powder_perfect", "cleansing_powder_excellent", "cleansing_powder_normal", "cleansing_powder_poor"],
+          "result": "perfect",
+          "reward": { "funds": 380, "popularity": 120 }
+        },
+        {
+          "id": "use_calming_incense",
+          "text": "点燃安神香观察资料室动静",
+          "requiredItemIds": ["calming_incense_perfect", "calming_incense_excellent", "calming_incense_normal", "calming_incense_poor"],
+          "result": "normal",
+          "reward": { "funds": 260, "popularity": 90 }
+        }
+      ],
+      "failurePenalty": { "popularity": -50 }
     },
     {
       "id": "commission_004",
       "title": "古董修复",
       "clientNpcId": "guest_clockmaker",
-      "type": "short",
+      "type": "shortTerm",
       "startDay": 3,
       "expireDay": 5,
       "description": "【占位】古董店老板有一件需要修复的老物件。",
@@ -90,11 +370,11 @@
     }
   ],
   "commissionTypes": {
-    "long": {
+    "longTerm": {
       "name": "长期委托",
       "expireDays": 20
     },
-    "short": {
+    "shortTerm": {
       "name": "短期委托",
       "expireDays": 3
     }

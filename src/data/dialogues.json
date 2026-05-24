@@ -47,7 +47,7 @@
         {
           "text": "这是给您的回礼",
           "effects": {
-            "addItem": "alchemy_material_001",
+            "addItem": "material_old_coin",
             "npcAffinity": { "visitor_teacher": 10 },
             "flags": { "received_gift_from_teacher": true }
           },
@@ -485,66 +485,89 @@
         }
       ]
     },
-    "commission_ring_start": {
-      "speaker": "委托客人",
-      "portrait": "portrait_ring_boy",
+    "commission_digestive_start": {
+      "speaker": "肚子很大的厨师",
+      "portrait": "portrait_chef_digestive",
       "lines": [
         {
-          "id": "r1",
-          "text": "【占位】请问...这里是万事屋吗？"
-        },
-        {
-          "id": "r2",
-          "text": "【占位】我...我在寻找一个人。能帮我吗？"
+          "id": "d1",
+          "text": "你就是万事屋的老板吗？"
         }
       ],
       "choices": [
         {
-          "text": "请坐，慢慢说",
-          "effects": {
-            "popularity": 1,
-            "npcAffinity": { "guest_ring_boy": 5 }
-          },
-          "next": "commission_ring_quest"
-        },
+          "text": "正是在下",
+          "effects": {},
+          "next": "commission_digestive_reason"
+        }
+      ]
+    },
+    "commission_digestive_reason": {
+      "speaker": "肚子很大的厨师",
+      "portrait": "portrait_chef_digestive",
+      "lines": [
         {
-          "text": "什么情况？",
+          "id": "d2",
+          "text": "听说你这里能制作出神奇的药品，我想委托你帮我制作出让肠胃快速消化的消食片..."
+        }
+      ],
+      "choices": [
+        {
+          "text": "能冒昧问一下缘由吗？",
+          "effects": {},
+          "next": "commission_digestive_detail"
+        }
+      ]
+    },
+    "commission_digestive_detail": {
+      "speaker": "肚子很大的厨师",
+      "portrait": "portrait_chef_digestive",
+      "lines": [
+        {
+          "id": "d3",
+          "text": "（有点尴尬地挠了挠头），不瞒你说，因为我在后厨经常要试吃菜品，久而久之，总感觉肚子涨涨的... 去医院做过检查也没有实际解决，所以才来这里找你"
+        }
+      ],
+      "choices": [
+        {
+          "text": "哈哈，这样啊。乐意效劳。",
           "effects": {
-            "flags": { "asked_ring": true }
+            "flags": { "digestive_commission_accepted": true }
           },
+          "next": null
+        }
+      ]
+    },
+    "commission_ring_start": {
+      "speaker": "看上去有点腼腆的年轻人",
+      "portrait": "portrait_ring_boy",
+      "lines": [
+        {
+          "id": "r1",
+          "text": "请..请问这里是新开的万事屋吗？我想委托你一件事情"
+        }
+      ],
+      "choices": [
+        {
+          "text": "请说吧",
+          "effects": {},
           "next": "commission_ring_quest"
         }
       ]
     },
     "commission_ring_quest": {
-      "speaker": "委托客人",
+      "speaker": "看上去有点腼腆的年轻人",
       "portrait": "portrait_ring_boy",
       "lines": [
         {
           "id": "r3",
-          "text": "【占位】这里填写客人说明委托原因的台词。"
-        },
-        {
-          "id": "r4",
-          "text": "【占位】这里填写客人展示委托物品或说明具体需求的台词。"
+          "text": "我最近在家里翻出一枚祖传的戒指，看上去有点老了，家里人也说不清楚来历，能不能帮我调查一下...我，我会付给你报酬的！"
         }
       ],
       "choices": [
         {
-          "text": "让我看看那件物品",
-          "effects": {
-            "flags": { "seen_ring_item": true },
-            "npcAffinity": { "guest_ring_boy": 3 }
-          },
-          "next": "commission_ring_after"
-        },
-        {
-          "text": "我明白了，委托我接下了",
-          "effects": {
-            "flags": { "accept_ring_quest": true },
-            "funds": 30,
-            "npcAffinity": { "guest_ring_boy": 10 }
-          },
+          "text": "当然，我就是干这个的。",
+          "effects": {},
           "next": "commission_ring_end"
         }
       ]
@@ -574,18 +597,19 @@
       ]
     },
     "commission_ring_end": {
-      "speaker": "委托客人",
+      "speaker": "看上去有点腼腆的年轻人",
       "portrait": "portrait_ring_boy",
       "lines": [
         {
           "id": "re1",
-          "text": "【占位】这里填写客人感谢并表示会再来听取消息的台词。"
+          "text": "那就拜托了！"
         }
       ],
       "choices": [
         {
-          "text": "我会尽力而为",
+          "text": "收下老旧的戒指",
           "effects": {
+            "addItem": "quest_item_001",
             "flags": { "ring_commission_accepted": true }
           },
           "next": null
@@ -593,62 +617,60 @@
       ]
     },
     "commission_cat_start": {
-      "speaker": "委托客人",
+      "speaker": "看上去很焦急的女孩",
       "portrait": "portrait_little_girl",
       "lines": [
         {
           "id": "c1",
-          "text": "【占位】这里填写委托人进门的台词。"
-        },
-        {
-          "id": "c2",
-          "text": "【占位】这里填写委托人说明委托内容的台词。"
+          "text": "万事屋老板，请你帮我找回我的猫咪吧！"
         }
       ],
       "choices": [
         {
-          "text": "别着急，慢慢说",
-          "effects": {
-            "npcAffinity": { "guest_little_girl": 5 }
-          },
-          "next": "commission_cat_quest"
-        },
-        {
-          "text": "什么情况？",
-          "effects": {
-            "flags": { "asked_cat": true }
-          },
+          "text": "别着急，让我听听是怎么回事",
+          "effects": {},
           "next": "commission_cat_quest"
         }
       ]
     },
     "commission_cat_quest": {
-      "speaker": "委托客人",
+      "speaker": "看上去很焦急的女孩",
       "portrait": "portrait_little_girl",
       "lines": [
         {
           "id": "c3",
-          "text": "【占位】这里填写委托人详细说明委托细节的台词。"
-        },
-        {
-          "id": "c4",
-          "text": "【占位】这里填写委托人表达期望或提供线索的台词。"
+          "text": "小黑今天白天还在我家阳台上晒太阳，可我刚刚无论怎么找也找不到它了..."
         }
       ],
       "choices": [
         {
-          "text": "委托我接下了",
+          "text": "你仔细找过家里面吗？",
+          "effects": {},
+          "next": "commission_cat_detail"
+        }
+      ]
+    },
+    "commission_cat_detail": {
+      "speaker": "看上去很焦急的女孩",
+      "portrait": "portrait_little_girl",
+      "lines": [
+        {
+          "id": "c4",
+          "text": "找过了..小黑可能是跑去花园里了，它之前还没有这么消失过 ..."
+        }
+      ],
+      "choices": [
+        {
+          "text": "（沉吟）好，我会帮你找回小黑",
           "effects": {
-            "flags": { "accept_cat_quest": true },
-            "funds": 10,
-            "popularity": 1
+            "flags": { "cat_commission_accepted": true }
           },
-          "next": "commission_cat_end"
+          "next": null
         }
       ]
     },
     "commission_cat_end": {
-      "speaker": "委托客人",
+      "speaker": "看上去很焦急的女孩",
       "portrait": "portrait_little_girl",
       "lines": [
         {
@@ -664,6 +686,186 @@
           },
           "next": null
         }
+      ]
+    },
+    "commission_convenience_store_start": {
+      "speaker": "顶着黑眼圈的便利店员",
+      "portrait": "portrait_convenience_clerk",
+      "lines": [
+        { "id": "cs1", "text": "你就是这家万事屋的老板吗？太好了，我刚好想找人帮忙。" }
+      ],
+      "choices": [
+        { "text": "发生什么事了？", "effects": {}, "next": "commission_convenience_store_problem" }
+      ]
+    },
+    "commission_convenience_store_problem": {
+      "speaker": "顶着黑眼圈的便利店员",
+      "portrait": "portrait_convenience_clerk",
+      "lines": [
+        { "id": "cs2", "text": "我们便利店后面的仓库不知道为什么总有一股奇怪的味道，检查了半天也没发现东西坏掉。" }
+      ],
+      "choices": [
+        { "text": "听起来不像普通的卫生问题。", "effects": {}, "next": "commission_convenience_store_detail" }
+      ]
+    },
+    "commission_convenience_store_detail": {
+      "speaker": "顶着黑眼圈的便利店员",
+      "portrait": "portrait_convenience_clerk",
+      "lines": [
+        { "id": "cs3", "text": "对吧！我也是这么觉得的。店长说再处理不好就让我继续加班，我真的快撑不住了。" }
+      ],
+      "choices": [
+        { "text": "交给我吧，至少先让你的黑眼圈少熬几圈。", "effects": { "flags": { "convenience_store_commission_accepted": true } }, "next": null }
+      ]
+    },
+    "commission_calming_incense_start": {
+      "speaker": "精神紧绷的广告策划",
+      "portrait": "portrait_ad_planner",
+      "lines": [
+        { "id": "ai1", "text": "请问，这里真的什么委托都接吗？" }
+      ],
+      "choices": [
+        { "text": "原则上是这样。", "effects": {}, "next": "commission_calming_incense_problem" }
+      ]
+    },
+    "commission_calming_incense_problem": {
+      "speaker": "精神紧绷的广告策划",
+      "portrait": "portrait_ad_planner",
+      "lines": [
+        { "id": "ai2", "text": "太好了。我最近连续改方案，闭上眼睛都是甲方的修改意见，已经完全睡不着了。" }
+      ],
+      "choices": [
+        { "text": "所以你想要能帮助入睡的东西？", "effects": {}, "next": "commission_calming_incense_detail" }
+      ]
+    },
+    "commission_calming_incense_detail": {
+      "speaker": "精神紧绷的广告策划",
+      "portrait": "portrait_ad_planner",
+      "lines": [
+        { "id": "ai3", "text": "不用太夸张，只要能让我别在梦里继续开会就行。" }
+      ],
+      "choices": [
+        { "text": "明白了，我试着给你准备一些安神香。", "effects": { "flags": { "calming_incense_commission_accepted": true } }, "next": null }
+      ]
+    },
+    "commission_herbal_powder_start": {
+      "speaker": "戴口罩的药房店员",
+      "portrait": "portrait_pharmacy_clerk",
+      "lines": [
+        { "id": "hp1", "text": "老板，我听附近的人说，你这里能制作一些很特别的药材粉末？" }
+      ],
+      "choices": [
+        { "text": "要看你说的特别是哪种特别。", "effects": {}, "next": "commission_herbal_powder_problem" }
+      ]
+    },
+    "commission_herbal_powder_problem": {
+      "speaker": "戴口罩的药房店员",
+      "portrait": "portrait_pharmacy_clerk",
+      "lines": [
+        { "id": "hp2", "text": "我们药房最近想做一个传统药材展示角，普通样品都太普通了，想找一点更有话题性的东西。" }
+      ],
+      "choices": [
+        { "text": "也就是说，你需要中药粉末？", "effects": {}, "next": "commission_herbal_powder_detail" }
+      ]
+    },
+    "commission_herbal_powder_detail": {
+      "speaker": "戴口罩的药房店员",
+      "portrait": "portrait_pharmacy_clerk",
+      "lines": [
+        { "id": "hp3", "text": "对，最好看起来可靠一点。毕竟要摆在店里，不能像从厨房角落扫出来的。" }
+      ],
+      "choices": [
+        { "text": "这个要求很具体，我会注意的。", "effects": { "flags": { "herbal_powder_commission_accepted": true } }, "next": null }
+      ]
+    },
+    "commission_rideshare_deodorize_start": {
+      "speaker": "满脸疲惫的网约车司机",
+      "portrait": "portrait_rideshare_driver",
+      "lines": [
+        { "id": "rd1", "text": "老板，你这里有没有那种能快速去味的东西？" }
+      ],
+      "choices": [
+        { "text": "车里出问题了？", "effects": {}, "next": "commission_rideshare_deodorize_problem" }
+      ]
+    },
+    "commission_rideshare_deodorize_problem": {
+      "speaker": "满脸疲惫的网约车司机",
+      "portrait": "portrait_rideshare_driver",
+      "lines": [
+        { "id": "rd2", "text": "昨天有个乘客带了一袋不知道是什么的熟食，上车十分钟，下车以后味道像住在车里了一样。" }
+      ],
+      "choices": [
+        { "text": "听上去确实很有冲击力。", "effects": {}, "next": "commission_rideshare_deodorize_detail" }
+      ]
+    },
+    "commission_rideshare_deodorize_detail": {
+      "speaker": "满脸疲惫的网约车司机",
+      "portrait": "portrait_rideshare_driver",
+      "lines": [
+        { "id": "rd3", "text": "我今天已经被三个乘客问是不是刚从火锅店开出来了，再这样下去评分要没了。" }
+      ],
+      "choices": [
+        { "text": "我会想办法帮你处理。", "effects": { "flags": { "rideshare_deodorize_commission_accepted": true } }, "next": null }
+      ]
+    },
+    "commission_diner_attract_customers_start": {
+      "speaker": "有点发愁的小饭馆老板",
+      "portrait": "portrait_diner_owner",
+      "lines": [
+        { "id": "da1", "text": "唉，老板，你说这条街人也不少，怎么就没人进我店里吃饭呢？" }
+      ],
+      "choices": [
+        { "text": "菜不好吃？", "effects": {}, "next": "commission_diner_attract_customers_problem" }
+      ]
+    },
+    "commission_diner_attract_customers_problem": {
+      "speaker": "有点发愁的小饭馆老板",
+      "portrait": "portrait_diner_owner",
+      "lines": [
+        { "id": "da2", "text": "那不能！我对自己的手艺还是有信心的，就是最近隔壁新开了两家店，客人都被分走了。" }
+      ],
+      "choices": [
+        { "text": "所以你想委托我帮你招揽客人？", "effects": {}, "next": "commission_diner_attract_customers_detail" }
+      ]
+    },
+    "commission_diner_attract_customers_detail": {
+      "speaker": "有点发愁的小饭馆老板",
+      "portrait": "portrait_diner_owner",
+      "lines": [
+        { "id": "da3", "text": "对。听说你这里有些奇怪但有效的办法，我就来碰碰运气。" }
+      ],
+      "choices": [
+        { "text": "奇怪不保证，但我会尽量有效。", "effects": { "flags": { "diner_attract_customers_commission_accepted": true } }, "next": null }
+      ]
+    },
+    "commission_law_office_noise_start": {
+      "speaker": "提着文件袋的律师助理",
+      "portrait": "portrait_law_assistant",
+      "lines": [
+        { "id": "ln1", "text": "您好，我想委托一件有点不好开口的事情。" }
+      ],
+      "choices": [
+        { "text": "不好开口的事情，通常比较适合万事屋。", "effects": {}, "next": "commission_law_office_noise_problem" }
+      ]
+    },
+    "commission_law_office_noise_problem": {
+      "speaker": "提着文件袋的律师助理",
+      "portrait": "portrait_law_assistant",
+      "lines": [
+        { "id": "ln2", "text": "我们律所的资料室最近晚上总有细碎的声音，像是纸页自己在翻。领导说可能是老鼠，但我总觉得不像。" }
+      ],
+      "choices": [
+        { "text": "你们检查过了吗？", "effects": {}, "next": "commission_law_office_noise_detail" }
+      ]
+    },
+    "commission_law_office_noise_detail": {
+      "speaker": "提着文件袋的律师助理",
+      "portrait": "portrait_law_assistant",
+      "lines": [
+        { "id": "ln3", "text": "检查过，没有老鼠，也没有风。可每次加班经过那里，我都感觉有人在翻案卷。" }
+      ],
+      "choices": [
+        { "text": "我明白了，我会帮你处理资料室的问题。", "effects": { "flags": { "law_office_noise_commission_accepted": true } }, "next": null }
       ]
     },
     "commission_photo_start": {

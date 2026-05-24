@@ -7,7 +7,8 @@ const TABS = [
   { key: 'materials', label: '素材图鉴' },
   { key: 'products', label: '产物图鉴' },
   { key: 'quests', label: '委托记录' },
-  { key: 'keyItems', label: '关键物品记录' }
+  { key: 'keyItems', label: '关键物品记录' },
+  { key: 'achievements', label: '成就' }
 ];
 
 function safe(value, fallback = '待补充') {
@@ -55,21 +56,21 @@ class BookshelfArchiveScene extends Phaser.Scene {
       fontStyle: 'bold'
     }).setOrigin(0.5));
 
-    this.tabContainer = this.add.container(-305, -178);
+    this.tabContainer = this.add.container(-300, -190);
     this.listContainer = new ScrollableListUI(this, {
       parent: panel,
-      x: -300,
-      y: 50,
-      width: 210,
-      height: 350,
-      rowHeight: 36,
-      rowGap: 4
+      x: -235,
+      y: 112,
+      width: 240,
+      height: 245,
+      rowHeight: 44,
+      rowGap: 5
     });
-    this.detailContainer = this.add.container(85, 15);
+    this.detailContainer = this.add.container(100, 15);
     panel.add(this.tabContainer);
     panel.add(this.detailContainer);
 
-    panel.add(this.add.rectangle(-115, 5, 2, 410, 0x4c566a, 1));
+    panel.add(this.add.rectangle(-95, 48, 2, 335, 0x4c566a, 1));
 
     const closeBtn = this.createButton(0, 240, '关闭', () => this.closeScene(), 0xbf616a, 120, 34);
     panel.add(closeBtn);
@@ -104,7 +105,7 @@ class BookshelfArchiveScene extends Phaser.Scene {
       const isActive = tab.key === this.activeTab;
       const btn = this.createButton(
         0,
-        index * 38,
+        index * 31,
         tab.label,
         () => {
           this.activeTab = tab.key;
@@ -114,7 +115,7 @@ class BookshelfArchiveScene extends Phaser.Scene {
         },
         isActive ? 0x5e81ac : 0x3b4252,
         140,
-        30
+        28
       );
       this.tabContainer.add(btn);
     });
@@ -132,6 +133,8 @@ class BookshelfArchiveScene extends Phaser.Scene {
         return this.archiveManager.getCompletedQuests();
       case 'keyItems':
         return this.archiveManager.getKeyItems();
+      case 'achievements':
+        return this.archiveManager.getUnlockedAchievements();
       default:
         return [];
     }
@@ -149,6 +152,8 @@ class BookshelfArchiveScene extends Phaser.Scene {
         return record.questName;
       case 'keyItems':
         return record.keyItemName;
+      case 'achievements':
+        return record.title;
       default:
         return '未知记录';
     }
@@ -166,6 +171,8 @@ class BookshelfArchiveScene extends Phaser.Scene {
         return `第 ${safe(record.completedDay, '?')} 天完成`;
       case 'keyItems':
         return `第 ${safe(record.acquiredDay, '?')} 天获得`;
+      case 'achievements':
+        return `第 ${safe(record.unlockedDay, '?')} 天解锁`;
       default:
         return '';
     }
@@ -180,7 +187,8 @@ class BookshelfArchiveScene extends Phaser.Scene {
     }
 
     if (records.length === 0) {
-      this.listContainer.render([], () => null, { emptyText: '暂无记录' });
+      const emptyText = this.activeTab === 'achievements' ? '尚未解锁成就' : '暂无记录';
+      this.listContainer.render([], () => null, { emptyText });
       this.renderEmptyDetail();
       return;
     }
@@ -196,12 +204,16 @@ class BookshelfArchiveScene extends Phaser.Scene {
       row.add(this.add.text(10, rowHeight / 2 - 8, safe(this.getRecordTitle(record), '未命名'), {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4'
+        color: '#eceff4',
+        wordWrap: { width: width - 28, useAdvancedWrap: true },
+        maxLines: 1
       }));
       row.add(this.add.text(10, rowHeight / 2 + 8, this.getRecordSubTitle(record), {
         fontSize: '10px',
         fontFamily: 'Courier New',
-        color: '#d8dee9'
+        color: '#d8dee9',
+        wordWrap: { width: width - 28, useAdvancedWrap: true },
+        maxLines: 1
       }));
 
       bg.on('pointerdown', () => {
@@ -230,67 +242,70 @@ class BookshelfArchiveScene extends Phaser.Scene {
     }
 
     const lines = this.getDetailLines(record);
-    this.detailContainer.add(this.add.text(-150, -178, safe(this.getRecordTitle(record), '未命名'), {
+    const title = this.add.text(-150, -178, safe(this.getRecordTitle(record), '未命名'), {
       fontSize: '22px',
       fontFamily: 'Georgia, serif',
       color: '#ebcb8b',
-      fontStyle: 'bold'
-    }));
+      fontStyle: 'bold',
+      wordWrap: { width: 430, useAdvancedWrap: true },
+      fixedWidth: 430,
+      maxLines: 2
+    });
+    this.detailContainer.add(title);
 
+    let y = -135;
     lines.forEach((line, index) => {
-      this.detailContainer.add(this.add.text(-150, -135 + index * 28, line, {
+      const text = this.add.text(-150, y, line, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#d8dee9',
-        wordWrap: { width: 430, useAdvancedWrap: true }
-      }));
+        color: index === 0 ? '#d8dee9' : '#eceff4',
+        wordWrap: { width: 430, useAdvancedWrap: true },
+        fixedWidth: 430,
+        lineSpacing: 5,
+        maxLines: index === 0 ? 2 : 10
+      });
+      this.detailContainer.add(text);
+      y += Math.max(28, text.height + 14);
     });
   }
 
   getDetailLines(record) {
+    if (this.activeTab === 'materials') {
+      return [
+        `首次获得：第 ${safe(record.firstUnlockedDay, '?')} 天`,
+        safe(record.description, '【素材说明待补充】')
+      ];
+    }
+
+    if (this.activeTab === 'products') {
+      return [
+        `首次制作：第 ${safe(record.firstCraftedDay, '?')} 天`,
+        safe(record.description, '【产物说明待补充】')
+      ];
+    }
+
+    if (this.activeTab === 'achievements') {
+      return [
+        `解锁日期：第 ${safe(record.unlockedDay, '?')} 天`,
+        safe(record.description, '成就说明待补充')
+      ];
+    }
+
     switch (this.activeTab) {
       case 'memories':
         return [
-          `关联 NPC：${safe(record.relatedNpcName)}`,
-          `精魂名称：${safe(record.spiritName)}`,
-          `文化标签：${safe(record.culturalTag)}`,
           `解锁日期：第 ${safe(record.unlockedDay, '?')} 天`,
-          `回忆文本：${safe(record.memoryText, '【古代精魂记忆文本待补充】')}`
-        ];
-      case 'materials':
-        return [
-          `类型：${safe(record.materialType, '炼金素材')}`,
-          `说明：${safe(record.description, '【素材说明待补充】')}`,
-          `占格形状：\n${this.formatShape(record.shapeCells)}`,
-          `首次获得：第 ${safe(record.firstUnlockedDay, '?')} 天`,
-          `来源：${safe(record.discoveredFrom)}`
-        ];
-      case 'products':
-        return [
-          `说明：${safe(record.description, '【产物说明待补充】')}`,
-          `首次制作：第 ${safe(record.firstCraftedDay, '?')} 天`,
-          `首次品质：${this.archiveManager.getQualityName(record.firstCraftedQuality)}`,
-          `最高品质：${this.archiveManager.getQualityName(record.bestQualityCrafted)}`,
-          `制作次数：${safe(record.craftedCount, 0)}`,
-          `相关配方：${safe(record.relatedRecipeId)}`
+          safe(record.memoryText, '【古代精魂记忆文本待补充】')
         ];
       case 'quests':
         return [
-          `发布 NPC：${safe(record.sourceNpcName)}`,
-          `委托类型：${this.formatQuestType(record.questType)}`,
           `完成日期：第 ${safe(record.completedDay, '?')} 天`,
-          `交付物品：${this.formatArray(record.deliveredItemIds)}`,
-          `获得奖励：资金 +${safe(record.rewardMoney, 0)}，人气 +${safe(record.rewardPopularity, 0)}`,
-          `关联回忆：${this.formatArray(record.relatedMemoryIds)}`,
-          `委托描述：${safe(record.description, '【委托描述待补充】')}`
+          safe(record.description, '【委托描述待补充】')
         ];
       case 'keyItems':
         return [
-          `来源：${safe(record.sourceType)} / ${safe(record.sourceName)}`,
           `获得日期：第 ${safe(record.acquiredDay, '?')} 天`,
-          `文化标签：${safe(record.culturalTag)}`,
-          `关联回忆：${safe(record.relatedMemoryId)}`,
-          `说明文本：${safe(record.description, '【关键物品说明待补充】')}`
+          safe(record.description, '【关键物品说明待补充】')
         ];
       default:
         return ['暂无记录'];
