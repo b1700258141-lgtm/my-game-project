@@ -234,7 +234,7 @@ class CommissionListScene extends Phaser.Scene {
       maxLines: 1
     }).setOrigin(0, 0.5));
 
-    item.add(this.add.text(-280, 4, commission.description || '【委托描述待补充】', {
+    item.add(this.add.text(-280, 4, commission.description || '这项委托的详细说明已记录在柜台档案中。', {
       fontSize: '12px',
       fontFamily: 'Georgia, serif',
       color: '#d8dee9',

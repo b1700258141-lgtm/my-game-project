@@ -41,6 +41,34 @@
       "unlockCondition": "第1天起可接取委托",
       "portraitId": "portrait_little_girl",
       "description": "正在寻找走丢的猫小黑。"
+    },
+    {
+      "npcId": "guest_elder_lady",
+      "npcName": "退休社区医生",
+      "modernJob": "退休社区医生",
+      "npcType": "commissionClient",
+      "personality": "温和、认真，习惯把旧事整理清楚",
+      "dialogueSetId": "commission_photo_start",
+      "questIds": ["commission_002"],
+      "spiritMemoryIds": ["photo_memory"],
+      "isRandomVisitor": false,
+      "unlockCondition": "第2天起可接取委托",
+      "portraitId": "portrait_elder_lady",
+      "description": "带来一张写有“雨夜借灯”的旧照片，希望确认照片中无名医者的故事。"
+    },
+    {
+      "npcId": "guest_clockmaker",
+      "npcName": "钟表修理店主",
+      "modernJob": "钟表修理店主",
+      "npcType": "commissionClient",
+      "personality": "耐心、讲规矩，对机械和约定都很执着",
+      "dialogueSetId": "commission_clock_start",
+      "questIds": ["commission_004"],
+      "spiritMemoryIds": ["clock_memory"],
+      "isRandomVisitor": false,
+      "unlockCondition": "第3天起可接取委托",
+      "portraitId": "portrait_clockmaker",
+      "description": "带来一只总在子夜停摆的老钟，希望万事屋找出它停下的原因。"
     }
   ],
   "note": "NPC 现在主要通过来访系统（visitors.json）和委托系统动态出现在场景中，此文件用于记录设定稿中的正式 NPC 数据。"

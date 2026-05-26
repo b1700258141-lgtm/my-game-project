@@ -11,7 +11,7 @@ const TABS = [
   { key: 'achievements', label: '成就' }
 ];
 
-function safe(value, fallback = '待补充') {
+function safe(value, fallback = '尚未记录') {
   if (value === null || value === undefined || value === '' || Number.isNaN(value)) {
     return fallback;
   }
@@ -273,21 +273,21 @@ class BookshelfArchiveScene extends Phaser.Scene {
     if (this.activeTab === 'materials') {
       return [
         `首次获得：第 ${safe(record.firstUnlockedDay, '?')} 天`,
-        safe(record.description, '【素材说明待补充】')
+        safe(record.description, '这份素材的来历已经记录在万事屋档案中。')
       ];
     }
 
     if (this.activeTab === 'products') {
       return [
         `首次制作：第 ${safe(record.firstCraftedDay, '?')} 天`,
-        safe(record.description, '【产物说明待补充】')
+        safe(record.description, '这件炼金产物已经记录在万事屋档案中。')
       ];
     }
 
     if (this.activeTab === 'achievements') {
       return [
         `解锁日期：第 ${safe(record.unlockedDay, '?')} 天`,
-        safe(record.description, '成就说明待补充')
+        safe(record.description, '这个成就已经收入万事屋档案。')
       ];
     }
 
@@ -295,17 +295,17 @@ class BookshelfArchiveScene extends Phaser.Scene {
       case 'memories':
         return [
           `解锁日期：第 ${safe(record.unlockedDay, '?')} 天`,
-          safe(record.memoryText, '【古代精魂记忆文本待补充】')
+          safe(record.memoryText, '这段记忆仍很模糊，需要在之后的探索中逐渐看清。')
         ];
       case 'quests':
         return [
           `完成日期：第 ${safe(record.completedDay, '?')} 天`,
-          safe(record.description, '【委托描述待补充】')
+          safe(record.description, '这项委托已经归档，详细经过可在委托记录中回顾。')
         ];
       case 'keyItems':
         return [
           `获得日期：第 ${safe(record.acquiredDay, '?')} 天`,
-          safe(record.description, '【关键物品说明待补充】')
+          safe(record.description, '这件关键物品与万事屋的旧事有关。')
         ];
       default:
         return ['暂无记录'];
@@ -328,7 +328,7 @@ class BookshelfArchiveScene extends Phaser.Scene {
   }
 
   formatShape(cells) {
-    if (!Array.isArray(cells) || cells.length === 0) return '待补充';
+    if (!Array.isArray(cells) || cells.length === 0) return '未记录';
     const maxRow = Math.max(...cells.map(cell => cell[0]));
     const maxCol = Math.max(...cells.map(cell => cell[1]));
     const occupied = new Set(cells.map(cell => `${cell[0]},${cell[1]}`));

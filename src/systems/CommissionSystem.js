@@ -190,15 +190,6 @@ export default class CommissionSystem {
   getAllNPCs() {
     return [
       {
-        id: "guest_placeholder_customer",
-        name: "占位客人",
-        description: "【占位】现代职业身份，具体设定由用户填写。",
-        position: { x: 0, y: 0 },
-        color: 10066329,
-        borderColor: 13421772,
-        portrait: "portrait_placeholder_customer"
-      },
-      {
         id: "guest_chef_digestive",
         name: "肚子很大的厨师",
         description: "一位在附近的城镇饭店工作的大厨。",
@@ -218,8 +209,8 @@ export default class CommissionSystem {
       },
       {
         id: "guest_elder_lady",
-        name: "委托客人B",
-        description: "【占位】现代职业身份，具体设定由用户填写。",
+        name: "退休社区医生",
+        description: "一位退休社区医生，带着旧照片来寻找照片中无名医者的故事。",
         position: { x: 0, y: 0 },
         color: 13952025,
         borderColor: 10535579,
@@ -290,8 +281,8 @@ export default class CommissionSystem {
       },
       {
         id: "guest_clockmaker",
-        name: "委托客人D",
-        description: "【占位】现代职业身份，具体设定由用户填写。",
+        name: "钟表修理店主",
+        description: "街边钟表修理店的店主，带来一只总在子夜停摆的老钟。",
         position: { x: 0, y: 0 },
         color: 11487568,
         borderColor: 8692549,
@@ -557,9 +548,9 @@ export default class CommissionSystem {
     return commissions.commissionTypes[normalizedType]?.name || normalizedType;
   }
 
-  // ========== 委托完成框架（占位逻辑） ==========
+  // ========== 委托完成框架 ==========
 
-  // 检查委托是否可完成 — 占位，具体条件待设定
+  // 检查委托是否可完成
   checkQuestCompletion(commissionId) {
     const commission = this.getCommission(commissionId);
     if (!commission) return false;
@@ -648,7 +639,11 @@ export default class CommissionSystem {
       completionResult: option.result || 'normal'
     });
 
-    return { success: true, message: `委托「${commission.title}」已完成！`, result: option.result || 'normal' };
+    return {
+      success: true,
+      message: option.successMessage || commission.taskSuccessText || `委托「${commission.title}」已完成！`,
+      result: option.result || 'normal'
+    };
   }
 
   // 提交委托 — 有交付物要求的委托在这里完成闭环
@@ -710,7 +705,7 @@ export default class CommissionSystem {
 
     const inventorySystem = new InventorySystem(this.gameState);
     if (inventorySystem.getItemCount(itemId) <= 0) {
-      return { success: false, message: '背包中没有该物品' };
+      return { success: false, message: commission.emptySubmitMessage || '背包中没有该物品' };
     }
 
     if (!inventorySystem.removeItem(itemId, 1)) {
@@ -735,7 +730,7 @@ export default class CommissionSystem {
 
     return {
       success: true,
-      message: `委托「${commission.title}」已提交！`,
+      message: commission.submitSuccessText || `委托「${commission.title}」已提交！`,
       result: reward.result || 'normal',
       reward: appliedReward
     };

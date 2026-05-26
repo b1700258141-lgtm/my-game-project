@@ -112,7 +112,7 @@ export default class VisitorSystem {
       "visitor_teacher": {
         id: "visitor_teacher",
         name: "退休教师",
-        description: "【占位】一位退休的中小学教师，穿着朴素。",
+        description: "一位退休中小学教师，随身带着旧教案和整理好的纸袋。",
         position: { x: 0, y: 0 },
         color: 8454143,
         borderColor: 63487,
@@ -121,7 +121,7 @@ export default class VisitorSystem {
       "visitor_chef": {
         id: "visitor_chef",
         name: "饭馆厨师",
-        description: "【占位】附近饭馆的厨师，戴着厨师帽。",
+        description: "附近饭馆的厨师，身上带着后厨烟火气和一本老菜谱。",
         position: { x: 0, y: 0 },
         color: 13434879,
         borderColor: 11885375,
@@ -130,7 +130,7 @@ export default class VisitorSystem {
       "visitor_courier": {
         id: "visitor_courier",
         name: "快递员",
-        description: "【占位】穿着快递工作服的年轻人。",
+        description: "穿着快递工作服的年轻人，熟悉附近每条小巷和门牌。",
         position: { x: 0, y: 0 },
         color: 16737894,
         borderColor: 14737633,
@@ -139,7 +139,7 @@ export default class VisitorSystem {
       "visitor_antique": {
         id: "visitor_antique",
         name: "古玩店老板",
-        description: "【占位】古玩街店铺的老板，对老物件很有研究。",
+        description: "古玩街店铺的老板，习惯先问来路再谈价钱。",
         position: { x: 0, y: 0 },
         color: 11579568,
         borderColor: 8684678,

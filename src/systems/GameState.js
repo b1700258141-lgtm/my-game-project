@@ -335,7 +335,7 @@ class GameState {
     this.setCommissionStatus(commissionId, COMMISSION_STATUS.SUBMITTABLE);
   }
 
-  // ========== 委托完成框架（占位逻辑） ==========
+  // ========== 委托完成框架 ==========
 
   checkQuestCompletion(commissionId) {
     const status = this.getCommissionStatus(commissionId);

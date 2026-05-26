@@ -50,7 +50,7 @@ class DayEndScene extends Phaser.Scene {
 
     const panel = this.add.container(width / 2, 292);
 
-    const panelBg = this.add.rectangle(0, 0, 560, 340, 0x1c2128)
+    const panelBg = this.add.rectangle(0, 0, 600, 350, 0x1c2128)
       .setStrokeStyle(3, 0x4c566a);
     panel.add(panelBg);
 
@@ -67,21 +67,39 @@ class DayEndScene extends Phaser.Scene {
       ['今日消耗物品', this.formatItems(this.daySummary.itemsConsumed), '#bf616a']
     ];
 
-    lines.forEach((line, index) => {
-      const y = -138 + index * 28;
-      panel.add(this.add.text(-250, y, `${line[0]}:`, {
+    const viewport = {
+      x: width / 2 - 270,
+      y: 132,
+      width: 540,
+      height: 312
+    };
+    const content = this.add.container(0, 0);
+    panel.add(content);
+
+    const maskShape = this.make.graphics({ x: 0, y: 0, add: false });
+    maskShape.fillStyle(0xffffff);
+    maskShape.fillRect(viewport.x, viewport.y, viewport.width, viewport.height);
+    content.setMask(maskShape.createGeometryMask());
+
+    let contentY = -142;
+    lines.forEach((line) => {
+      const label = this.add.text(-260, contentY, `${line[0]}:`, {
         fontSize: '15px',
         fontFamily: 'Georgia, serif',
         color: '#d8dee9'
-      }));
-      panel.add(this.add.text(20, y, line[1], {
+      });
+      const value = this.add.text(-78, contentY, line[1], {
         fontSize: '15px',
         fontFamily: 'Courier New',
         color: line[2],
-        wordWrap: true,
-        wordWrapWidth: 230
-      }));
+        wordWrap: { width: 322, useAdvancedWrap: true },
+        fixedWidth: 322,
+        lineSpacing: 5
+      });
+      content.add([label, value]);
+      contentY += Math.max(26, value.height + 11);
     });
+    this.setupSummaryScroll(panel, content, contentY, viewport.height);
 
     const nextBtn = this.createButton(width / 2 - 170, 535, '进入下一天', () => this.startNextDay(), 0x5e81ac);
     const recordBtn = this.createButton(width / 2, 535, '查看今日记录', () => this.showRecordToast(), 0x4c566a);
@@ -99,6 +117,42 @@ class DayEndScene extends Phaser.Scene {
   formatItems(items) {
     if (!items || items.length === 0) return '无';
     return items.map(item => `${item.name} x${item.count}`).join('、');
+  }
+
+  setupSummaryScroll(panel, content, contentBottom, viewportHeight) {
+    const contentTop = -142;
+    const visibleBottom = contentTop + viewportHeight - 10;
+    const maxScroll = Math.max(0, contentBottom - visibleBottom);
+    if (maxScroll <= 0) return;
+
+    let scrollOffset = 0;
+    const track = this.add.rectangle(278, 0, 6, viewportHeight - 20, 0x2e3440, 0.9)
+      .setStrokeStyle(1, 0x4c566a);
+    const thumbHeight = Math.max(44, (viewportHeight - 20) * ((viewportHeight - 20) / (contentBottom - contentTop)));
+    const thumb = this.add.rectangle(278, -(viewportHeight - 20) / 2 + thumbHeight / 2, 6, thumbHeight, 0x88c0d0, 0.95);
+    panel.add([track, thumb]);
+
+    const updateScroll = (delta) => {
+      scrollOffset = Phaser.Math.Clamp(scrollOffset + delta, 0, maxScroll);
+      content.y = -scrollOffset;
+      const travel = viewportHeight - 20 - thumbHeight;
+      thumb.y = -(viewportHeight - 20) / 2 + thumbHeight / 2 + travel * (scrollOffset / maxScroll);
+    };
+
+    this.input.on('wheel', (_pointer, _objects, _dx, dy) => {
+      updateScroll(dy > 0 ? 28 : -28);
+    });
+
+    thumb.setInteractive({ useHandCursor: true });
+    this.input.setDraggable(thumb);
+    thumb.on('drag', (_pointer, _dragX, dragY) => {
+      const minY = -(viewportHeight - 20) / 2 + thumbHeight / 2;
+      const maxY = (viewportHeight - 20) / 2 - thumbHeight / 2;
+      thumb.y = Phaser.Math.Clamp(dragY, minY, maxY);
+      const ratio = maxY === minY ? 0 : (thumb.y - minY) / (maxY - minY);
+      scrollOffset = ratio * maxScroll;
+      content.y = -scrollOffset;
+    });
   }
 
   createButton(x, y, text, callback, color) {

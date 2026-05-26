@@ -6,11 +6,11 @@
       "lines": [
         {
           "id": "t1",
-          "text": "【占位】你好，请问这里是万事屋吗？"
+          "text": "你好，请问这里是万事屋吗？我在学校退休后，常听学生家长提起这家店。"
         },
         {
           "id": "t2",
-          "text": "【占位】我听说你们能帮忙处理一些...特殊的事情？"
+          "text": "我有几份旧教案和一枚旧铜钱，总觉得和这间店有点说不清的缘分。"
         }
       ],
       "choices": [
@@ -36,16 +36,16 @@
       "lines": [
         {
           "id": "t3",
-          "text": "【占位】我这里有一些老物件，一直想找人帮忙看看..."
+          "text": "这些东西是我整理老办公室时翻出来的。旧铜钱你先留着，也许比放在我抽屉里更有用。"
         },
         {
           "id": "t4",
-          "text": "【占位】不过今天只是先来打个招呼。改天再详细聊聊。"
+          "text": "至于那张油印纸条，我想先看看你是不是真的愿意听老故事。"
         }
       ],
       "choices": [
         {
-          "text": "这是给您的回礼",
+          "text": "我愿意听您慢慢说",
           "effects": {
             "addItem": "material_old_coin",
             "npcAffinity": { "visitor_teacher": 10 },
@@ -68,18 +68,18 @@
       "lines": [
         {
           "id": "tg1",
-          "text": "【占位】这...这是给我的？真是太感谢了。"
+          "text": "你愿意认真听，我就放心了。现在肯这样听人把话说完的年轻人不多。"
         },
         {
           "id": "tg2",
-          "text": "【占位】作为回报，这个给你。是我整理旧物时发现的。"
+          "text": "这张油印纸条夹在教案里，上面的店名被墨水晕开了，只剩一个像门牌的图案。"
         }
       ],
       "choices": [
         {
           "text": "这是什么？",
           "effects": {
-            "addKeyItem": "key_item_001",
+            "addKeyItem": "key_item_004",
             "flags": { "teacher_trust_established": true }
           },
           "next": "visitor_teacher_bye"
@@ -92,7 +92,7 @@
       "lines": [
         {
           "id": "tbye1",
-          "text": "【占位】那我就先走了。以后有什么需要帮忙的尽管说。"
+          "text": "那我先回去了。以后要是店里需要整理档案，记得叫我，我最会给旧纸张编号。"
         }
       ],
       "choices": [
@@ -111,11 +111,11 @@
       "lines": [
         {
           "id": "chef1",
-          "text": "【占位】打扰了，这里是万事屋吧？"
+          "text": "打扰了，这里是万事屋吧？我从街角饭馆过来的。"
         },
         {
           "id": "chef2",
-          "text": "【占位】我是附近饭馆的厨师，有点事情想请教..."
+          "text": "后厨最近翻出一本老菜谱，纸页一打开就有股很淡的铜锈味，我想请你看看。"
         }
       ],
       "choices": [
@@ -141,15 +141,15 @@
       "lines": [
         {
           "id": "chef3",
-          "text": "【占位】我们店最近在整理一些老菜谱，想恢复传统的味道..."
+          "text": "我们店最近想把几道老菜重新做起来，味道不能只靠调料，得把那点旧规矩也找回来。"
         },
         {
           "id": "chef4",
-          "text": "【占位】听说你们对传统的东西比较有研究？"
+          "text": "听说你们万事屋对旧物和炼金都有点门道，我就厚着脸皮来了。"
         },
         {
           "id": "chef4b",
-          "text": "【占位】对了，我这里有些东西，也许对你有用。"
+          "text": "对了，今天后厨多备了些萝卜和风铃草，能换就换，不能换也当交个朋友。"
         }
       ],
       "choices": [
@@ -182,15 +182,15 @@
       "lines": [
         {
           "id": "ci1",
-          "text": "【占位】这是一块从旧衣物上剪下的绸缎，50元你拿走？"
+          "text": "这两根萝卜是早市刚送来的，20资金拿走吧。厨房里少两根也不影响开火。"
         }
       ],
       "choices": [
         {
-          "text": "买下（-50资金）",
+          "text": "买下萝卜（-20资金）",
           "effects": {
-            "funds": -50,
-            "addItem": "alchemy_material_002"
+            "funds": -20,
+            "addItem": "material_carrot"
           },
           "next": "visitor_chef_bye"
         },
@@ -207,18 +207,18 @@
       "lines": [
         {
           "id": "cc1",
-          "text": "【占位】说起来，我确实有个小请求..."
+          "text": "说起来，我确实有个小请求。那本老菜谱的封皮里，夹着一块不像装饰的铜纹碎片。"
         },
         {
           "id": "cc2",
-          "text": "【占位】我在找一种特殊的炼金成品，如果你能帮我找到，我可以告诉你一些关于家族纹章的事。"
+          "text": "你要是愿意帮我确认它是不是万事屋的东西，我就把碎片交给你保管。"
         }
       ],
       "choices": [
         {
-          "text": "我接下这个委托",
+          "text": "先把碎片交给我，我会登记清楚",
           "effects": {
-            "startTemporaryCommission": "temp_commission_chef",
+            "addKeyItem": "key_item_001",
             "npcAffinity": { "visitor_chef": 10 }
           },
           "next": "visitor_chef_bye"
@@ -236,7 +236,7 @@
       "lines": [
         {
           "id": "chef5",
-          "text": "【占位】那改天我再来详细说说具体情况。谢谢！"
+          "text": "那我先回后厨了。锅上还炖着汤，离开太久师傅们会把咸淡全推给我。"
         }
       ],
       "choices": [
@@ -255,11 +255,11 @@
       "lines": [
         {
           "id": "cou1",
-          "text": "【占位】你好，有你们的快递！"
+          "text": "你好，有你们的快递！门牌挺旧，但地址写得很清楚。"
         },
         {
           "id": "cou2",
-          "text": "【占位】哦？这店名挺有意思的，万事屋？"
+          "text": "万事屋？我每天跑这片，倒是第一次见有人真把这三个字挂出来。"
         }
       ],
       "choices": [
@@ -285,17 +285,18 @@
       "lines": [
         {
           "id": "cou3",
-          "text": "【占位】不了不了，还要赶着送下一单..."
+          "text": "不了不了，还要赶着送下一单。只是刚才路过巷口，看到墙根有几株狗尾巴草长得挺精神。"
         },
         {
           "id": "cou4",
-          "text": "【占位】不过你们这店挺有老味道的，和周围的店铺不太一样。"
+          "text": "你要是不嫌弃，我顺手摘了两株。跑腿的人没什么贵重东西，能带点路上的消息。"
         }
       ],
       "choices": [
         {
           "text": "有空常来",
           "effects": {
+            "addItem": "material_foxtail_grass",
             "flags": { "courier_visited": true }
           },
           "next": null
@@ -308,11 +309,11 @@
       "lines": [
         {
           "id": "ant1",
-          "text": "【占位】打扰了，请问你们这里收不收老物件？"
+          "text": "打扰了，请问你们这里收不收老物件？我在古玩街开店，多少见过些门道。"
         },
         {
           "id": "ant2",
-          "text": "【占位】我是附近古玩街的店主，想和你们建立点业务往来。"
+          "text": "万事屋重新开门，街坊都在猜。我来不是探底，只是想看看能不能互通有无。"
         }
       ],
       "choices": [
@@ -338,11 +339,11 @@
       "lines": [
         {
           "id": "ant3",
-          "text": "【占位】哦？处理事情？比如说..."
+          "text": "处理事情？这说法比收货有意思。旧物麻烦多，很多麻烦不在价钱上。"
         },
         {
           "id": "ant4",
-          "text": "【占位】我这里有些稀有材料，还有一些特别的物件。"
+          "text": "我这里有些旧铜钱和甲壳虫标本，也有几件说不清来路的小东西。"
         }
       ],
       "choices": [
@@ -375,23 +376,23 @@
       "lines": [
         {
           "id": "at1",
-          "text": "【占位】干枯草药40元，石英碎片60元。你要哪个？"
+          "text": "旧铜钱20资金，甲壳虫10资金。都是干净来源，账本可以给你看。"
         }
       ],
       "choices": [
         {
-          "text": "买草药（-40资金）",
+          "text": "买旧铜钱（-20资金）",
           "effects": {
-            "funds": -40,
-            "addItem": "alchemy_material_004"
+            "funds": -20,
+            "addItem": "material_old_coin"
           },
           "next": "visitor_antique_trade2"
         },
         {
-          "text": "买石英（-60资金）",
+          "text": "买甲壳虫（-10资金）",
           "effects": {
-            "funds": -60,
-            "addItem": "alchemy_material_005"
+            "funds": -10,
+            "addItem": "material_beetle"
           },
           "next": "visitor_antique_trade2"
         },
@@ -408,23 +409,23 @@
       "lines": [
         {
           "id": "at2",
-          "text": "【占位】还要别的吗？"
+          "text": "还要别的吗？旧物讲眼缘，素材也一样。"
         }
       ],
       "choices": [
         {
-          "text": "买草药（-40资金）",
+          "text": "买旧铜钱（-20资金）",
           "effects": {
-            "funds": -40,
-            "addItem": "alchemy_material_004"
+            "funds": -20,
+            "addItem": "material_old_coin"
           },
           "next": "visitor_antique_trade2"
         },
         {
-          "text": "买石英（-60资金）",
+          "text": "买甲壳虫（-10资金）",
           "effects": {
-            "funds": -60,
-            "addItem": "alchemy_material_005"
+            "funds": -10,
+            "addItem": "material_beetle"
           },
           "next": "visitor_antique_trade2"
         },
@@ -441,18 +442,17 @@
       "lines": [
         {
           "id": "ae1",
-          "text": "【占位】交换？让我想想..."
+          "text": "交换？让我想想。你这店刚开，最缺的可能不是货，而是能对上的线索。"
         },
         {
           "id": "ae2",
-          "text": "【占位】如果你有一份净化药剂，我可以给你一块家族纹章碎片。"
+          "text": "我有一枚药签形状的纹章片，压在旧账本里多年。你若愿意替我记清它的来处，就带走吧。"
         }
       ],
       "choices": [
         {
-          "text": "成交（交付净化药剂）",
+          "text": "收下纹章片，并承诺登记来源",
           "effects": {
-            "removeItem": "alchemy_product_001",
             "addKeyItem": "key_item_002",
             "npcAffinity": { "visitor_antique": 15 },
             "flags": { "antique_trade_done": true }
@@ -460,7 +460,7 @@
           "next": "visitor_antique_bye"
         },
         {
-          "text": "我没有那种东西",
+          "text": "我暂时不收来路不明的东西",
           "effects": {},
           "next": "visitor_antique_bye"
         }
@@ -472,7 +472,7 @@
       "lines": [
         {
           "id": "ab1",
-          "text": "【占位】好的，以后有好东西再来。我先走了。"
+          "text": "好的，以后有能说清来路的好东西，我再带来。做旧物生意，最怕账不明。"
         }
       ],
       "choices": [
@@ -573,16 +573,16 @@
       ]
     },
     "commission_ring_after": {
-      "speaker": "委托客人",
+      "speaker": "看上去有点腼腆的年轻人",
       "portrait": "portrait_ring_boy",
       "lines": [
         {
           "id": "ra1",
-          "text": "【占位】这里填写玩家看完物品后的对话。"
+          "text": "戒指内侧的磨痕很深，像是有人反复用指腹确认它还在。"
         },
         {
           "id": "ra2",
-          "text": "【占位】这里填写客人询问玩家是否看到什么的台词。"
+          "text": "所以它不是普通首饰，对吗？我总觉得家里人把它留下，不只是为了纪念。"
         }
       ],
       "choices": [
@@ -675,7 +675,7 @@
       "lines": [
         {
           "id": "ce1",
-          "text": "【占位】这里填写委托人表示感谢并告别的台词。"
+          "text": "谢谢你愿意帮忙。小黑平时很认路，它一定只是被什么东西吸引住了。"
         }
       ],
       "choices": [
@@ -869,16 +869,16 @@
       ]
     },
     "commission_photo_start": {
-      "speaker": "委托客人",
+      "speaker": "退休社区医生",
       "portrait": "portrait_elder_lady",
       "lines": [
         {
           "id": "p1",
-          "text": "【占位】年轻人，能帮我看看这个东西吗？"
+          "text": "年轻人，能帮我看看这张照片吗？我退休前在社区医院工作，见过很多病历，却看不懂它。"
         },
         {
           "id": "p2",
-          "text": "【占位】这里填写委托人展示某样老物件的台词。"
+          "text": "照片背面写着“雨夜借灯”四个字，旁边还有一枚像药签的印记。"
         }
       ],
       "choices": [
@@ -899,16 +899,16 @@
       ]
     },
     "commission_photo_quest": {
-      "speaker": "委托客人",
+      "speaker": "退休社区医生",
       "portrait": "portrait_elder_lady",
       "lines": [
         {
           "id": "p3",
-          "text": "【占位】这里填写委托人说明背景故事的台词。"
+          "text": "我母亲说，照片里的人曾救过我们家一位长辈，可名字没人记得清。"
         },
         {
           "id": "p4",
-          "text": "【占位】这里填写委托人表达期望的台词。"
+          "text": "我不求多神奇，只想知道那个人为什么在雨夜还肯出门救人。"
         }
       ],
       "choices": [
@@ -924,12 +924,12 @@
       ]
     },
     "commission_photo_end": {
-      "speaker": "委托客人",
+      "speaker": "退休社区医生",
       "portrait": "portrait_elder_lady",
       "lines": [
         {
           "id": "pe1",
-          "text": "【占位】这里填写委托人表示感谢并告别的台词。"
+          "text": "谢谢。照片我先留在你这里，等你看见什么，再慢慢告诉我。"
         }
       ],
       "choices": [
@@ -943,16 +943,16 @@
       ]
     },
     "commission_clock_start": {
-      "speaker": "委托客人",
+      "speaker": "钟表修理店主",
       "portrait": "portrait_clockmaker",
       "lines": [
         {
           "id": "ck1",
-          "text": "【占位】听说你们万事屋能处理一些...特殊的事情？"
+          "text": "听说你们万事屋能处理一些说不清的事情？我修了一辈子钟，也第一次遇到这种脾气的。"
         },
         {
           "id": "ck2",
-          "text": "【占位】这里填写委托人说明来意的台词。"
+          "text": "这只老钟零件没坏，却每天子夜准时停摆，像是在等某个人回来。"
         }
       ],
       "choices": [
@@ -973,16 +973,16 @@
       ]
     },
     "commission_clock_quest": {
-      "speaker": "委托客人",
+      "speaker": "钟表修理店主",
       "portrait": "portrait_clockmaker",
       "lines": [
         {
           "id": "ck3",
-          "text": "【占位】这里填写委托人详细说明问题的台词。"
+          "text": "我换过发条、调过摆轮，连灰都清了三遍。白天走得好好的，一到夜里十二点就沉默。"
         },
         {
           "id": "ck4",
-          "text": "【占位】这里填写委托人提供物品或线索的台词。"
+          "text": "钟壳里夹着一片旧纸，上面只有“守到更声尽”几个字。我想知道它到底在守什么。"
         }
       ],
       "choices": [
@@ -998,12 +998,12 @@
       ]
     },
     "commission_clock_end": {
-      "speaker": "委托客人",
+      "speaker": "钟表修理店主",
       "portrait": "portrait_clockmaker",
       "lines": [
         {
           "id": "cke1",
-          "text": "【占位】这里填写委托人表示感谢并提供联系方式的台词。"
+          "text": "老钟就交给你了。修钟讲究耐心，查它的心事大概也一样。"
         }
       ],
       "choices": [

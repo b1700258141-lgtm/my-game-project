@@ -1,6 +1,9 @@
 // 记忆场景 - 展示精魂的古代记忆
 import memories from '../data/memories.json';
-import dialogues from '../data/dialogues.json';
+import CommissionSystem from '../systems/CommissionSystem';
+import SpiritMemoryManager from '../systems/SpiritMemoryManager';
+import InventorySystem from '../systems/InventorySystem';
+import DailyLoopManager from '../systems/DailyLoopManager';
 
 class MemoryScene extends Phaser.Scene {
   constructor() {
@@ -11,13 +14,15 @@ class MemoryScene extends Phaser.Scene {
     this.returnScene = 'ShopScene';
     this.fromDialogue = false;
     this.dialogueData = null;
+    this.completeCommissionId = null;
   }
 
-  init(data) {
+  init(data = {}) {
     this.memoryId = data.memoryId || null;
     this.nextDialogueId = data.nextDialogueId || null;
     this.returnScene = data.returnScene || 'ShopScene';
     this.fromDialogue = data.fromDialogue || false;
+    this.completeCommissionId = data.completeCommissionId || null;
     this.currentLineIndex = 0;
     this.currentChoices = [];
     this.isTyping = false;
@@ -33,6 +38,9 @@ class MemoryScene extends Phaser.Scene {
 
     // 记忆场景特殊色调
     this.cameras.main.setBackgroundColor('#1c1c2e');
+    this.currentMemory = this.memoryId
+      ? memories.memories.find(m => m.id === this.memoryId)
+      : null;
 
     // 创建背景
     this.createMemoryBackground();
@@ -45,7 +53,7 @@ class MemoryScene extends Phaser.Scene {
       .setStrokeStyle(4, 0xa3be8c);
     memoryContainer.add(frame);
 
-    // 背景占位（占位图/后续替换）
+    // 背景色块（后续可替换为正式场景图）
     const bgPlaceholder = this.add.rectangle(0, 0, 540, 360, 0x3c3050)
       .setStrokeStyle(1, 0x5e5270);
     memoryContainer.add(bgPlaceholder);
@@ -61,7 +69,7 @@ class MemoryScene extends Phaser.Scene {
     memoryContainer.add(bgLabel);
 
     // 记忆标题
-    const title = this.add.text(width / 2, 50, this.currentMemory?.title || '???', {
+    const title = this.add.text(0, -248, this.currentMemory?.title || '未名回忆', {
       fontSize: '28px',
       fontFamily: 'Georgia, serif',
       color: '#b48ead',
@@ -89,14 +97,13 @@ class MemoryScene extends Phaser.Scene {
   }
 
   loadMemoryData() {
-    // 查找记忆数据
-    if (this.memoryId) {
+    if (this.memoryId && !this.currentMemory) {
       this.currentMemory = memories.memories.find(m => m.id === this.memoryId);
     }
 
     // 加载对话数据
     if (this.currentMemory && this.currentMemory.dialogueId) {
-      this.dialogueData = dialogues.dialogues[this.currentMemory.dialogueId];
+      this.dialogueData = memories.dialogues?.[this.currentMemory.dialogueId];
     }
 
     // 如果没有对话数据，使用默认
@@ -358,7 +365,20 @@ class MemoryScene extends Phaser.Scene {
 
     // 应用记忆奖励
     if (this.currentMemory && this.currentMemory.rewards) {
-      window.gameState.applyEffects(this.currentMemory.rewards);
+      const rewards = { ...this.currentMemory.rewards };
+      const inventorySystem = new InventorySystem(window.gameState);
+      const dailyLoop = new DailyLoopManager(window.gameState);
+      if (rewards.addKeyItem) {
+        inventorySystem.addKeyItem(rewards.addKeyItem, this.currentMemory.id);
+        dailyLoop.recordItemGained(rewards.addKeyItem, 1);
+        delete rewards.addKeyItem;
+      }
+      if (rewards.addItem) {
+        inventorySystem.addItem(rewards.addItem, 1, this.currentMemory.id);
+        dailyLoop.recordItemGained(rewards.addItem, 1);
+        delete rewards.addItem;
+      }
+      window.gameState.applyEffects(rewards);
       this.showRewardsPopup(this.currentMemory.rewards);
     }
 
@@ -440,6 +460,22 @@ class MemoryScene extends Phaser.Scene {
     // 解锁图鉴
     if (this.currentMemory && this.currentMemory.unlockCodex) {
       window.gameState.unlockMemory(this.currentMemory.id);
+      const memoryText = this.dialogueData?.lines?.map(line => line.text).join('\n') || this.currentMemory.description;
+      const spiritMemoryManager = new SpiritMemoryManager(window.gameState);
+      spiritMemoryManager.unlockSpiritMemory({
+        ...this.currentMemory,
+        memoryId: this.currentMemory.id,
+        memoryText,
+        hasViewed: true
+      });
+      spiritMemoryManager.markSpiritMemoryViewed(this.currentMemory.id);
+    }
+
+    if (this.completeCommissionId) {
+      const completed = new CommissionSystem(window.gameState).completeQuest(this.completeCommissionId);
+      if (completed) {
+        window.gameState.addSystemMessage(`委托「${this.currentMemory?.relatedCommissionTitle || this.completeCommissionId}」已完成。`);
+      }
     }
 
     // 直接切换场景，不用 camera fade

@@ -1,7 +1,7 @@
 import ArchiveManager from './ArchiveManager';
 
-const PLACEHOLDER_MEMORY_ID = 'placeholder_spirit_memory';
-const MEMORY_TEXT_PLACEHOLDER = '【古代精魂记忆文本待补充】';
+const DEFAULT_MEMORY_ID = 'default_spirit_memory';
+const MEMORY_TEXT_FALLBACK = '这段记忆仍很模糊，需要在之后的探索中逐渐看清。';
 
 export default class SpiritMemoryManager {
   constructor(gameState) {
@@ -12,18 +12,18 @@ export default class SpiritMemoryManager {
   ensureData() {
     if (!this.gameState.spiritMemories) {
       this.gameState.spiritMemories = {
-        [PLACEHOLDER_MEMORY_ID]: {
-          memoryId: PLACEHOLDER_MEMORY_ID,
-          title: '回忆占位',
-          npcId: 'placeholder_npc',
-          relatedNpcId: 'placeholder_npc',
-          relatedNpcName: '占位 NPC',
-          spiritName: '精魂名称待补充',
-          culturalTag: '待补充',
+        [DEFAULT_MEMORY_ID]: {
+          memoryId: DEFAULT_MEMORY_ID,
+          title: '未名回忆',
+          npcId: 'unknown_npc',
+          relatedNpcId: 'unknown_npc',
+          relatedNpcName: '相关来客',
+          spiritName: '未名精魂',
+          culturalTag: '中国传统文化',
           unlockProgress: 0,
           isUnlocked: false,
           hasViewed: false,
-          memoryText: MEMORY_TEXT_PLACEHOLDER,
+          memoryText: MEMORY_TEXT_FALLBACK,
           relatedKeyItemIds: []
         }
       };
@@ -34,7 +34,7 @@ export default class SpiritMemoryManager {
 
   addSpiritMemoryProgress(npcId, amount) {
     const memories = this.ensureData();
-    const memory = memories[PLACEHOLDER_MEMORY_ID];
+    const memory = memories[DEFAULT_MEMORY_ID];
     memory.npcId = npcId || memory.npcId;
     memory.relatedNpcId = memory.npcId;
     memory.unlockProgress = Math.min(100, Math.max(0, memory.unlockProgress + amount));
@@ -50,13 +50,13 @@ export default class SpiritMemoryManager {
 
   unlockSpiritMemory(memory) {
     const memories = this.ensureData();
-    const memoryId = memory.memoryId || memory.id || PLACEHOLDER_MEMORY_ID;
+    const memoryId = memory.memoryId || memory.id || DEFAULT_MEMORY_ID;
     const record = {
       ...memory,
       memoryId,
       isUnlocked: true,
       hasViewed: Boolean(memory.hasViewed),
-      memoryText: memory.memoryText || MEMORY_TEXT_PLACEHOLDER,
+      memoryText: memory.memoryText || MEMORY_TEXT_FALLBACK,
       unlockedDay: memory.unlockedDay || this.gameState.day || 1
     };
 
@@ -65,7 +65,7 @@ export default class SpiritMemoryManager {
     return record;
   }
 
-  markSpiritMemoryViewed(memoryId = PLACEHOLDER_MEMORY_ID) {
+  markSpiritMemoryViewed(memoryId = DEFAULT_MEMORY_ID) {
     const memories = this.ensureData();
     const memory = memories[memoryId];
     if (!memory) return null;

@@ -2,11 +2,11 @@ import ItemSystem from './ItemSystem';
 import commissionsData from '../data/commissions.json';
 import { ALCHEMY_RECIPES, getAlchemyMaterialShape } from './AlchemyMaterialShapeConfig';
 
-const MEMORY_TEXT_PLACEHOLDER = '【古代精魂记忆文本待补充】';
-const MATERIAL_TEXT_PLACEHOLDER = '【素材说明待补充】';
-const PRODUCT_TEXT_PLACEHOLDER = '【产物说明待补充】';
-const QUEST_TEXT_PLACEHOLDER = '【委托描述待补充】';
-const KEY_ITEM_TEXT_PLACEHOLDER = '【关键物品说明待补充】';
+const MEMORY_TEXT_FALLBACK = '这段记忆仍很模糊，需要在之后的探索中逐渐看清。';
+const MATERIAL_TEXT_FALLBACK = '这份素材的来历已经记录在万事屋档案中。';
+const PRODUCT_TEXT_FALLBACK = '这件炼金产物已经记录在万事屋档案中。';
+const QUEST_TEXT_FALLBACK = '这项委托已经归档，详细经过可在委托记录中回顾。';
+const KEY_ITEM_TEXT_FALLBACK = '这件关键物品与万事屋的旧事有关。';
 
 const QUALITY_RANK = {
   poor: 1,
@@ -40,7 +40,7 @@ const ACHIEVEMENT_DEFINITIONS = {
   }
 };
 
-function safeText(value, fallback = '待补充') {
+function safeText(value, fallback = '尚未记录') {
   if (value === null || value === undefined || value === '') {
     return fallback;
   }
@@ -92,7 +92,7 @@ export default class ArchiveManager {
       materialId: itemId,
       materialName: safeText(item.name || item.itemName || itemData.name, itemId),
       materialType: '炼金素材',
-      description: safeText(item.description || item.itemDescription || itemData.description, MATERIAL_TEXT_PLACEHOLDER),
+      description: safeText(item.description || item.itemDescription || itemData.description, MATERIAL_TEXT_FALLBACK),
       shapeCells: shape ? shape.footprintCells.map(cell => [...cell]) : [],
       firstUnlockedDay: this.getCurrentDay(),
       discoveredFrom: discoveredFrom || item.sourceNpcId || 'inventory',
@@ -126,7 +126,7 @@ export default class ArchiveManager {
     const record = {
       productBaseId,
       productName: finalProductName,
-      description: safeText(recipe?.description, PRODUCT_TEXT_PLACEHOLDER),
+      description: safeText(recipe?.description, PRODUCT_TEXT_FALLBACK),
       firstCraftedDay: this.getCurrentDay(),
       firstCraftedQuality: normalizedQuality,
       bestQualityCrafted: normalizedQuality,
@@ -172,14 +172,14 @@ export default class ArchiveManager {
       questId,
       questName: safeText(quest.title || quest.questName, questId),
       sourceNpcId: quest.clientNpcId || quest.sourceNpcId || '',
-      sourceNpcName: safeText(quest.sourceNpcName || quest.clientNpcName, '待补充'),
-      questType: quest.type || quest.questType || '待设定',
+      sourceNpcName: safeText(quest.sourceNpcName || quest.clientNpcName, '委托人'),
+      questType: quest.type || quest.questType || '未记录',
       completedDay: this.getCurrentDay(),
       rewardMoney: reward.funds || quest.rewardMoney || 0,
       rewardPopularity: reward.popularity || quest.rewardPopularity || 0,
       deliveredItemIds: options.deliveredItemIds || quest.deliveredItemIds || [],
       relatedMemoryIds: quest.relatedMemoryIds || [],
-      description: safeText(quest.description || quest.questDescription, QUEST_TEXT_PLACEHOLDER)
+      description: safeText(quest.description || quest.questDescription, QUEST_TEXT_FALLBACK)
     };
 
     archiveData.completedQuests[questId] = record;
@@ -194,14 +194,14 @@ export default class ArchiveManager {
     const existing = archiveData.spiritMemories[memoryId] || {};
     const record = {
       memoryId,
-      title: safeText(memory.title, '回忆占位'),
+      title: safeText(memory.title, '未命名回忆'),
       relatedNpcId: memory.relatedNpcId || memory.npcId || '',
-      relatedNpcName: safeText(memory.relatedNpcName || memory.npcName, '待补充'),
-      spiritName: safeText(memory.spiritName, '精魂名称待补充'),
-      culturalTag: safeText(memory.culturalTag, '待补充'),
+      relatedNpcName: safeText(memory.relatedNpcName || memory.npcName, '相关来客'),
+      spiritName: safeText(memory.spiritName, '未名精魂'),
+      culturalTag: safeText(memory.culturalTag, '中国传统文化'),
       isUnlocked: memory.isUnlocked !== false,
       hasViewed: Boolean(memory.hasViewed || existing.hasViewed),
-      memoryText: safeText(memory.memoryText, MEMORY_TEXT_PLACEHOLDER),
+      memoryText: safeText(memory.memoryText, MEMORY_TEXT_FALLBACK),
       unlockedDay: memory.unlockedDay || existing.unlockedDay || this.getCurrentDay(),
       relatedKeyItemIds: memory.relatedKeyItemIds || existing.relatedKeyItemIds || []
     };
@@ -232,12 +232,12 @@ export default class ArchiveManager {
     const record = {
       keyItemId,
       keyItemName: safeText(keyItem.keyItemName || keyItem.name || keyItem.itemName || itemData.name, keyItemId),
-      description: safeText(keyItem.description || keyItem.itemDescription || itemData.description, KEY_ITEM_TEXT_PLACEHOLDER),
+      description: safeText(keyItem.description || keyItem.itemDescription || itemData.description, KEY_ITEM_TEXT_FALLBACK),
       sourceType: keyItem.sourceType || 'debug',
       sourceId: keyItem.sourceId || keyItem.sourceNpcId || '',
-      sourceName: safeText(keyItem.sourceName || keyItem.sourceNpcName, '待补充'),
+      sourceName: safeText(keyItem.sourceName || keyItem.sourceNpcName, '未知来源'),
       acquiredDay: keyItem.acquiredDay || keyItem.obtainedAt || this.getCurrentDay(),
-      culturalTag: safeText(keyItem.culturalTag, '待补充'),
+      culturalTag: safeText(keyItem.culturalTag, '万事屋旧事'),
       relatedMemoryId: keyItem.relatedMemoryId || '',
       isStoryCritical: Boolean(keyItem.isStoryCritical),
       isUnlocked: true
@@ -397,6 +397,6 @@ export default class ArchiveManager {
   }
 
   getQualityName(quality) {
-    return QUALITY_NAME[quality] || quality || '待补充';
+    return QUALITY_NAME[quality] || quality || '未记录';
   }
 }

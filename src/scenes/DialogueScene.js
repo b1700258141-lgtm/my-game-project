@@ -92,7 +92,7 @@ class DialogueScene extends Phaser.Scene {
       .setStrokeStyle(3, 0x4c566a);
     this.portraitContainer.add(portraitBg);
 
-    // 立绘占位
+    // 立绘基础底板
     this.portraitImage = this.add.rectangle(0, 0, 130, 180, 0x3b4252)
       .setStrokeStyle(2, 0x4c566a);
     this.portraitContainer.add(this.portraitImage);

@@ -2,8 +2,8 @@
   "endings": [
     {
       "id": "ending_normal_1",
-      "title": "【占位】普通结局A",
-      "description": "【占位】普通结局的描述，具体内容由用户填写。",
+      "title": "平稳经营之路",
+      "description": "万事屋在街坊的委托中慢慢站稳脚跟，仍有许多旧事等待以后翻开。",
       "type": "normal",
       "priority": 1,
       "isTrueEnding": false,
@@ -17,8 +17,8 @@
     },
     {
       "id": "ending_normal_2",
-      "title": "【占位】普通结局B",
-      "description": "【占位】普通结局的描述，具体内容由用户填写。",
+      "title": "街坊信任之路",
+      "description": "越来越多现代来客记住了这间店，万事屋成为街角让人安心的去处。",
       "type": "normal",
       "priority": 1,
       "isTrueEnding": false,
@@ -32,8 +32,8 @@
     },
     {
       "id": "ending_family_truth",
-      "title": "【占位】家族真相结局",
-      "description": "【占位】收集齐家族纹章碎片后解锁的特殊结局。具体内容由用户填写。",
+      "title": "家族真相线索",
+      "description": "收集齐几枚纹章线索后，万事屋旧门牌背后的家族往事露出轮廓。",
       "type": "special",
       "priority": 10,
       "isTrueEnding": false,
@@ -50,8 +50,8 @@
     },
     {
       "id": "ending_mystery_traces",
-      "title": "【占位】神秘痕迹结局",
-      "description": "【占位】追寻神秘线索后解锁的结局。具体内容由用户填写。",
+      "title": "旧痕追寻线索",
+      "description": "油印纸条与旧街景照片指向同一段被藏起的旧街往事。",
       "type": "special",
       "priority": 8,
       "isTrueEnding": false,
@@ -68,8 +68,8 @@
     },
     {
       "id": "ending_true",
-      "title": "【占位】真结局",
-      "description": "【占位】达成所有条件后解锁的真结局。具体内容由用户填写。",
+      "title": "万事屋传承线索",
+      "description": "当委托、记忆与关键物品逐渐拼合，万事屋真正的传承方向开始清晰。",
       "type": "true",
       "priority": 100,
       "isTrueEnding": true,

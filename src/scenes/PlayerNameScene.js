@@ -56,7 +56,7 @@ class PlayerNameScene extends Phaser.Scene {
     this.nameInput = this.add.dom(width / 2, height / 2 - 8, 'input', inputStyle);
     this.nameInput.node.setAttribute('type', 'text');
     this.nameInput.node.setAttribute('maxlength', '12');
-    this.nameInput.node.setAttribute('placeholder', '主角名字');
+    this.nameInput.node.setAttribute('aria-label', '主角名字');
     this.nameInput.node.value = window.gameState.getPlayerName?.() || '';
 
     this.submitButton = this.createButton(width / 2, height / 2 + 72, '开始经营万事屋', () => this.confirmName());

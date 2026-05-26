@@ -21,7 +21,7 @@ export default class ItemSystem {
   // 获取物品描述
   getItemDescription(itemId) {
     const item = this.getItem(itemId);
-    return item ? item.description : '暂无描述';
+    return item ? item.description : '尚未记录说明';
   }
 
   // 获取物品类型

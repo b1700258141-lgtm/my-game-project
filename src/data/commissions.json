@@ -19,6 +19,8 @@
       "requiredFlags": [],
       "requiredItemText": "交付消食片 x1",
       "completionMethodText": "提交背包中的消食片 x1，根据品质判定完成档位",
+      "submitSuccessText": "厨师收下消食片，连声说今晚终于不用扶着灶台试菜了。",
+      "emptySubmitMessage": "背包中没有可提交的消食片",
       "requiredAnyItemIds": [
         "digestive_tablet_perfect",
         "digestive_tablet_excellent",
@@ -56,8 +58,11 @@
       "startDialogueId": "commission_ring_start",
       "requiredFlags": [],
       "requiredItemText": "搞清楚【老旧的戒指】的来历",
-      "completionMethodText": "点击进行任务，看完剧情后完成",
-      "taskText": "点击进行任务后进入剧情，剧情内容待定",
+      "completionMethodText": "前往查看戒指中残留的精魂记忆",
+      "taskText": "进入戒指中的古代精魂记忆，理解它被传下来的原因",
+      "memoryId": "ring_ancient_memory",
+      "relatedMemoryIds": ["ring_ancient_memory"],
+      "taskSuccessText": "戒指里的记忆逐渐安静下来，委托人也终于知道这件传家宝为何被一代代留下。",
       "reward": {
         "funds": 1000,
         "popularity": 300
@@ -77,13 +82,30 @@
       "type": "longTerm",
       "startDay": 2,
       "expireDay": 25,
-      "description": "【占位】一位老人家希望能找到老照片中的人物。",
+      "availableDaysBeforeAccept": 24,
+      "deadlineDaysAfterAccept": 7,
+      "expireText": "剩余时间：24 天",
+      "deadlineText": "完成限时：7 天",
+      "description": "一位退休社区医生带来旧照片，想确认照片背后那位无名医者的故事。",
       "status": "available",
       "startDialogueId": "commission_photo_start",
       "requiredFlags": [],
+      "requiredItemText": "读懂旧照片背后的记忆",
+      "completionMethodText": "前往查看旧照片中残留的精魂记忆",
+      "taskText": "进入旧照片中的古代精魂记忆，寻找那位医者留下的线索",
+      "memoryId": "photo_memory",
+      "relatedMemoryIds": ["photo_memory"],
+      "taskSuccessText": "照片中的医者记忆被整理进档案，老人终于能把这段故事讲给家人听。",
       "reward": {
-        "funds": 60,
-        "popularity": 8
+        "funds": 900,
+        "popularity": 260
+      },
+      "completionTiers": {
+        "perfect": {
+          "condition": "只要点击前往完成并看完精魂记忆，即为完美达成",
+          "funds": 900,
+          "popularity": 260
+        }
       }
     },
     {
@@ -105,6 +127,7 @@
       "requiredFlags": [],
       "requiredItemText": "找到小黑",
       "completionMethodText": "选择寻找方式：花费资金委托附近的人，或用招财丸引诱小黑",
+      "taskSuccessText": "小黑被找回来了，女孩抱着猫站在门口道谢，猫尾巴还卷着一点招财丸的气味。",
       "reward": {
         "funds": 400,
         "popularity": 150
@@ -150,6 +173,7 @@
       "requiredFlags": [],
       "requiredItemText": "处理便利店仓库里的奇怪味道",
       "completionMethodText": "选择一种方式处理仓库异味",
+      "taskSuccessText": "便利店仓库的味道终于散去，夜班店员把货架补齐后准点下了班。",
       "reward": { "funds": 250, "popularity": 80 },
       "taskOptions": [
         {
@@ -194,6 +218,8 @@
       "requiredFlags": [],
       "requiredItemText": "交付安神香 x1",
       "completionMethodText": "提交背包中的安神香 x1",
+      "submitSuccessText": "广告策划小心收好安神香，说今晚终于能把会议纪要从梦里请出去。",
+      "emptySubmitMessage": "背包中没有可提交的安神香",
       "requiredAnyItemIds": ["calming_incense_perfect", "calming_incense_excellent", "calming_incense_normal", "calming_incense_poor"],
       "reward": { "funds": 350, "popularity": 120 },
       "qualityRewards": {
@@ -223,6 +249,8 @@
       "requiredFlags": [],
       "requiredItemText": "交付中药粉末 x1",
       "completionMethodText": "提交背包中的中药粉末 x1",
+      "submitSuccessText": "药房店员把中药粉末装进展示瓶，认真记下了万事屋的名字。",
+      "emptySubmitMessage": "背包中没有可提交的中药粉末",
       "requiredAnyItemIds": ["herbal_powder_perfect", "herbal_powder_excellent", "herbal_powder_normal", "herbal_powder_poor"],
       "reward": { "funds": 300, "popularity": 100 },
       "qualityRewards": {
@@ -252,6 +280,7 @@
       "requiredFlags": [],
       "requiredItemText": "处理车内异味",
       "completionMethodText": "提交背包中的驱秽粉 x1",
+      "submitSuccessText": "司机试着在车里撒下驱秽粉，终于不用再向乘客解释昨晚那袋熟食了。",
       "emptySubmitMessage": "背包中没有可提交的驱秽粉",
       "requiredAnyItemIds": ["cleansing_powder_perfect", "cleansing_powder_excellent", "cleansing_powder_normal", "cleansing_powder_poor"],
       "reward": { "funds": 280, "popularity": 90 },
@@ -282,6 +311,7 @@
       "requiredFlags": [],
       "requiredItemText": "帮小饭馆吸引客人",
       "completionMethodText": "选择一种方式帮小饭馆招揽客人",
+      "taskSuccessText": "小饭馆门口重新热闹起来，老板隔着玻璃冲你比了个放心的手势。",
       "reward": { "funds": 400, "popularity": 130 },
       "taskOptions": [
         {
@@ -326,6 +356,7 @@
       "requiredFlags": [],
       "requiredItemText": "处理资料室里的奇怪异响",
       "completionMethodText": "选择一种方式处理资料室异响",
+      "taskSuccessText": "资料室恢复安静，律师助理说以后加班经过那里，至少不用小跑了。",
       "reward": { "funds": 380, "popularity": 120 },
       "taskOptions": [
         {
@@ -354,18 +385,35 @@
     },
     {
       "id": "commission_004",
-      "title": "古董修复",
+      "title": "停摆的老钟",
       "clientNpcId": "guest_clockmaker",
-      "type": "shortTerm",
+      "type": "longTerm",
       "startDay": 3,
-      "expireDay": 5,
-      "description": "【占位】古董店老板有一件需要修复的老物件。",
+      "expireDay": 28,
+      "availableDaysBeforeAccept": 26,
+      "deadlineDaysAfterAccept": 7,
+      "expireText": "剩余时间：26 天",
+      "deadlineText": "完成限时：7 天",
+      "description": "钟表修理店主带来一只总在子夜停摆的老钟，希望万事屋找出它不肯继续走下去的原因。",
       "status": "available",
       "startDialogueId": "commission_clock_start",
       "requiredFlags": [],
+      "requiredItemText": "理解老钟停摆的原因",
+      "completionMethodText": "前往查看老钟中残留的精魂记忆",
+      "taskText": "进入老钟里的古代精魂记忆，找到它守住的约定",
+      "memoryId": "clock_memory",
+      "relatedMemoryIds": ["clock_memory"],
+      "taskSuccessText": "老钟重新走动，修理店主听见第一声报时后沉默了很久。",
       "reward": {
-        "funds": 100,
-        "popularity": 12
+        "funds": 1100,
+        "popularity": 320
+      },
+      "completionTiers": {
+        "perfect": {
+          "condition": "只要点击前往完成并看完精魂记忆，即为完美达成",
+          "funds": 1100,
+          "popularity": 320
+        }
       }
     }
   ],

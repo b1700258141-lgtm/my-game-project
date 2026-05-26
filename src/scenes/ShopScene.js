@@ -58,6 +58,16 @@ class ShopScene extends Phaser.Scene {
     // 成就系统
     this.achievementManager = null;
     this.achievementToastUI = null;
+    this.lanternDay = null;
+    this.lanternNight = null;
+    this.collisionZones = [];
+    this.furnitureSprites = {};
+    this.roomBounds = {
+      left: 48,
+      top: 64,
+      width: 704,
+      height: 480
+    };
   }
 
   create() {
@@ -85,6 +95,9 @@ class ShopScene extends Phaser.Scene {
 
     // 创建可交互物体
     this.createInteractables();
+
+    // 绘制场景家具和装饰贴图
+    this.drawFurniture();
 
     // 创建来访 NPC
     this.createVisitorNPCs();
@@ -242,6 +255,12 @@ class ShopScene extends Phaser.Scene {
 
     const overlay = this.timeManager.getDayNightOverlay();
     this.dayNightOverlay.setFillStyle(overlay.color, overlay.alpha);
+
+    if (this.lanternDay && this.lanternNight) {
+      const isNight = this.timeManager.getDayPhase() === 'night';
+      this.lanternDay.setVisible(!isNight);
+      this.lanternNight.setVisible(isNight);
+    }
   }
 
   // ========== 背景 ==========
@@ -249,26 +268,430 @@ class ShopScene extends Phaser.Scene {
   createBackground() {
     const width = gameConfig.display.width;
     const height = gameConfig.display.height;
+    const room = this.roomBounds;
+    const roomRight = room.left + room.width;
+    const roomBottom = room.top + room.height;
+    const wallHeight = 128;
+    const wallBottom = room.top + wallHeight;
 
-    this.add.rectangle(width / 2, height / 2, width, height, 0x2e3440);
+    this.add.rectangle(width / 2, height / 2, width, height, 0x18131a);
+    this.add.rectangle(room.left + room.width / 2, room.top + room.height / 2, room.width + 16, room.height + 16, 0x2b1d1b)
+      .setStrokeStyle(4, 0x6b3f25, 0.9);
 
-    this.add.rectangle(width / 2, 30, width, 60, 0x3b4252);
-    this.add.rectangle(width / 2, height - 30, width, 60, 0x3b4252);
-    this.add.rectangle(30, height / 2, 60, height, 0x3b4252);
-    this.add.rectangle(width - 30, height / 2, 60, height, 0x3b4252);
+    this.add.tileSprite(room.left, room.top, room.width, wallHeight, 'sceneWarmWall')
+      .setOrigin(0)
+      .setDepth(0);
+    this.add.tileSprite(room.left, wallBottom, room.width, room.height - wallHeight, 'sceneWoodFloor')
+      .setOrigin(0)
+      .setDepth(0);
 
-    for (let x = 60; x < width - 60; x += 40) {
-      for (let y = 60; y < height - 60; y += 40) {
-        this.add.rectangle(x, y, 38, 38).setStrokeStyle(1, 0x4c566a, 0.3);
+    this.add.rectangle(room.left + room.width / 2, room.top + 8, room.width, 16, 0x4b2d1a, 0.24)
+      .setDepth(1);
+    this.add.rectangle(room.left + room.width / 2, wallBottom - 5, room.width, 10, 0x7a482d, 0.78)
+      .setDepth(1);
+    this.add.rectangle(room.left + room.width / 2, wallBottom + 2, room.width, 4, 0x3b2418, 0.35)
+      .setDepth(1);
+    this.add.rectangle(room.left + room.width / 2, roomBottom - 8, room.width, 16, 0x3d2418, 0.8);
+    this.add.rectangle(room.left + 8, room.top + room.height / 2, 16, room.height, 0x3d2418, 0.75);
+    this.add.rectangle(roomRight - 8, room.top + room.height / 2, 16, room.height, 0x3d2418, 0.75);
+
+    this.createCollisionBounds();
+    return;
+    /*
+
+    const W = 800, H = 600, T = 32;
+    // 房间：左48 上64 宽704 高480 — 22列 x 15行 tile
+    const rx = 48, ry = 64, rw = 704, rh = 480;
+    const cols = Math.floor(rw / T); // 22
+    const rows = Math.floor(rh / T); // 15
+    const wallRows = 4; // 上方4行是墙壁
+
+    this.add.rectangle(W / 2, H / 2, W, H, 0x1a1520);
+
+    const atlas = 'tilesAtlas32';
+    for (let c = 0; c < cols; c++) {
+      for (let r = 0; r < rows; r++) {
+        const x = rx + c * T;
+        const y = ry + r * T;
+        if (r < wallRows) {
+          const frame = (r + c) % 3; // 墙壁 frame 0-2
+          this.add.image(x + T / 2, y + T / 2, atlas, frame).setDepth(0);
+        } else {
+          const frame = 6 + ((r + c) % 2); // 地板 frame 6-7
+          this.add.image(x + T / 2, y + T / 2, atlas, frame).setDepth(0);
+        }
       }
     }
 
-    this.add.rectangle(400, 80, 150, 80, 0x88c0d0, 0.2).setStrokeStyle(2, 0x4c566a);
-    this.add.text(400, 80, '窗', {
-      fontSize: '10px',
-      fontFamily: 'Courier New',
-      color: '#4c566a'
-    }).setOrigin(0.5);
+    // 墙壁下沿 + 房间边框暗色条
+    this.add.rectangle(rx + rw / 2, ry + wallRows * T, rw, 6, 0x3b2418, 0.65).setDepth(1);
+    this.add.rectangle(rx + 8, ry + rh / 2, 16, rh, 0x2b1d1b, 0.55).setDepth(1);
+    this.add.rectangle(rx + rw - 8, ry + rh / 2, 16, rh, 0x2b1d1b, 0.55).setDepth(1);
+    this.add.rectangle(rx + rw / 2, ry + rh - 6, rw, 12, 0x2b1d1b, 0.55).setDepth(1);
+  }
+
+  */
+  }
+
+  createCollisionBounds() {
+    const room = this.roomBounds;
+    const bottom = room.top + room.height;
+    const right = room.left + room.width;
+
+    this.addCollisionZone(room.left + room.width / 2, room.top + 64, room.width, 128, 'wall');
+    this.addCollisionZone(room.left + 16, room.top + room.height / 2, 32, room.height, 'left wall');
+    this.addCollisionZone(right - 16, room.top + room.height / 2, 32, room.height, 'right wall');
+    this.addCollisionZone(room.left + 16, bottom - 16, 32, 32, 'bottom wall');
+    this.addCollisionZone(476, bottom - 16, 552, 32, 'bottom wall');
+  }
+
+  drawFurniture() {
+    const furniture = [
+      {
+        id: 'door',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/door.png',
+        key: 'craftDoor',
+        x: 108,
+        y: 536,
+        displayWidth: 84,
+        displayHeight: 80,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 3,
+        layer: 'object',
+        collision: false,
+        interaction: 'door'
+      },
+      {
+        id: 'fireplace',
+        imagePath: '/assets/scene-pieces/fireplace_fancy_full2.png',
+        key: 'sceneFireplace',
+        x: 400,
+        y: 188,
+        displayWidth: 104,
+        displayHeight: 104,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'wall',
+        collision: true,
+        interaction: null
+      },
+      {
+        id: 'window',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/window.png',
+        key: 'craftWindow',
+        x: 508,
+        y: 118,
+        displayWidth: 60,
+        displayHeight: 37,
+        anchor: { x: 0.5, y: 0.5 },
+        zIndex: 2,
+        layer: 'wall',
+        collision: false,
+        interaction: null
+      },
+      {
+        id: 'painting',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/painting.png',
+        key: 'craftPainting',
+        x: 240,
+        y: 118,
+        displayWidth: 142,
+        displayHeight: 25,
+        anchor: { x: 0.5, y: 0.5 },
+        zIndex: 2,
+        layer: 'wall',
+        collision: false,
+        interaction: null
+      },
+      {
+        id: 'quest_board',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/quest.png',
+        key: 'craftQuest',
+        x: 575,
+        y: 132,
+        displayWidth: 42,
+        displayHeight: 47,
+        anchor: { x: 0.5, y: 0.5 },
+        zIndex: 2,
+        layer: 'wall',
+        collision: false,
+        interaction: 'questLog'
+      },
+      {
+        id: 'alchemy_table',
+        imagePath: '/assets/processed/furniture/cauldron_pot-stpat.png',
+        key: 'craftCauldron',
+        x: 154,
+        y: 246,
+        displayWidth: 66,
+        displayHeight: 66,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 3,
+        layer: 'object',
+        collision: true,
+        interaction: 'alchemy'
+      },
+      {
+        id: 'clock',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/clock.png',
+        key: 'craftClock',
+        x: 92,
+        y: 352,
+        displayWidth: 34,
+        displayHeight: 92,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: null
+      },
+      {
+        id: 'fridge',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/fridge.png',
+        key: 'craftFridge',
+        x: 214,
+        y: 486,
+        displayWidth: 38,
+        displayHeight: 78,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: 'fridge'
+      },
+      {
+        id: 'carpet',
+        imagePath: '/assets/processed/furniture/carpet.png',
+        key: 'craftCarpet',
+        x: 400,
+        y: 328,
+        displayWidth: 122,
+        displayHeight: 162,
+        anchor: { x: 0.5, y: 0.5 },
+        zIndex: 1,
+        layer: 'floor',
+        collision: false,
+        interaction: null
+      },
+      {
+        id: 'desk',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/desk.png',
+        key: 'craftDesk',
+        x: 400,
+        y: 528,
+        displayWidth: 104,
+        displayHeight: 78,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 3,
+        layer: 'object',
+        collision: true,
+        interaction: 'counter'
+      },
+      {
+        id: 'book',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/book.png',
+        key: 'craftBook',
+        x: 662,
+        y: 284,
+        displayWidth: 54,
+        displayHeight: 82,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: 'codex'
+      },
+      {
+        id: 'decorate2',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/decorate2.png',
+        key: 'craftDecorate2',
+        x: 604,
+        y: 348,
+        displayWidth: 38,
+        displayHeight: 52,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: null
+      },
+      {
+        id: 'decorate1',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/decorate1.png',
+        key: 'craftDecorate1',
+        x: 254,
+        y: 410,
+        displayWidth: 28,
+        displayHeight: 56,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: null
+      },
+      {
+        id: 'sofa1',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/sofa1.png',
+        key: 'craftSofa1',
+        x: 536,
+        y: 438,
+        displayWidth: 32,
+        displayHeight: 50,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: null
+      },
+      {
+        id: 'sofa2',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/sofa2.png',
+        key: 'craftSofa2',
+        x: 610,
+        y: 404,
+        displayWidth: 58,
+        displayHeight: 34,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: null
+      },
+      {
+        id: 'bed',
+        imagePath: '/assets/scene-pieces/bed_fancy_brown.png',
+        key: 'sceneBedImage',
+        x: 672,
+        y: 514,
+        displayWidth: 78,
+        displayHeight: 104,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 2,
+        layer: 'object',
+        collision: true,
+        interaction: 'bed'
+      },
+      {
+        id: 'lantern1',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/lantern1.png',
+        key: 'craftLantern1',
+        x: 672,
+        y: 390,
+        displayWidth: 22,
+        displayHeight: 56,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 3,
+        layer: 'object',
+        collision: false,
+        interaction: null
+      },
+      {
+        id: 'lantern2',
+        imagePath: '/assets/craft_furniture_transparent/source_1x/lantern2.png',
+        key: 'craftLantern2',
+        x: 672,
+        y: 390,
+        displayWidth: 20,
+        displayHeight: 54,
+        anchor: { x: 0.5, y: 1 },
+        zIndex: 3,
+        layer: 'object',
+        collision: false,
+        interaction: null
+      }
+    ];
+
+    this.furnitureConfig = furniture;
+    this.furnitureSprites = {};
+    this.add.rectangle(154, 252, 94, 30, 0x4a2f21, 0.45).setDepth(2);
+
+    furniture.forEach((item) => {
+      const sprite = this.add.image(item.x, item.y, item.key)
+        .setOrigin(item.anchor.x, item.anchor.y)
+        .setDisplaySize(item.displayWidth, item.displayHeight)
+        .setDepth(item.zIndex);
+      sprite.sceneObjectData = item;
+      this.furnitureSprites[item.id] = sprite;
+      if (item.collision && !item.interaction) {
+        const cx = item.x + (0.5 - item.anchor.x) * item.displayWidth;
+        const cy = item.y + (0.5 - item.anchor.y) * item.displayHeight;
+        this.addCollisionZone(cx, cy, item.displayWidth * 0.8, item.displayHeight * 0.65, item.id);
+      }
+    });
+
+    this.add.sprite(400, 164, 'srwFire2', 0)
+      .setScale(0.6)
+      .setDepth(3)
+      .play('srwFire2Loop');
+    this.add.sprite(154, 218, 'srwFire', 0)
+      .setScale(0.58)
+      .setDepth(4)
+      .play('srwFireLoop');
+
+    this.lanternDay = this.furnitureSprites.lantern1?.setVisible(true) || null;
+    this.lanternNight = this.furnitureSprites.lantern2?.setVisible(false) || null;
+    return;
+    /*
+
+    const T = 32;
+    // 辅助：按 tile 尺寸创建家具贴图
+    const spr = (x, y, key, tw, th, originX, originY, depth) =>
+      this.add.image(x, y, key)
+        .setOrigin(originX, originY)
+        .setDisplaySize(tw * T, th * T)
+        .setDepth(depth);
+
+    // 门（左下，2x3 格）
+    spr(100, 538, 'furnitureDoor', 2, 3, 0.5, 1, 3);
+
+    // 冰箱（左下区域，2x2 格）
+    spr(210, 470, 'furnitureFridge', 2, 2, 0.5, 1, 2);
+
+    // 落地钟（左侧墙面，1x3 格）
+    spr(80, 320, 'furnitureClock', 1, 3, 0.5, 0.5, 2);
+
+    // 炼金釜（左上，2x2 格）
+    spr(180, 260, 'furnitureCauldron', 2, 2, 0.5, 0.8, 3);
+
+    // 窗户（后墙上，2x1.5 格）
+    spr(460, 68, 'furnitureWindow', 2, 2, 0.5, 0, 2);
+
+    // 画（后墙，2x1 格）
+    spr(240, 80, 'furniturePainting', 2, 1, 0.5, 0, 2);
+
+    // 委托板（后墙右侧，2x2 格）
+    spr(600, 68, 'furnitureQuest', 2, 2, 0.5, 0, 2);
+
+    // 装饰品1（1x1 格）
+    spr(300, 175, 'furnitureDecorate1', 1, 1, 0.5, 0.5, 2);
+
+    // 地球仪（书架附近，1x1 格）
+    spr(610, 320, 'furnitureDecorate2', 1, 1, 0.5, 0.5, 2);
+
+    // 地毯（中央，5x4 格）
+    spr(400, 300, 'furnitureCarpet', 5, 4, 0.5, 0.5, 1);
+
+    // 柜台（中央偏下，4x2 格）
+    spr(400, 445, 'furnitureDesk', 4, 2, 0.5, 1, 3);
+
+    // 沙发1（柜台右，2x1 格）
+    spr(530, 445, 'furnitureSofa1', 2, 1, 0.5, 1, 2);
+
+    // 沙发2（沙发1右上方，2x1 格）
+    spr(610, 415, 'furnitureSofa2', 2, 1, 0.5, 1, 2);
+
+    // 书架（右上，2x3 格）
+    spr(690, 245, 'furnitureBook', 2, 3, 0.5, 1, 2);
+
+    // 床（右下，3x2 格）
+    spr(690, 515, 'sceneBed', 3, 2, 0.5, 1, 2);
+
+    // 灯笼（床上方，1x1 格，昼夜切换）
+    this.lanternDay = spr(690, 445, 'furnitureLantern1', 1, 1, 0.5, 0.5, 3).setVisible(true);
+    this.lanternNight = spr(690, 445, 'furnitureLantern2', 1, 1, 0.5, 0.5, 3).setVisible(false);
+  }
+
+  */
   }
 
   createInteractables() {
@@ -281,13 +704,15 @@ class ShopScene extends Phaser.Scene {
         objConfig.width,
         objConfig.height,
         objConfig.color,
-        0.9
-      ).setStrokeStyle(2, objConfig.borderColor)
+        0
+      ).setStrokeStyle(2, objConfig.borderColor, 0)
        .setInteractive({ useHandCursor: true });
+      obj.setDepth(4);
 
       obj.interactionData = {
         id: objConfig.id,
         name: objConfig.name,
+        promptText: objConfig.promptText || objConfig.name,
         type: objConfig.interactionType,
         description: objConfig.description,
         borderColor: objConfig.borderColor,
@@ -296,13 +721,15 @@ class ShopScene extends Phaser.Scene {
 
       obj.on('pointerover', () => {
         if (!this.nearbyObject || this.nearbyObject !== obj) {
-          obj.setStrokeStyle(3, shopObjects.colors.highlight);
+          obj.setStrokeStyle(3, shopObjects.colors.highlight, 0.95);
+          obj.setFillStyle(objConfig.borderColor, 0.08);
         }
       });
 
       obj.on('pointerout', () => {
         if (this.nearbyObject !== obj) {
-          obj.setStrokeStyle(2, objConfig.borderColor);
+          obj.setStrokeStyle(2, objConfig.borderColor, 0);
+          obj.setFillStyle(objConfig.borderColor, 0);
         }
       });
 
@@ -318,7 +745,24 @@ class ShopScene extends Phaser.Scene {
       });
 
       this.interactables.push(obj);
+      if (objConfig.collides) {
+        this.addCollisionZone(
+          objConfig.x,
+          objConfig.y,
+          objConfig.width,
+          objConfig.height,
+          objConfig.name
+        );
+      }
     });
+  }
+
+  addCollisionZone(x, y, width, height, label) {
+    const zone = this.add.rectangle(x, y, width, height, 0xff0000, 0).setVisible(false);
+    zone.collisionLabel = label;
+    this.physics.add.existing(zone, true);
+    this.collisionZones.push(zone);
+    return zone;
   }
 
   createVisitorNPCs() {
@@ -407,7 +851,7 @@ class ShopScene extends Phaser.Scene {
     const startY = savedPosition.y;
     const size = gameConfig.player.size;
 
-    this.player = this.add.container(startX, startY);
+    this.player = this.add.container(startX, startY).setDepth(2.6);
 
     const playerBody = this.add.rectangle(0, 0, size, size, 0x88c0d0)
       .setStrokeStyle(2, 0x5e81ac);
@@ -424,7 +868,10 @@ class ShopScene extends Phaser.Scene {
     this.player.body.setOffset(-size / 2 + 4, -size / 2 + 4);
     this.player.body.setCollideWorldBounds(true);
 
-    this.physics.world.setBounds(60, 60, 680, 480);
+    this.physics.world.setBounds(60, 96, 680, 432);
+    this.collisionZones.forEach((zone) => {
+      this.physics.add.collider(this.player, zone);
+    });
   }
 
   createUI() {
@@ -609,7 +1056,9 @@ class ShopScene extends Phaser.Scene {
       this.interactionPrompt.setVisible(true);
       this.interactionPrompt.setPosition(this.player.x, this.player.y - 50);
 
-      const name = closestObject.npcData ? closestObject.npcData.name : closestObject.interactionData.name;
+      const name = closestObject.npcData
+        ? closestObject.npcData.name
+        : (closestObject.interactionData.promptText || closestObject.interactionData.name);
       this.promptText.setText(`[E] ${name}`);
     } else {
       this.interactionPrompt.setVisible(false);
@@ -625,7 +1074,8 @@ class ShopScene extends Phaser.Scene {
         }
       } else {
         if (obj.setStrokeStyle) {
-          obj.setStrokeStyle(3, shopObjects.colors.highlight);
+          obj.setStrokeStyle(3, shopObjects.colors.highlight, 0.95);
+          obj.setFillStyle(obj.interactionData.borderColor, 0.08);
         }
       }
     } catch (e) {
@@ -642,7 +1092,8 @@ class ShopScene extends Phaser.Scene {
         }
       } else {
         if (obj.setStrokeStyle) {
-          obj.setStrokeStyle(2, obj.interactionData.borderColor);
+          obj.setStrokeStyle(2, obj.interactionData.borderColor, 0);
+          obj.setFillStyle(obj.interactionData.borderColor, 0);
         }
       }
     } catch (e) {
@@ -687,6 +1138,12 @@ class ShopScene extends Phaser.Scene {
         break;
       case 'bed':
         this.onBedInteraction(data);
+        break;
+      case 'questLog':
+        this.openQuestLog();
+        break;
+      case 'fridge':
+        this.openInventory();
         break;
       case 'door':
         this.onDoorInteraction(data);

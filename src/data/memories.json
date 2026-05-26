@@ -2,76 +2,97 @@
   "memories": [
     {
       "id": "ring_ancient_memory",
-      "title": "【占位】戒指相关记忆",
+      "title": "戒指里的守诺火光",
       "triggerFlag": "ring_ancient_memory",
-      "description": "【占位】关于那枚戒指的记忆，具体内容由用户后续填写。",
-      "background": "memory_placeholder",
+      "description": "老旧戒指中残留的守城记忆，讲述一枚戒指如何成为守诺的凭证。",
+      "background": "ancient_city_gate_night",
       "dialogueId": "ring_memory_dialogue",
       "unlockCodex": true,
+      "relatedNpcId": "guest_ring_boy",
+      "relatedNpcName": "看上去有点腼腆的年轻人",
+      "relatedCommissionTitle": "传家宝溯源",
+      "spiritName": "守城军士精魂",
+      "culturalTag": "守信与家国情怀",
+      "relatedKeyItemIds": ["key_item_001"],
       "rewards": {
-        "funds": 100,
-        "popularity": 5,
         "flags": { "ring_memory_unlocked": true },
+        "addKeyItem": "key_item_001",
         "npcAffinity": { "guest_ring_boy": 20 }
       }
     },
     {
       "id": "elder_wisdom_memory",
-      "title": "【占位】老者相关记忆",
+      "title": "旧教案里的晨读声",
       "triggerFlag": "elder_wisdom_memory",
-      "description": "【占位】关于某位来访客人的记忆，具体内容由用户后续填写。",
-      "background": "memory_placeholder",
+      "description": "旧教案里残留的晨读记忆，记录一位先生在乱世中守住课堂。",
+      "background": "ancient_school_morning",
       "dialogueId": "elder_memory_dialogue",
       "unlockCodex": true,
+      "relatedNpcId": "visitor_teacher",
+      "relatedNpcName": "退休教师",
+      "spiritName": "乡塾先生精魂",
+      "culturalTag": "师者传灯",
+      "relatedKeyItemIds": ["key_item_004"],
       "rewards": {
-        "funds": 50,
-        "popularity": 3,
         "flags": { "elder_wisdom_unlocked": true },
         "npcAffinity": { "visitor_teacher": 15 }
       }
     },
     {
       "id": "cat_memory",
-      "title": "【占位】猫咪相关记忆",
+      "title": "檐铃与归路",
       "triggerFlag": "cat_memory",
-      "description": "【占位】关于那只失踪猫咪的记忆，具体内容由用户后续填写。",
-      "background": "memory_placeholder",
+      "description": "屋檐铃声里残留的归家记忆，提醒人不要轻易放弃寻找。",
+      "background": "old_alley_rooftop",
       "dialogueId": "cat_memory_dialogue",
       "unlockCodex": true,
+      "relatedNpcId": "guest_little_girl",
+      "relatedNpcName": "看上去很焦急的女孩",
+      "spiritName": "檐下守候精魂",
+      "culturalTag": "守护与归家",
+      "relatedKeyItemIds": [],
       "rewards": {
-        "funds": 50,
-        "popularity": 8,
         "flags": { "cat_memory_unlocked": true },
         "npcAffinity": { "guest_little_girl": 25 }
       }
     },
     {
       "id": "photo_memory",
-      "title": "【占位】老照片相关记忆",
+      "title": "雨夜借灯",
       "triggerFlag": "photo_memory",
-      "description": "【占位】老照片中隐藏的记忆，具体内容由用户后续填写。",
-      "background": "memory_placeholder",
+      "description": "旧照片中隐藏的医者记忆，讲述一盏灯如何照过风雨里的病人。",
+      "background": "ancient_clinic_rain",
       "dialogueId": "photo_memory_dialogue",
       "unlockCodex": true,
+      "relatedNpcId": "guest_elder_lady",
+      "relatedNpcName": "退休社区医生",
+      "relatedCommissionTitle": "老照片调查",
+      "spiritName": "乡间医者精魂",
+      "culturalTag": "仁心与兼济",
+      "relatedKeyItemIds": ["key_item_002"],
       "rewards": {
-        "funds": 80,
-        "popularity": 10,
         "flags": { "photo_memory_unlocked": true },
+        "addKeyItem": "key_item_002",
         "npcAffinity": { "guest_elder_lady": 20 }
       }
     },
     {
       "id": "clock_memory",
-      "title": "【占位】钟表相关记忆",
+      "title": "更声未尽",
       "triggerFlag": "clock_memory",
-      "description": "【占位】古老钟表中封印的记忆，具体内容由用户后续填写。",
-      "background": "memory_placeholder",
+      "description": "老钟中封存的匠人记忆，记录一个守时守诺的人如何等到最后一更。",
+      "background": "ancient_watchtower_midnight",
       "dialogueId": "clock_memory_dialogue",
       "unlockCodex": true,
+      "relatedNpcId": "guest_clockmaker",
+      "relatedNpcName": "钟表修理店主",
+      "relatedCommissionTitle": "停摆的老钟",
+      "spiritName": "守更匠人精魂",
+      "culturalTag": "匠心与守诺",
+      "relatedKeyItemIds": ["key_item_003"],
       "rewards": {
-        "funds": 120,
-        "popularity": 15,
         "flags": { "clock_memory_unlocked": true },
+        "addKeyItem": "key_item_003",
         "npcAffinity": { "guest_clockmaker": 30 }
       }
     }
@@ -82,19 +103,19 @@
       "lines": [
         {
           "id": "rm1",
-          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+          "text": "城门外的火把被夜风压低，年轻军士把一枚戒指系在红绳上，交给即将出城报信的同伴。"
         },
         {
           "id": "rm2",
-          "text": "【占位】这里填写记忆中的对话或场景。"
+          "text": "他说：若我没能回来，就把它送回家中。不是报丧，是告诉他们，我守到最后一刻。"
         },
         {
           "id": "rm3",
-          "text": "【占位】这里填写精魂传达的信息。"
+          "text": "同伴跪在泥地里应下。城上鼓声一声接一声，像把人的胆怯一点点敲碎。"
         },
         {
           "id": "rm4",
-          "text": "【占位】这里填写记忆结束前的最后信息。"
+          "text": "记忆尽头，戒指内侧浮出一道铜纹。它不像装饰，更像某个家族曾经立下的守诺印记。"
         }
       ],
       "choices": [
@@ -110,19 +131,19 @@
       "lines": [
         {
           "id": "em1",
-          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+          "text": "清晨的乡塾还没有点灯，先生已经把孩子们的课本摊开，逐页抚平被雨泡皱的纸。"
         },
         {
           "id": "em2",
-          "text": "【占位】这里填写记忆中的对话或场景。"
+          "text": "有人劝他逃难，他只说：书可以晚些读，但不能没人替孩子们记得回来的路。"
         },
         {
           "id": "em3",
-          "text": "【占位】这里填写精魂传达的信息。"
+          "text": "门外兵荒马乱，屋里却响起参差的晨读声。那声音很轻，却把一间小屋撑得很稳。"
         },
         {
           "id": "em4",
-          "text": "【占位】这里填写记忆结束前的最后信息。"
+          "text": "先生把一张油印纸条夹进教案，纸角画着一枚旧门牌，像在托付后来的人继续点灯。"
         }
       ],
       "choices": [
@@ -138,19 +159,19 @@
       "lines": [
         {
           "id": "cm1",
-          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+          "text": "旧巷的屋檐下挂着铜铃，风一吹就响。一个孩子抱着空竹篮，沿着墙根找一只不肯回家的猫。"
         },
         {
           "id": "cm2",
-          "text": "【占位】这里填写记忆中的对话或场景。"
+          "text": "邻里有人递来半盏热汤，有人帮他敲开柴门。小小的脚印在雨后泥地里断断续续。"
         },
         {
           "id": "cm3",
-          "text": "【占位】这里填写精魂传达的信息。"
+          "text": "孩子没有放弃，因为他记得猫也曾在他发烧时守在枕边，一整夜没有离开。"
         },
         {
           "id": "cm4",
-          "text": "【占位】这里填写记忆结束前的最后信息。"
+          "text": "檐铃最后响了一下，像在提醒：被认真寻找的东西，总会记得回家的方向。"
         }
       ],
       "choices": [
@@ -166,19 +187,19 @@
       "lines": [
         {
           "id": "pm1",
-          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+          "text": "雨夜里，药铺的灯被风吹得忽明忽暗。医者披着蓑衣，背起药箱走进泥泞小路。"
         },
         {
           "id": "pm2",
-          "text": "【占位】这里填写记忆中的对话或场景。"
+          "text": "徒弟问他：这家人付不起诊金，真的还去吗？医者只答：病不等天晴，人命也不看银两。"
         },
         {
           "id": "pm3",
-          "text": "【占位】这里填写精魂传达的信息。"
+          "text": "他借着邻家的灯写下药方，把最后一包药留下，自己在廊下坐到天亮。"
         },
         {
           "id": "pm4",
-          "text": "【占位】这里填写记忆结束前的最后信息。"
+          "text": "照片中的药签纹路渐渐清晰，像一枚被岁月磨淡的纹章，提醒后来的人记住仁心。"
         }
       ],
       "choices": [
@@ -194,19 +215,19 @@
       "lines": [
         {
           "id": "clm1",
-          "text": "【占位】这里填写精魂记忆开始时的场景描述。"
+          "text": "更楼上，匠人把铜齿轮装进木制更钟。城中宵禁已起，远处仍有归人的脚步声。"
         },
         {
           "id": "clm2",
-          "text": "【占位】这里填写记忆中的对话或场景。"
+          "text": "他答应过守城的人：只要钟还响，城里的人就知道今夜还没有失守。"
         },
         {
           "id": "clm3",
-          "text": "【占位】这里填写精魂传达的信息。"
+          "text": "子夜将近，匠人的手被冻得发抖，仍一点点校准齿轮，让更声稳稳传过长街。"
         },
         {
           "id": "clm4",
-          "text": "【占位】这里填写记忆结束前的最后信息。"
+          "text": "最后一声更响后，一枚铜齿轮落入掌心。齿尖刻着门牌纹，像把守诺的时间交给后来的人。"
         }
       ],
       "choices": [

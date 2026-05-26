@@ -68,7 +68,7 @@ export default class InventorySystem {
       count: count,
       name: itemData ? itemData.name : '未知物品',
       type: itemData ? itemData.type : 'normal_item',
-      description: itemData ? itemData.description : '暂无描述',
+      description: itemData ? itemData.description : '尚未记录说明',
       isKeyItem: false,
       sourceNpcId: sourceNpcId || ''
     });
@@ -93,7 +93,7 @@ export default class InventorySystem {
       obtainedAt: this.gameState.day || 1,
       name: itemData ? itemData.name : '未知物品',
       type: itemData ? itemData.type : 'key_item',
-      description: itemData ? itemData.description : '暂无描述',
+      description: itemData ? itemData.description : '尚未记录说明',
       isKeyItem: true,
       sourceNpcId: sourceNpcId || ''
     });
@@ -107,12 +107,12 @@ export default class InventorySystem {
     new ArchiveManager(this.gameState).unlockKeyItem({
       keyItemId: itemId,
       keyItemName: itemData ? itemData.name : itemId,
-      description: itemData ? itemData.description : '【关键物品说明待补充】',
+      description: itemData ? itemData.description : '这件关键物品与万事屋的旧事有关。',
       sourceType: sourceNpcId ? 'npc' : 'debug',
       sourceId: sourceNpcId || '',
-      sourceName: sourceNpcId || '待补充',
+      sourceName: sourceNpcId || '未知来源',
       acquiredDay: this.gameState.day || 1,
-      culturalTag: '待补充',
+      culturalTag: '万事屋旧事',
       isStoryCritical: true
     });
 

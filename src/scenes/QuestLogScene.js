@@ -17,7 +17,7 @@ class QuestLogScene extends Phaser.Scene {
     this.taskOptionList = null;
   }
 
-  init(data) {
+  init(data = {}) {
     this.returnScene = data.returnScene || 'ShopScene';
   }
 
@@ -371,7 +371,7 @@ class QuestLogScene extends Phaser.Scene {
       fontFamily: 'Georgia, serif',
       color: '#88c0d0'
     }));
-    this.detailContainer.add(this.add.text(-135, 40, quest.description || '【委托描述待补充】', {
+    this.detailContainer.add(this.add.text(-135, 40, quest.description || '这项委托的详细说明已记录在柜台档案中。', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
       color: '#d8dee9',
@@ -385,7 +385,7 @@ class QuestLogScene extends Phaser.Scene {
       fontFamily: 'Georgia, serif',
       color: '#88c0d0'
     }));
-    this.detailContainer.add(this.add.text(-60, 98, quest.requiredItemText || '【任务目标待补充】', {
+    this.detailContainer.add(this.add.text(-60, 98, quest.requiredItemText || '按委托要求完成任务', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
       color: requirementStatus.canSubmit ? '#a3be8c' : '#4c566a',
@@ -420,12 +420,12 @@ class QuestLogScene extends Phaser.Scene {
     const actionType = this.commissionSystem.getCommissionActionType(quest.id);
 
     if (actionType === 'taskOptions') {
-      const btn = this.createActionButton(0, 158, '进行任务', () => this.showTaskOptionList(quest), 160);
+      const btn = this.createActionButton(0, 158, '前往完成', () => this.showTaskOptionList(quest), 160);
       this.detailContainer.add(btn);
       return;
     }
 
-    const buttonText = actionType === 'submit' ? '前往完成' : '进行任务';
+    const buttonText = '前往完成';
     const btn = this.createActionButton(0, 158, buttonText, () => this.onQuestAction(quest), 160);
     this.detailContainer.add(btn);
   }
@@ -474,6 +474,14 @@ class QuestLogScene extends Phaser.Scene {
     } else {
       if (actionType === 'taskOptions') {
         this.showTaskOptionList(quest);
+        return;
+      }
+      if (quest.type === 'longTerm' && quest.memoryId) {
+        this.scene.start('MemoryScene', {
+          memoryId: quest.memoryId,
+          completeCommissionId: quest.id,
+          returnScene: 'QuestLogScene'
+        });
         return;
       }
       const success = this.commissionSystem.startQuestTask(quest.id);

@@ -1,64 +1,75 @@
 {
   "objects": [
     {
-      "id": "counter",
-      "name": "柜台",
-      "x": 400,
-      "y": 480,
-      "width": 200,
-      "height": 40,
+      "id": "desk",
+      "name": "接待台",
+      "x": 400, "y": 492,
+      "width": 104, "height": 62,
       "interactionType": "counter",
-      "description": "接待客人的地方。来访的客人会在这里等候委托。",
-      "color": 8557360,
-      "borderColor": 12565702
+      "description": "接待客人的地方。",
+      "color": 8557360, "borderColor": 12565702,
+      "collides": true
     },
     {
       "id": "alchemy_table",
       "name": "炼金釜",
-      "x": 150,
-      "y": 200,
-      "width": 100,
-      "height": 60,
+      "x": 154, "y": 218,
+      "width": 76, "height": 64,
       "interactionType": "alchemy",
-      "description": "古老的炼金釜，炉火日夜不熄，散发着神秘的光芒。",
-      "color": 6209500,
-      "borderColor": 8496913
+      "description": "古老的炼金釜。",
+      "color": 6209500, "borderColor": 8496913,
+      "collides": true
     },
     {
       "id": "bookshelf",
       "name": "书架",
-      "x": 650,
-      "y": 200,
-      "width": 100,
-      "height": 80,
+      "x": 662, "y": 238,
+      "width": 58, "height": 76,
       "interactionType": "codex",
-      "description": "记载着历代万事屋传承的记忆与炼金配方。",
-      "color": 10693772,
-      "borderColor": 11822173
+      "description": "历代传承的记录。",
+      "color": 10693772, "borderColor": 11822173,
+      "collides": true
+    },
+    {
+      "id": "quest_board",
+      "name": "委托板",
+      "x": 575, "y": 178,
+      "width": 84, "height": 108,
+      "interactionType": "questLog",
+      "promptText": "\u67e5\u770b\u59d4\u6258",
+      "description": "查看当前委托记录。",
+      "color": 8496913, "borderColor": 12565702,
+      "collides": false
     },
     {
       "id": "bed",
       "name": "床铺",
-      "x": 680,
-      "y": 400,
-      "width": 80,
-      "height": 60,
+      "x": 672, "y": 466,
+      "width": 78, "height": 96,
       "interactionType": "bed",
-      "description": "万事屋的床铺，可以睡觉跳过时间。",
-      "color": 5964934,
-      "borderColor": 9803157
+      "description": "可以睡觉跳过时间。",
+      "color": 5964934, "borderColor": 9803157,
+      "collides": true
+    },
+    {
+      "id": "fridge",
+      "name": "冰箱",
+      "x": 214, "y": 440,
+      "width": 44, "height": 70,
+      "interactionType": "fridge",
+      "description": "查看存放的物品。",
+      "color": 7368816, "borderColor": 12565702,
+      "collides": true
     },
     {
       "id": "door",
       "name": "门",
-      "x": 100,
-      "y": 520,
-      "width": 60,
-      "height": 40,
+      "x": 108, "y": 500,
+      "width": 84, "height": 88,
       "interactionType": "door",
-      "description": "万事屋的大门，可以前往不同的地点。",
-      "color": 4956090,
-      "borderColor": 8454127
+      "description": "前往集市或远郊。",
+      "color": 4956090, "borderColor": 8454127,
+      "collides": false
     }
   ],
   "interactionDistance": 70,

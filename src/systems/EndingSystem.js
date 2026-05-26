@@ -187,6 +187,6 @@ export default class EndingSystem {
   // 获取结局描述
   getEndingDescription(endingId) {
     const ending = this.getEnding(endingId);
-    return ending?.description || '暂无描述';
+    return ending?.description || '这条结局线索尚未完全显现。';
   }
 }

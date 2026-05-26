@@ -30,18 +30,17 @@
       "blockedFlags": [],
       "items": [
         {
-          "itemId": "alchemy_material_002",
-          "itemName": "褪色绸缎",
+          "itemId": "material_carrot",
+          "itemName": "萝卜",
           "obtainMethod": "buy",
-          "cost": 50,
-          "description": "【占位】厨师从旧衣物上剪下的一小块绸缎。"
+          "cost": 20,
+          "description": "厨师从早市多带来的新鲜萝卜，适合用作炼金素材。"
         },
         {
           "itemId": "key_item_001",
-          "itemName": "家族纹章碎片A",
-          "obtainMethod": "temporary_commission",
-          "tempCommissionId": "temp_commission_chef",
-          "description": "神秘的一个纹章碎片，似乎是来自破碎的什么东西的一角"
+          "itemName": "铜纹碎片A",
+          "obtainMethod": "dialogue_choice",
+          "description": "夹在老菜谱封皮里的铜纹碎片，纹路和万事屋门牌背面的刻痕相似。"
         }
       ]
     },
@@ -56,18 +55,18 @@
       "blockedFlags": [],
       "items": [
         {
-          "itemId": "alchemy_material_003",
-          "itemName": "旧钥匙",
-          "obtainMethod": "buy",
-          "cost": 30,
-          "description": "【占位】快递员在整理包裹时发现的一把旧钥匙。"
+          "itemId": "material_foxtail_grass",
+          "itemName": "狗尾巴草",
+          "obtainMethod": "gift",
+          "giftCondition": "friendly_response",
+          "description": "快递员从巷口顺手摘来的狗尾巴草，带着路边阳光晒过的草香。"
         },
         {
           "itemId": "clue_item_001",
-          "itemName": "【占位】褪色照片",
+          "itemName": "褪色街景照片",
           "obtainMethod": "affinity_gift",
           "requiredAffinity": 20,
-          "description": "【占位】与快递员建立一定好感后可获得的线索物品。"
+          "description": "快递员在旧信封里发现的街景照片，角落里能看见万事屋旧门牌。"
         }
       ]
     },
@@ -82,32 +81,31 @@
       "blockedFlags": [],
       "items": [
         {
-          "itemId": "alchemy_material_004",
-          "itemName": "干枯草药",
+          "itemId": "material_old_coin",
+          "itemName": "旧铜钱",
           "obtainMethod": "buy",
-          "cost": 40,
-          "description": "【占位】古玩店老板珍藏的稀有草药样本。"
+          "cost": 20,
+          "description": "古玩店老板账本中有记录的旧铜钱，适合用于炼金。"
         },
         {
-          "itemId": "alchemy_material_005",
-          "itemName": "石英碎片",
+          "itemId": "material_beetle",
+          "itemName": "甲壳虫",
           "obtainMethod": "buy",
-          "cost": 60,
-          "description": "【占位】晶莹剔透的石英碎片，可用于炼金反应。"
+          "cost": 10,
+          "description": "古玩店老板收在标本盒里的甲壳虫，背甲保存得很完整。"
         },
         {
           "itemId": "key_item_002",
-          "itemName": "【占位】家族纹章碎片B",
-          "obtainMethod": "exchange",
-          "requiredItem": "alchemy_product_001",
-          "description": "【占位】用炼金成品交换获得的关键物品。"
+          "itemName": "药签纹章片",
+          "obtainMethod": "dialogue_choice",
+          "description": "压在旧账本里的药签形纹章片，背面写着一行很淡的药铺账码。"
         },
         {
           "itemId": "key_item_003",
-          "itemName": "【占位】家族纹章碎片C",
+          "itemName": "子时铜齿轮",
           "obtainMethod": "temporary_commission",
           "tempCommissionId": "temp_commission_antique",
-          "description": "【占位】完成古玩店老板的委托后可获得的关键物品。"
+          "description": "从老钟机芯旁脱落的铜齿轮，齿尖刻着极小的门牌纹。"
         }
       ]
     }
@@ -115,18 +113,18 @@
   "temporaryCommissions": [
     {
       "id": "temp_commission_chef",
-      "title": "【占位】寻找炼金成品",
+      "title": "老菜谱封皮登记",
       "npcId": "visitor_chef",
       "expireDays": 3,
-      "requiredItems": ["alchemy_product_001"],
+      "requiredItems": ["herbal_powder_normal"],
       "rewardItems": ["key_item_001"],
       "rewardFunds": 0,
       "rewardPopularity": 5,
-      "description": "【占位】厨师希望你能帮他找到一份特殊的炼金成品。"
+      "description": "厨师希望你用中药粉末拓清老菜谱封皮上的铜纹，再把碎片登记进万事屋档案。"
     },
     {
       "id": "temp_commission_antique",
-      "title": "【占位】鉴定老物件",
+      "title": "老钟齿轮登记",
       "npcId": "visitor_antique",
       "expireDays": 5,
       "requiredItems": [],
@@ -134,7 +132,7 @@
       "rewardFunds": 100,
       "rewardPopularity": 10,
       "requiredFlags": ["antique_trust_established"],
-      "description": "【占位】古玩店老板有一个需要鉴定的东西。"
+      "description": "古玩店老板希望你把一枚子时停摆的铜齿轮登记清楚，再决定是否收入万事屋档案。"
     }
   ]
 }

@@ -135,7 +135,7 @@ export default class FurnitureUpgradeManager {
         ...config,
         level,
         isMaxLevel,
-        currentEffect: config.effectsByLevel[level - 1] || '效果待补充',
+        currentEffect: config.effectsByLevel[level - 1] || '当前等级效果已记录在家具档案中',
         nextEffect: isMaxLevel ? '已达最高等级' : config.effectsByLevel[nextLevel - 1],
         nextCost: isMaxLevel ? 0 : config.upgradeCosts[level] || 0,
         nextRequirementText: nextRequirement ? this.formatRequirement(nextRequirement) : '',

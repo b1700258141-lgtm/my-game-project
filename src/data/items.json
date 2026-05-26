@@ -2,9 +2,9 @@
   "items": [
     {
       "id": "alchemy_material_002",
-      "name": "褪色绸缎",
-      "description": "【占位】一小块褪色的绸缎碎片，似乎有特殊用途。",
-      "type": "alchemy_material",
+      "name": "旧布样",
+      "description": "一小块从旧衣物上剪下的布样，适合留作旧物登记参考。",
+      "type": "normal_item",
       "icon": "material_silk",
       "stackable": true,
       "maxStack": 99
@@ -12,17 +12,17 @@
     {
       "id": "alchemy_material_003",
       "name": "旧钥匙",
-      "description": "【占位】一把不知能开什么的旧钥匙。",
-      "type": "alchemy_material",
+      "description": "一把齿痕磨平的旧钥匙，像是开过很多次老式铁门。",
+      "type": "clue_item",
       "icon": "material_key",
       "stackable": false,
       "maxStack": 1
     },
     {
       "id": "alchemy_material_004",
-      "name": "干枯草药",
-      "description": "【占位】一些常见的草药，炼金术的基础材料。",
-      "type": "alchemy_material",
+      "name": "干枯草药标本",
+      "description": "夹在纸页里的草药标本，只适合做档案参照，不作为当前炼金素材。",
+      "type": "normal_item",
       "icon": "material_herb",
       "stackable": true,
       "maxStack": 99
@@ -30,8 +30,8 @@
     {
       "id": "alchemy_material_005",
       "name": "石英碎片",
-      "description": "【占位】晶莹剔透的石英碎片，可用于某些炼金反应。",
-      "type": "alchemy_material",
+      "description": "晶莹的石英碎片，被古玩店老板当作旧物样本保存。",
+      "type": "normal_item",
       "icon": "material_quartz",
       "stackable": true,
       "maxStack": 99
@@ -39,7 +39,7 @@
     {
       "id": "alchemy_product_001",
       "name": "净化药剂",
-      "description": "【占位】使用炼金术制成的净化药剂。",
+      "description": "早期记录里的炼金试剂样本，现阶段尚未纳入正式配方。",
       "type": "alchemy_product",
       "icon": "product_potion_purify",
       "stackable": true,
@@ -49,7 +49,7 @@
     {
       "id": "alchemy_product_002",
       "name": "记忆提取液",
-      "description": "【占位】能够提取物品记忆的特殊炼金产物。",
+      "description": "旧档案里提到的实验性产物，现阶段仅作为后续系统预留。",
       "type": "alchemy_product",
       "icon": "product_potion_memory",
       "stackable": true,
@@ -59,7 +59,7 @@
     {
       "id": "usable_item_001",
       "name": "体力恢复药",
-      "description": "【占位】恢复少量体力。",
+      "description": "随身药箱里的普通补给，能让疲惫的身体稍微缓过来。",
       "type": "usable_item",
       "icon": "item_potion_health",
       "stackable": true,
@@ -67,8 +67,8 @@
     },
     {
       "id": "key_item_001",
-      "name": "家族纹章碎片A",
-      "description": "神秘的一个纹章碎片，似乎是来自破碎的什么东西的一角",
+      "name": "铜纹碎片A",
+      "description": "夹在老菜谱封皮里的铜纹碎片，纹路和万事屋门牌背面的刻痕相似。",
       "type": "key_item",
       "icon": "keyitem_charm_a",
       "stackable": false,
@@ -77,8 +77,8 @@
     },
     {
       "id": "key_item_002",
-      "name": "【占位】家族纹章碎片B",
-      "description": "【占位】关键结局物品B，具体设定由用户填写。",
+      "name": "药签纹章片",
+      "description": "压在旧账本里的药签形纹章片，背面写着一行很淡的药铺账码。",
       "type": "key_item",
       "icon": "keyitem_charm_b",
       "stackable": false,
@@ -87,8 +87,8 @@
     },
     {
       "id": "key_item_003",
-      "name": "【占位】家族纹章碎片C",
-      "description": "【占位】关键结局物品C，具体设定由用户填写。",
+      "name": "子时铜齿轮",
+      "description": "从老钟机芯旁脱落的铜齿轮，齿尖刻着极小的门牌纹。",
       "type": "key_item",
       "icon": "keyitem_charm_c",
       "stackable": false,
@@ -97,8 +97,8 @@
     },
     {
       "id": "key_item_004",
-      "name": "【占位】神秘纸条",
-      "description": "【占位】一张写有神秘文字的纸条，似乎是某个线索。",
+      "name": "油印纸条",
+      "description": "退休教师夹在旧教案里的油印纸条，墨痕里隐约能看见万事屋旧门牌。",
       "type": "key_item",
       "icon": "keyitem_note",
       "stackable": false,
@@ -107,8 +107,8 @@
     },
     {
       "id": "clue_item_001",
-      "name": "【占位】褪色照片",
-      "description": "【占位】一张褪色的老照片，上面有模糊的人影。",
+      "name": "褪色街景照片",
+      "description": "快递员在旧信封里发现的街景照片，角落里能看见万事屋旧门牌。",
       "type": "clue_item",
       "icon": "clue_photo",
       "stackable": false,
@@ -116,8 +116,8 @@
     },
     {
       "id": "clue_item_002",
-      "name": "【占位】旧信件",
-      "description": "【占位】一封泛黄的信件，字迹已模糊不清。",
+      "name": "泛黄旧信",
+      "description": "一封写给旧街坊的信，字迹有些淡，但落款仍能辨认出万事屋的旧称。",
       "type": "clue_item",
       "icon": "clue_letter",
       "stackable": false,
@@ -126,7 +126,7 @@
     {
       "id": "quest_item_001",
       "name": "老旧的戒指",
-      "description": "【关键物品说明待补充】",
+      "description": "一枚褪色的戒指，已经无法辨认上面镶嵌的东西是什么",
       "type": "quest_item",
       "icon": "quest_item_sample",
       "stackable": true,
@@ -408,8 +408,8 @@
     },
     {
       "id": "normal_item_001",
-      "name": "【占位】普通物品样本",
-      "description": "【占位】NPC给予的普通物品，具体设定由用户填写。",
+      "name": "街坊谢礼",
+      "description": "街坊临走前留下的小礼物，不贵重，却带着被认真感谢的温度。",
       "type": "normal_item",
       "icon": "normal_item_sample",
       "stackable": true,

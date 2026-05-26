@@ -447,7 +447,7 @@ class InventoryScene extends Phaser.Scene {
     this.addDetailLine('数量', this.formatDetailValue(item.count ?? item.itemCount ?? 1, '1'), yOffset);
     yOffset += 35;
 
-    const description = this.formatDetailValue(item.description || item.itemDescription, '暂无描述');
+    const description = this.formatDetailValue(item.description || item.itemDescription, '尚未记录说明');
     const descText = this.add.text(-130, yOffset, description, {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
