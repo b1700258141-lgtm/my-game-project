@@ -86,6 +86,12 @@ export default class ItemSystem {
     return typeInfo?.defaultPrice || 0;
   }
 
+  getItemValue(itemId) {
+    const item = this.getItem(itemId);
+    if (!item) return 0;
+    return item.value ?? item.price ?? this.getDefaultPrice(itemId);
+  }
+
   // 检查物品是否可交易
   canTrade(itemId) {
     const type = this.getItemType(itemId);
@@ -96,6 +102,16 @@ export default class ItemSystem {
   getItemIcon(itemId) {
     const item = this.getItem(itemId);
     return item?.icon || 'item_default';
+  }
+
+  getItemPreviewIcon(itemId) {
+    const item = this.getItem(itemId);
+    return item?.previewIcon || item?.icon || '';
+  }
+
+  getItemPreviewImage(itemId) {
+    const item = this.getItem(itemId);
+    return item?.previewImage || '';
   }
 
   // 验证物品是否存在于数据中

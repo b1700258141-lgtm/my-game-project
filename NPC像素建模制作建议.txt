@@ -1,0 +1,463 @@
+NPC像素风格建模与动画制作建议
+
+一、总体目标
+
+你现在已经确定了一批正式 NPC 和动态来访 NPC。下一步不是随便做几张像素人物图，而是要按网页 RPG 可以直接落地的方式制作一套统一规格的 NPC 像素素材。
+
+目标是：
+1. 每个 NPC 都有像素风格建模。
+2. NPC 能在万事屋场景中站立、转向、走动。
+3. 后续可以被 Codex / CodeBuddy 直接接入浏览器网页前端。
+4. 所有 NPC 风格统一，不会像从不同游戏里拼出来的素材。
+
+二、推荐统一制作规格
+
+建议全部 NPC 使用同一套标准：
+
+1. 视角：俯视 / Top-down RPG 视角。
+2. 单帧尺寸：32×32 像素。
+3. 角色占用：1 个地图格。
+4. 风格：现代、温暖、生活化、轻微复古感。
+5. 人物比例：Q 版像素比例，头稍大一些，方便辨识身份。
+6. 背景：透明 PNG。
+7. 动画格式：sprite sheet 精灵表。
+
+三、每个 NPC 至少需要的动画帧
+
+如果希望 NPC 能动起来，不建议只做一张站立图。
+
+推荐最低配置：
+
+1. 朝下 idle：1 帧。
+2. 朝上 idle：1 帧。
+3. 朝左 idle：1 帧。
+4. 朝右 idle：1 帧。
+5. 朝下 walk：3 帧。
+6. 朝上 walk：3 帧。
+7. 朝左 walk：3 帧。
+8. 朝右 walk：3 帧。
+
+推荐排布方式：
+
+每个 NPC 一张 sprite sheet，4 行 4 列，每帧 32×32：
+
+第 1 行：朝下 down，idle、walk1、walk2、walk3。
+第 2 行：朝左 left，idle、walk1、walk2、walk3。
+第 3 行：朝右 right，idle、walk1、walk2、walk3。
+第 4 行：朝上 up，idle、walk1、walk2、walk3。
+
+这样每张 NPC 图总尺寸为：128×128 像素。
+
+四、不要每个 NPC 都从零开始画
+
+你现在有 9 个 NPC。建议先做基础模板，再做换装和局部调整。
+
+推荐先做 4 个基础模板：
+
+1. 青年男性模板。
+2. 成年男性模板。
+3. 老年女性模板。
+4. 儿童 / 少女模板。
+
+然后在模板基础上修改：
+
+1. 发型。
+2. 衣服颜色。
+3. 配饰。
+4. 体型。
+5. 职业特征。
+
+这样效率更高，也能保证所有 NPC 风格统一。
+
+五、正式 NPC 像素建模建议
+
+1. guest_ring_boy
+显示名：看上去有点腼腆的年轻人
+身份：年轻职员
+类型：commissionClient
+关联委托：commission_001
+
+外观建议：
+- 男性，20 多岁。
+- 发型整齐，略有学生气或职员感。
+- 穿浅色衬衫和深色长裤。
+- 可以带斜挎包、公文包或文件袋。
+- 站姿稍微拘谨。
+
+像素识别重点：
+- 浅色衬衫。
+- 深色裤子。
+- 斜挎包或文件袋。
+- 表情和姿态偏腼腆。
+
+动作建议：
+- 待机时轻微缩肩。
+- 行走时小步、普通速度。
+- 对话头像可以略显紧张。
+
+2. guest_chef_digestive
+显示名：肚子很大的厨师
+身份：城镇饭店大厨
+类型：commissionClient
+关联委托：commission_digestive_tablet
+
+外观建议：
+- 中年男性。
+- 偏胖体型。
+- 白色厨师帽。
+- 白色厨师服或围裙。
+- 腰部略宽，身体横向比普通 NPC 更明显。
+
+像素识别重点：
+- 厨师帽。
+- 围裙。
+- 肚子大的体型。
+
+动作建议：
+- 待机时可以手扶腰或挺着肚子。
+- 行走时步伐慢一点，左右摆动明显。
+
+3. guest_little_girl
+显示名：看上去很焦急的女孩
+身份：学生
+类型：commissionClient
+关联委托：commission_003
+
+外观建议：
+- 小女孩或初中生感觉。
+- 双马尾、短发或学生感发型。
+- 校服风格，或 T 恤加百褶裙 / 短裤。
+- 背小书包。
+
+像素识别重点：
+- 体型比成年人小。
+- 颜色偏明亮。
+- 书包要明显。
+- 姿态体现焦急。
+
+动作建议：
+- 待机时可以稍微内八、紧张。
+- 行走频率比成年人快一点。
+
+4. guest_elder_lady
+显示名：退休社区医生
+身份：退休社区医生
+类型：commissionClient
+关联委托：commission_002、photo_memory
+
+外观建议：
+- 老年女性。
+- 灰白头发，盘发或短卷发。
+- 温和、朴素、整洁的衣着。
+- 可以有小药箱、挎包或老花镜。
+
+像素识别重点：
+- 白发。
+- 稍弯的站姿。
+- 小药箱或挎包。
+- 医生气质要温和，不要太像正式医院白大褂。
+
+动作建议：
+- 待机时稳重站立。
+- 行走时步子小，速度慢。
+
+5. guest_clockmaker
+显示名：钟表修理店主
+身份：钟表修理店主
+类型：commissionClient
+关联委托：commission_004、clock_memory
+
+外观建议：
+- 中老年男性。
+- 穿工匠感背心或工作围裙。
+- 可以戴眼镜。
+- 可以有工具包、口袋表链、袖套等小元素。
+- 整体像现代小店手艺人。
+
+像素识别重点：
+- 眼镜。
+- 工作背心或围裙。
+- 工具包或表链。
+- 沉稳、细致的气质。
+
+动作建议：
+- 待机时站姿笔直，手可以放在身前。
+- 行走时慢而稳。
+
+六、动态来访 NPC 像素建模建议
+
+1. visitor_teacher
+显示名：退休教师
+出现时间：第 1 天
+概率：1.0
+关联内容：赠送 / 关键物品线索
+
+外观建议：
+- 老年男性或老年女性都可以。
+- 建议与退休社区医生形成明显区别。
+- 穿针织衫、开衫、长裤等朴素衣物。
+- 可以带书本、文件夹、眼镜。
+
+像素识别重点：
+- 书本或文件夹。
+- 眼镜。
+- 整洁、文气、温和。
+
+动作建议：
+- 待机端正站立。
+- 行走平缓。
+
+2. visitor_chef
+显示名：饭馆厨师
+出现时间：第 3-10 天
+概率：0.4
+关联内容：素材交易、temp_commission_chef
+
+外观建议：
+- 要和 guest_chef_digestive 区分开。
+- 可以做成年轻或更精干的厨师。
+- 保留厨师帽或围裙，但体型普通。
+- 服装颜色可以和大肚厨师不同，例如深色围裙。
+
+像素识别重点：
+- 厨师帽或围裙。
+- 更灵活、普通体型。
+- 与大厨形成区别。
+
+动作建议：
+- 待机自然站立。
+- 行走比大肚厨师更轻快。
+
+3. visitor_courier
+显示名：快递员
+出现时间：第 5-15 天
+概率：0.3
+关联内容：素材赠送
+
+外观建议：
+- 年轻男性或中性形象。
+- 穿快递工作服。
+- 可以戴帽子、头盔。
+- 背快递包或拿快递箱。
+- 姿态更有动感。
+
+像素识别重点：
+- 快递箱。
+- 大背包。
+- 制服。
+- 身体略前倾。
+
+动作建议：
+- 待机时身体略前倾，像刚停下来。
+- 行走频率较高，脚步明显。
+
+4. visitor_antique
+显示名：古玩店老板
+出现时间：第 8-20 天
+概率：0.25
+关联内容：素材交易、temp_commission_antique
+
+外观建议：
+- 中年或中老年男性。
+- 穿深色唐装感外套、中式便服或马甲。
+- 可以加手串、眼镜、小布包。
+- 要像现代古玩店老板，不要做成玄幻角色。
+
+像素识别重点：
+- 深色服装。
+- 稳重气质。
+- 小布包或手串。
+- 现代中式感。
+
+动作建议：
+- 待机时从容、稳重。
+- 行走慢、稳，略有派头。
+
+七、推荐文件命名
+
+建议每个 NPC 一张 sprite sheet：
+
+正式 NPC：
+- guest_ring_boy_sheet.png
+- guest_chef_digestive_sheet.png
+- guest_little_girl_sheet.png
+- guest_elder_lady_sheet.png
+- guest_clockmaker_sheet.png
+
+动态来访 NPC：
+- visitor_teacher_sheet.png
+- visitor_chef_sheet.png
+- visitor_courier_sheet.png
+- visitor_antique_sheet.png
+
+如果制作头像，可以额外准备：
+
+- guest_ring_boy_portrait.png
+- guest_chef_digestive_portrait.png
+- guest_little_girl_portrait.png
+- guest_elder_lady_portrait.png
+- guest_clockmaker_portrait.png
+- visitor_teacher_portrait.png
+- visitor_chef_portrait.png
+- visitor_courier_portrait.png
+- visitor_antique_portrait.png
+
+八、推荐素材目录结构
+
+建议放在项目 assets 目录下：
+
+assets/
+  characters/
+    npc/
+      guest_ring_boy_sheet.png
+      guest_chef_digestive_sheet.png
+      guest_little_girl_sheet.png
+      guest_elder_lady_sheet.png
+      guest_clockmaker_sheet.png
+      visitor_teacher_sheet.png
+      visitor_chef_sheet.png
+      visitor_courier_sheet.png
+      visitor_antique_sheet.png
+  portraits/
+    npc/
+      guest_ring_boy_portrait.png
+      guest_chef_digestive_portrait.png
+      guest_little_girl_portrait.png
+      guest_elder_lady_portrait.png
+      guest_clockmaker_portrait.png
+      visitor_teacher_portrait.png
+      visitor_chef_portrait.png
+      visitor_courier_portrait.png
+      visitor_antique_portrait.png
+
+九、推荐 npc_sprites.json 配置
+
+可以让 Codex / CodeBuddy 建立一个 NPC 素材映射文件，例如：
+
+{
+  "guest_ring_boy": {
+    "sprite": "assets/characters/npc/guest_ring_boy_sheet.png",
+    "portrait": "assets/portraits/npc/guest_ring_boy_portrait.png",
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "columns": 4,
+    "rows": 4,
+    "directions": ["down", "left", "right", "up"],
+    "idleFrame": 0,
+    "walkFrames": [1, 2, 3]
+  }
+}
+
+其他 NPC 按相同规则配置即可。
+
+十、建议的制作流程
+
+第一步：先统一标准
+- 全部 NPC 使用 32×32。
+- 全部 NPC 使用 4 方向。
+- 每方向 4 帧。
+- 使用 top-down 像素 RPG 风格。
+- 保持现代、温暖、生活化的万事屋风格。
+
+第二步：先做 2 个试点 NPC
+
+建议优先做：
+1. guest_ring_boy：普通人形，适合测试基础风格。
+2. visitor_courier：动态感强，适合测试行走动画。
+
+这两个做出来后，先接进游戏测试：
+- 尺寸是否合适。
+- 走路动画是否自然。
+- 与地图比例是否协调。
+- 对话时角色是否能朝向主角。
+
+第三步：确认风格后再扩展到全部 NPC
+
+再依次制作：
+- guest_chef_digestive
+- guest_little_girl
+- guest_elder_lady
+- guest_clockmaker
+- visitor_teacher
+- visitor_chef
+- visitor_antique
+
+第四步：交给 Codex / CodeBuddy 接入
+
+把以下内容交给 Codex / CodeBuddy：
+1. sprite sheet 文件。
+2. portrait 文件，如果有。
+3. 文件命名规则。
+4. sprite sheet 排布说明。
+5. npcId 与素材文件对应表。
+6. NPC 行走、站立、转向、互动要求。
+
+十一、Codex / CodeBuddy 接入任务提示词
+
+可以直接复制以下内容给 Codex / CodeBuddy：
+
+我现在要为游戏接入像素风 NPC，请按以下规则实现：
+
+1. 所有 NPC 使用 32x32 top-down pixel sprite sheet。
+2. 每个 NPC 的 sprite sheet 为 4 行 4 列：
+   - 第1行：down（idle, walk1, walk2, walk3）
+   - 第2行：left（idle, walk1, walk2, walk3）
+   - 第3行：right（idle, walk1, walk2, walk3）
+   - 第4行：up（idle, walk1, walk2, walk3）
+3. NPC 静止时显示各方向 idle 帧。
+4. NPC 移动时循环播放对应方向的 walk 帧。
+5. 当前阶段先支持：
+   - 柜台前站立
+   - 场景内缓慢巡逻
+   - 接近玩家时停止
+   - 对话时转向玩家
+6. 所有素材从 assets/characters/npc/ 目录读取。
+7. 需要建立 npcId 与 sprite 资源的映射关系。
+8. 如果某个 NPC 素材缺失，保留清晰的报错提示，不要让游戏崩溃。
+9. 保持 NPC 的现代万事屋风格，不要出现和项目风格不一致的奇幻角色。
+10. 先接入 guest_ring_boy 和 visitor_courier 作为测试角色，确认动画、比例、方向、碰撞、对话交互正常后，再扩展到其他 NPC。
+
+十二、是否需要头像或立绘
+
+建议每个 NPC 额外准备一张头像或半身立绘，特别是关键剧情 NPC。
+
+优先准备头像的 NPC：
+1. guest_ring_boy。
+2. guest_elder_lady。
+3. guest_clockmaker。
+4. visitor_antique。
+
+原因：
+地图上的 32×32 像素小人辨识度有限。对话时如果显示头像或半身立绘，玩家更容易记住角色，也更有代入感。
+
+十三、制作工具建议
+
+推荐使用：
+1. Aseprite：最适合像素角色和 sprite sheet 动画制作。
+2. Piskel：免费在线工具，适合新手和快速制作。
+3. LibreSprite：免费开源工具，可以作为 Aseprite 替代。
+
+如果使用 AI 生成，建议流程是：
+1. AI 生成角色参考图。
+2. 手动整理为真正的像素图。
+3. 用 Aseprite / Piskel 拆分并修正帧动画。
+4. 导出标准 4 行 4 列 sprite sheet。
+5. 交给 Codex / CodeBuddy 接入。
+
+十四、当前最推荐的执行顺序
+
+1. 先定标准：32×32、4方向、每方向4帧。
+2. 先做 guest_ring_boy 和 visitor_courier。
+3. 把这两个接进游戏测试。
+4. 确认角色比例、移动动画、转向和对话交互都正常。
+5. 再扩展到其他 7 个 NPC。
+6. 给重要 NPC 补头像或半身立绘。
+7. 整理 npc_sprites.json，统一管理所有 NPC 素材。
+
+十五、核心提醒
+
+1. Codex / CodeBuddy 更擅长接入素材和写动画逻辑，不擅长稳定产出高质量可商用像素动画素材。
+2. 不要只给单张 NPC 图片，要尽量给 sprite sheet。
+3. 不要每个 NPC 使用不同尺寸，否则前端接入会很麻烦。
+4. 不要一开始做 9 个完整角色，先用 2 个试点跑通流程。
+5. NPC 要符合现代万事屋背景，不要做成西幻冒险者、魔法师、骑士等违和形象。

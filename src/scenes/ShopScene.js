@@ -8,13 +8,18 @@ import VisitorSystem from '../systems/VisitorSystem';
 import InventorySystem from '../systems/InventorySystem';
 import ScrollableListUI from '../systems/ScrollableListUI';
 import RandomNpcManager, { RANDOM_NPC_STATE } from '../systems/RandomNpcManager';
-import TimeManager, { getTimeManager, resetTimeManager } from '../systems/TimeManager';
+import { getTimeManager } from '../systems/TimeManager';
 import DailyLoopManager from '../systems/DailyLoopManager';
 import FurnitureUpgradeManager from '../systems/FurnitureUpgradeManager';
 import SpiritMemoryManager from '../systems/SpiritMemoryManager';
 import AchievementManager from '../systems/AchievementManager';
 import AchievementToastUI from '../systems/AchievementToastUI';
+import SaveLoadManager from '../systems/SaveLoadManager';
+import { getSfxManager } from '../systems/SfxManager';
+import { getBgmManager } from '../systems/BgmManager';
 import { GAME_STATE } from '../systems/GameState';
+import { WARM_UI, addWarmButton, addWarmPanel } from '../ui/WarmUITheme';
+import { showTutorialIfNeeded } from '../systems/TutorialManager';
 
 class ShopScene extends Phaser.Scene {
   constructor() {
@@ -62,6 +67,8 @@ class ShopScene extends Phaser.Scene {
     this.lanternNight = null;
     this.collisionZones = [];
     this.furnitureSprites = {};
+    this._unsubscribeTimeChanged = null;
+    this._unsubscribeNewDay = null;
     this.roomBounds = {
       left: 48,
       top: 64,
@@ -86,6 +93,7 @@ class ShopScene extends Phaser.Scene {
 
     // 初始化系统
     this.initSystems();
+    this.syncShopBgm();
 
     // 背景
     this.createBackground();
@@ -146,18 +154,49 @@ class ShopScene extends Phaser.Scene {
     // 监听 J 键
     this.questLogKey.on('down', () => {
       if (!window.gameState.canMove()) return;
+      getSfxManager().openMenu();
       this.openQuestLog();
     });
 
     // 监听 B 键
     this.inventoryKey.on('down', () => {
       if (!window.gameState.canMove()) return;
+      getSfxManager().openMenu();
       this.openInventory();
     });
 
     this.upgradeKey.on('down', () => {
       if (!window.gameState.canMove()) return;
+      getSfxManager().openMenu();
       this.openFurnitureUpgrade();
+    });
+
+    // ========== ESC key handler ==========
+    this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this.escKey.on('down', () => {
+      if (this.__tutorialModalOpen) return;
+      const state = window.gameState.getGameState();
+      if (state === GAME_STATE.SLEEP_CHOICE || state === GAME_STATE.LOCATION_CHOICE || state === GAME_STATE.SHOP) {
+        getSfxManager().closeMenu();
+        this.closePopup();
+        return;
+      }
+      if (state === GAME_STATE.REWARD_POPUP && this.rewardPopup) {
+        this.rewardPopup.destroy();
+        this.rewardPopup = null;
+        window.gameState.clearPendingRewardItems();
+        window.gameState.setGameState(GAME_STATE.NORMAL);
+        getSfxManager().closeMenu();
+        return;
+      }
+      if (state === GAME_STATE.TRANSITION) {
+        window.gameState.setGameState(GAME_STATE.NORMAL);
+        return;
+      }
+      if (state === GAME_STATE.NORMAL) {
+        this._showExitConfirm();
+        return;
+      }
     });
 
     // ========== 处理待展示的奖励物品 ==========
@@ -211,13 +250,25 @@ class ShopScene extends Phaser.Scene {
 
     // 初始化或获取 TimeManager
     this.timeManager = getTimeManager(window.gameState);
-    if (!this.timeManager) {
-      this.timeManager = new TimeManager(window.gameState);
-    }
 
     // 注册新一天回调
-    this.timeManager.onNewDay((newDay) => {
+    this._unsubscribeNewDay?.();
+    this._unsubscribeNewDay = this.timeManager.onNewDay((newDay) => {
       this._onNewDay(newDay);
+    });
+
+    this._unsubscribeTimeChanged?.();
+    this._unsubscribeTimeChanged = this.timeManager.onTimeChanged((timeData, previousTime) => {
+      this.syncShopBgm(timeData);
+      this.updateRandomNpcPresence(timeData);
+      this.maybeShowDailySettlement(timeData, previousTime);
+    });
+
+    this.events.once('shutdown', () => {
+      this._unsubscribeTimeChanged?.();
+      this._unsubscribeTimeChanged = null;
+      this._unsubscribeNewDay?.();
+      this._unsubscribeNewDay = null;
     });
   }
 
@@ -232,6 +283,7 @@ class ShopScene extends Phaser.Scene {
     // 所以这里只做 NPC 状态清理和来访列表重置
     window.gameState.todayVisitors = [];
     window.gameState.visitorNotificationShown = false;
+    window.gameState.hasSleptToday = false;
 
     console.log(`[ShopScene] 新一天: 第 ${newDay} 天`);
   }
@@ -877,53 +929,78 @@ class ShopScene extends Phaser.Scene {
   createUI() {
     this.uiGroup = this.add.container(0, 0).setDepth(10);
 
-    const uiBg = this.add.rectangle(700, 45, 180, 140, 0x2e3440, 0.9)
-      .setStrokeStyle(2, 0x4c566a);
-    this.uiGroup.add(uiBg);
+    const width = this.cameras.main.width;
+    const cardWidth = 188;
+    const cardHeight = 126;
+    const cardX = width - cardWidth / 2 - 12;
+    const cardY = 60;
+    const textX = cardX - cardWidth / 2 + 16;
+    const textWidth = cardWidth - 32;
+    const colWidth = Math.floor((textWidth - 10) / 2);
+    const rightColX = textX + colWidth + 10;
 
-    // 时间显示（整合天数+时间）
-    this.timeText = this.add.text(615, 8, this._getTimeDisplayString(), {
-      fontSize: '16px',
+    // 右上角木牌状态栏
+    addWarmPanel(this, this.uiGroup, cardX, cardY, cardWidth, cardHeight, {
+      title: '万事账牌',
+      titleSize: '15px'
+    });
+
+    // 时间显示
+    this.timeText = this.add.text(textX, cardY - 18, this._getTimeDisplayString(), {
+      fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
-      fontStyle: 'bold'
+      color: WARM_UI.text,
+      fontStyle: 'bold',
+      fixedWidth: textWidth,
+      maxLines: 1
     });
     this.uiGroup.add(this.timeText);
 
     // 时段标签
-    this.dayPhaseText = this.add.text(615, 28, this._getDayPhaseLabel(), {
+    this.dayPhaseText = this.add.text(rightColX, cardY + 4, this._getDayPhaseLabel(), {
       fontSize: '12px',
       fontFamily: 'Georgia, serif',
-      color: '#d08770'
+      color: WARM_UI.goldText,
+      fixedWidth: colWidth,
+      maxLines: 1
     });
     this.uiGroup.add(this.dayPhaseText);
 
-    this.fundsText = this.add.text(615, 48, `资金: ${window.gameState.funds}`, {
-      fontSize: '14px',
+    // 万事屋等级
+    this.shopLevelText = this.add.text(textX, cardY + 4, `Lv.${window.gameState.wanShiWuLevel || 1}`, {
+      fontSize: '12px',
       fontFamily: 'Courier New',
-      color: '#a3be8c'
-    });
-    this.uiGroup.add(this.fundsText);
-
-    this.popularityText = this.add.text(615, 68, `人气: ${window.gameState.popularity}`, {
-      fontSize: '14px',
-      fontFamily: 'Courier New',
-      color: '#bf616a'
-    });
-    this.uiGroup.add(this.popularityText);
-
-    this.shopLevelText = this.add.text(615, 88, `万事屋等级: Lv${window.gameState.wanShiWuLevel || 1}`, {
-      fontSize: '14px',
-      fontFamily: 'Courier New',
-      color: '#ebcb8b'
+      color: WARM_UI.goldText,
+      fixedWidth: colWidth,
+      maxLines: 1
     });
     this.uiGroup.add(this.shopLevelText);
 
+    // 资金
+    this.fundsText = this.add.text(textX, cardY + 28, `资金 ${window.gameState.funds}`, {
+      fontSize: '11px',
+      fontFamily: 'Courier New',
+      color: WARM_UI.text,
+      fixedWidth: textWidth,
+      maxLines: 1
+    });
+    this.uiGroup.add(this.fundsText);
+
+    // 人气值
+    this.popularityText = this.add.text(textX, cardY + 48, `人气 ${window.gameState.popularity}`, {
+      fontSize: '11px',
+      fontFamily: 'Courier New',
+      color: WARM_UI.warningText,
+      fixedWidth: textWidth,
+      maxLines: 1
+    });
+    this.uiGroup.add(this.popularityText);
+
     // 控制提示
-    const controlHint = this.add.text(400, 575, 'WASD/方向键 移动 | E 交互 | J 委托日志 | B 背包 | U 家具升级', {
+    const controlHint = this.add.text(400, 575, 'WASD/方向键 移动 | E 交互 | J 委托日志 | B 背包 | U 家具升级 | ESC 主菜单', {
       fontSize: '12px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5);
     this.uiGroup.add(controlHint);
   }
@@ -943,14 +1020,15 @@ class ShopScene extends Phaser.Scene {
   createInteractionPrompt() {
     this.interactionPrompt = this.add.container(400, 500).setVisible(false).setDepth(50);
 
-    const promptBg = this.add.rectangle(0, 0, 160, 40, shopObjects.colors.promptBg, 0.95)
-      .setStrokeStyle(2, shopObjects.colors.promptBorder);
-    this.interactionPrompt.add(promptBg);
+    addWarmPanel(this, this.interactionPrompt, 0, 0, 164, 40, {
+      fill: WARM_UI.panelAlt,
+      alpha: 0.96
+    });
 
     this.promptText = this.add.text(0, 0, '按 E 交互', {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#ffffff'
+      color: WARM_UI.textLight
     }).setOrigin(0.5);
     this.interactionPrompt.add(this.promptText);
   }
@@ -960,17 +1038,6 @@ class ShopScene extends Phaser.Scene {
     if (this.timeManager) {
       this.timeManager.updatePauseByState(window.gameState.getGameState());
       this.timeManager.update(delta);
-    }
-
-    if (
-      this.timeManager &&
-      this.timeManager.currentHour >= 23 &&
-      !window.gameState.dayEndSummaryShown &&
-      window.gameState.canMove()
-    ) {
-      window.gameState.dayEndSummaryShown = true;
-      this.endDay();
-      return;
     }
 
     // 只有在 normal 状态下才能移动
@@ -1180,6 +1247,7 @@ class ShopScene extends Phaser.Scene {
 
   onAlchemyInteraction(data) {
     this.savePlayerPosition();
+    getSfxManager().openAlchemy();
     window.gameState.setGameState(GAME_STATE.ALCHEMY);
     this.scene.start('AlchemyScene', {
       returnScene: 'ShopScene'
@@ -1205,7 +1273,8 @@ class ShopScene extends Phaser.Scene {
   // ========== 床铺交互：睡觉选择 UI ==========
 
   onBedInteraction(data) {
-    if (this.popupContainer) return; // 防止重复打开
+    if (this.popupContainer) return;
+    getSfxManager().openMenu();
     window.gameState.setGameState(GAME_STATE.SLEEP_CHOICE);
     this.showSleepChoiceUI();
   }
@@ -1216,66 +1285,139 @@ class ShopScene extends Phaser.Scene {
 
     this.popupContainer = this.add.container(width / 2, height / 2).setDepth(100);
 
-    // 遮罩
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.3);
     this.popupContainer.add(overlay);
 
-    // 弹窗背景
-    const bg = this.add.rectangle(0, 0, 340, 340, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0x5e81ac);
-    this.popupContainer.add(bg);
+    addWarmPanel(this, this.popupContainer, 0, 0, 340, 340, { title: '床铺' });
 
-    // 标题
-    const title = this.add.text(0, -140, '【床铺】', {
-      fontSize: '20px',
-      fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
-      fontStyle: 'bold'
-    }).setOrigin(0.5);
-    this.popupContainer.add(title);
-
-    const desc = this.add.text(0, -110, '选择睡觉时间或保存进度', {
+    const desc = this.add.text(0, -110, '选择休息时长，或保存当前进度。', {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9'
+      color: WARM_UI.textMuted,
+      align: 'center',
+      wordWrap: { width: 280, useAdvancedWrap: true }
     }).setOrigin(0.5);
     this.popupContainer.add(desc);
 
-    // 睡觉选项按钮
     const options = [
-      { text: '睡 6 小时', hours: 6 },
-      { text: '睡 12 小时', hours: 12 },
-      { text: '睡 1 天', hours: 24 },
+      { text: '休息 6 小时', hours: 6 },
+      { text: '休息 12 小时', hours: 12 },
+      { text: '休息 24 小时', hours: 24 }
     ];
 
-    options.forEach((opt, i) => {
-      const y = -65 + i * 50;
-      const btn = this.createPopupButton(0, y, opt.text, () => {
-        this.onSleepSelected(opt.hours);
+    options.forEach((option, index) => {
+      const btn = this.createPopupButton(0, -65 + index * 50, option.text, () => {
+        this.onSleepSelected(option.hours);
       });
       this.popupContainer.add(btn);
     });
 
-    // 存档按钮
-    const saveBtn = this.createPopupButton(0, -65 + 3 * 50, '存档', () => {
+    const saveBtn = this.createPopupButton(0, 90, '存档', () => {
       this.openSaveLoadUI();
-    }, 0xa3be8c);
+    });
     this.popupContainer.add(saveBtn);
 
-    // 取消按钮
-    const cancelBtn = this.createPopupButton(0, -65 + 4 * 50, '取消', () => {
+    const cancelBtn = this.createPopupButton(0, 140, '取消', () => {
       this.closePopup();
     }, 0xbf616a);
     this.popupContainer.add(cancelBtn);
   }
 
   onSleepSelected(hours) {
+    if (this.hasSleptOnCurrentDay()) {
+      getSfxManager().error();
+      this.showToast('今天已经休息过了，明天再来');
+      return;
+    }
+
+    getSfxManager().confirm();
     this.closePopup();
+    this.savePlayerPosition();
+    window.gameState.hasSleptToday = true;
+    window.gameState.lastSleepDay = this.timeManager?.currentDay ?? window.gameState.timeData?.currentDay ?? window.gameState.day;
+
+    this.cameras.main.fadeOut(500, 0, 0, 0);
+    this.time.delayedCall(500, () => {
+      const oldDay = this.timeManager.currentDay;
+      this.timeManager.advanceGameTime(hours);
+      if (window.gameState.getGameState() === GAME_STATE.DAILY_SUMMARY) {
+        return;
+      }
+      if (this.timeManager.currentDay > oldDay) {
+        this.dailyLoopManager.resetForCurrentDay();
+      }
+      window.gameState.setGameState(GAME_STATE.NORMAL);
+      this.updateUI();
+      this.updateDayNight();
+      this.syncShopBgm();
+      this.cameras.main.fadeIn(500);
+    });
+  }
+
+  hasSleptOnCurrentDay() {
+    const currentDay = this.timeManager?.currentDay ?? window.gameState.timeData?.currentDay ?? window.gameState.day;
+    if (window.gameState.lastSleepDay === currentDay) return true;
+    if (window.gameState.lastSleepDay === null || window.gameState.lastSleepDay === undefined) {
+      return Boolean(window.gameState.hasSleptToday);
+    }
+    return false;
+  }
+
+  maybeShowDailySettlement(timeData = null, previousTime = null) {
+    if (!window.gameState.canMove()) return;
+
+    const current = timeData || this.timeManager?.getTimeData?.();
+    if (!current) return;
+
+    const currentDay = current.currentDay ?? current.day;
+    const currentHour = current.currentHour ?? current.hour;
+    const currentMinute = current.currentMinute ?? current.minute ?? 0;
+    const shownDay = window.gameState.dailySettlementShownDay || 0;
+    if (!currentDay || shownDay >= currentDay) return;
+
+    const currentTotal = currentHour * 60 + currentMinute;
+    if (currentTotal < 6 * 60) return;
+
+    const previousDay = previousTime?.currentDay ?? previousTime?.day;
+    const previousHour = previousTime?.currentHour ?? previousTime?.hour;
+    const previousMinute = previousTime?.currentMinute ?? previousTime?.minute ?? 0;
+    const crossedSixToday = previousDay === currentDay && ((previousHour * 60 + previousMinute) < 6 * 60);
+    const jumpedIntoSettlementWindow = previousDay !== currentDay || crossedSixToday;
+
+    if (!jumpedIntoSettlementWindow) return;
+
     this.endDay();
+  }
+
+  syncShopBgm() {
+    const timeData = this.timeManager?.getTimeData?.() || window.gameState.timeData || {};
+    getBgmManager().syncBySceneAndTime('shopMain', timeData);
+  }
+
+  updateRandomNpcPresence(timeData = null) {
+    if (!this.visitorSystem?.randomNpcManager) return;
+
+    const leftConfigIds = this.visitorSystem.randomNpcManager.updateNpcPresenceByTime(timeData);
+    if (!leftConfigIds.length) return;
+
+    this.visitorSystem.currentVisitors = this.visitorSystem.currentVisitors.filter(
+      visitor => !leftConfigIds.includes(visitor.configId)
+    );
+
+    this.visitorNPCs = this.visitorNPCs.filter((npc) => {
+      if (!leftConfigIds.includes(npc.npcData?.configId)) return true;
+      if (this.nearbyObject === npc) {
+        this.nearbyObject = null;
+        this.interactionPrompt?.setVisible(false);
+      }
+      npc.destroy();
+      return false;
+    });
   }
 
   openSaveLoadUI() {
     this.savePlayerPosition();
+    this.timeManager?._syncToGameState?.();
     if (this.popupContainer) {
       this.popupContainer.destroy();
       this.popupContainer = null;
@@ -1291,6 +1433,7 @@ class ShopScene extends Phaser.Scene {
 
   onDoorInteraction(data) {
     if (this.popupContainer) return; // 防止重复打开
+    getSfxManager().openMenu();
     window.gameState.setGameState(GAME_STATE.LOCATION_CHOICE);
     this.showLocationChoiceUI();
   }
@@ -1305,19 +1448,7 @@ class ShopScene extends Phaser.Scene {
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.3);
     this.popupContainer.add(overlay);
 
-    // 弹窗背景
-    const bg = this.add.rectangle(0, 0, 320, 260, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0xd08770);
-    this.popupContainer.add(bg);
-
-    // 标题
-    const title = this.add.text(0, -100, '要去哪里？', {
-      fontSize: '20px',
-      fontFamily: 'Georgia, serif',
-      color: '#d08770',
-      fontStyle: 'bold'
-    }).setOrigin(0.5);
-    this.popupContainer.add(title);
+    addWarmPanel(this, this.popupContainer, 0, 0, 320, 260, { title: '外出木牌' });
 
     // 地点选项
     const locations = [
@@ -1344,13 +1475,14 @@ class ShopScene extends Phaser.Scene {
     if (locationId === 'market') {
       this.showShopUI();
     } else if (locationId === 'suburbs') {
-      this.showMessage('远郊探索系统待开发\n\n后续将开放更多玩法...');
+      this.showMessage('远郊探索系统待开放。\n\n后续将开放更多玩法。');
     }
   }
 
   // ========== 集市商店 UI ==========
 
   showShopUI() {
+    getSfxManager().openMenu();
     window.gameState.setGameState(GAME_STATE.SHOP);
 
     const width = this.cameras.main.width;
@@ -1362,26 +1494,14 @@ class ShopScene extends Phaser.Scene {
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.4);
     this.popupContainer.add(overlay);
 
-    // 弹窗背景
     const panelH = 100 + this.shopItems.length * 55 + 60;
-    const bg = this.add.rectangle(0, 0, 500, Math.min(panelH, 500), 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0xa3be8c);
-    this.popupContainer.add(bg);
+    const shopPanelHeight = Math.min(panelH, 500);
+    addWarmPanel(this, this.popupContainer, 0, 0, 500, shopPanelHeight, { title: '集市货架' });
 
-    // 标题
-    const title = this.add.text(0, -Math.min(panelH, 500) / 2 + 30, '集市 - 炼金材料', {
-      fontSize: '20px',
-      fontFamily: 'Georgia, serif',
-      color: '#a3be8c',
-      fontStyle: 'bold'
-    }).setOrigin(0.5);
-    this.popupContainer.add(title);
-
-    // 资金显示
-    this.shopFundsText = this.add.text(0, -Math.min(panelH, 500) / 2 + 55, `当前资金: ${window.gameState.funds}`, {
+    this.shopFundsText = this.add.text(0, -shopPanelHeight / 2 + 50, `当前资金：${window.gameState.funds}`, {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: '#ebcb8b'
+      color: WARM_UI.goldText
     }).setOrigin(0.5);
     this.popupContainer.add(this.shopFundsText);
 
@@ -1390,13 +1510,13 @@ class ShopScene extends Phaser.Scene {
       x: 0,
       y: 28,
       width: 456,
-      height: Math.min(panelH, 500) - 160,
+      height: shopPanelHeight - 160,
       rowHeight: 50,
       rowGap: 4
     });
     this.renderShopScrollableList();
 
-    const closeBtn = this.createPopupButton(0, Math.min(panelH, 500) / 2 - 30, '关闭', () => {
+    const closeBtn = this.createPopupButton(0, shopPanelHeight / 2 - 30, '关闭', () => {
       this.closePopup();
     }, 0xbf616a);
     this.popupContainer.add(closeBtn);
@@ -1406,36 +1526,27 @@ class ShopScene extends Phaser.Scene {
     if (!this.shopList) return;
     this.shopList.render(this.shopItems, (item, index, width, rowHeight) => {
       const row = this.add.container(0, 0);
-      const rowBg = this.add.rectangle(width / 2, rowHeight / 2, width - 12, 42, 0x3b4252, 0.8)
-        .setStrokeStyle(2, 0x4c566a);
+      const rowBg = this.add.rectangle(width / 2, rowHeight / 2, width - 12, 42, WARM_UI.panelLight, 0.88)
+        .setStrokeStyle(2, WARM_UI.border);
       row.add(rowBg);
 
       row.add(this.add.text(14, rowHeight / 2 - 8, item.itemName, {
         fontSize: '15px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4'
+        color: WARM_UI.text
       }));
 
-      row.add(this.add.text(width - 160, rowHeight / 2 - 8, item.price + ' 金', {
+      row.add(this.add.text(width - 160, rowHeight / 2 - 8, `${item.price} 铜币`, {
         fontSize: '13px',
         fontFamily: 'Courier New',
-        color: '#ebcb8b'
+        color: WARM_UI.goldText
       }));
 
-      const buyBtnBg = this.add.rectangle(width - 55, rowHeight / 2, 60, 30, 0x5e81ac, 0.9)
-        .setStrokeStyle(2, 0x81a1c1)
-        .setInteractive({ useHandCursor: true });
-      row.add(buyBtnBg);
-
-      row.add(this.add.text(width - 55, rowHeight / 2, '购买', {
-        fontSize: '12px',
-        fontFamily: 'Georgia, serif',
-        color: '#eceff4'
-      }).setOrigin(0.5));
-
-      buyBtnBg.on('pointerover', () => buyBtnBg.setFillStyle(0x81a1c1));
-      buyBtnBg.on('pointerout', () => buyBtnBg.setFillStyle(0x5e81ac));
-      buyBtnBg.on('pointerdown', () => this.buyShopItem(item));
+      addWarmButton(this, row, width - 55, rowHeight / 2, '购买', () => this.buyShopItem(item), {
+        width: 60,
+        height: 30,
+        fontSize: '12px'
+      });
       return row;
     }, { emptyText: '暂无商品' });
   }
@@ -1443,12 +1554,14 @@ class ShopScene extends Phaser.Scene {
     const funds = window.gameState.funds;
 
     if (funds < shopItem.price) {
+      getSfxManager().buyFail();
       this.showToast('资金不足！');
       return;
     }
 
     // 扣除资金
     window.gameState.modifyFunds(-shopItem.price);
+    getSfxManager().buySuccess();
     this.dailyLoopManager.recordMoneySpent(shopItem.price);
 
     // 添加物品到背包
@@ -1456,45 +1569,23 @@ class ShopScene extends Phaser.Scene {
     this.dailyLoopManager.recordItemGained(shopItem.itemId, 1);
 
     // 刷新资金显示
-    this.fundsText.setText(`资金: ${window.gameState.funds}`);
+    this.fundsText.setText(`资金 ${window.gameState.funds}`);
     if (this.shopFundsText) {
-      this.shopFundsText.setText(`当前资金: ${window.gameState.funds}`);
+      this.shopFundsText.setText(`当前资金：${window.gameState.funds}`);
     }
 
-    this.showToast(`购买成功: ${shopItem.itemName}`);
+    this.showToast(`购买成功：${shopItem.itemName}`);
   }
 
   // ========== 通用弹出按钮 ==========
 
   createPopupButton(x, y, text, callback, color) {
-    const btn = this.add.container(x, y);
-
-    const bgColor = color || 0x5e81ac;
-    const borderColor = color ? (color === 0xbf616a ? 0xd08770 : 0x81a1c1) : 0x81a1c1;
-
-    const bg = this.add.rectangle(0, 0, 220, 38, bgColor, 0.9)
-      .setStrokeStyle(2, borderColor)
-      .setInteractive({ useHandCursor: true });
-    btn.add(bg);
-
-    const btnText = this.add.text(0, 0, text, {
-      fontSize: '16px',
-      fontFamily: 'Georgia, serif',
-      color: '#eceff4'
-    }).setOrigin(0.5);
-    btn.add(btnText);
-
-    bg.on('pointerover', () => {
-      bg.setFillStyle(borderColor);
+    return addWarmButton(this, null, x, y, text, callback, {
+      width: 220,
+      height: 38,
+      fill: color === 0xbf616a ? WARM_UI.warning : WARM_UI.button,
+      fontSize: '16px'
     });
-    bg.on('pointerout', () => {
-      bg.setFillStyle(bgColor);
-    });
-    bg.on('pointerdown', () => {
-      callback();
-    });
-
-    return btn;
   }
 
   // ========== 关闭弹出 UI ==========
@@ -1508,6 +1599,7 @@ class ShopScene extends Phaser.Scene {
       this.popupContainer.destroy();
       this.popupContainer = null;
     }
+    getSfxManager().closeMenu();
     this.shopFundsText = null;
     window.gameState.setGameState(GAME_STATE.NORMAL);
   }
@@ -1518,6 +1610,7 @@ class ShopScene extends Phaser.Scene {
   endDay() {
     this.savePlayerPosition();
     window.gameState.dayEndSummaryShown = true;
+    window.gameState.dailySettlementShownDay = this.timeManager?.currentDay ?? window.gameState.timeData?.currentDay ?? window.gameState.day;
     const summary = this.dailyLoopManager.getSummary();
 
     window.gameState.setGameState(GAME_STATE.DAILY_SUMMARY);
@@ -1551,14 +1644,12 @@ class ShopScene extends Phaser.Scene {
 
     const notifContainer = this.add.container(width / 2, height / 2 - 80).setDepth(100);
 
-    const bg = this.add.rectangle(0, 0, 400, 70, 0x2e3440, 0.95)
-      .setStrokeStyle(3, 0xebcb8b);
-    notifContainer.add(bg);
+    addWarmPanel(this, notifContainer, 0, 0, 400, 78, { fill: WARM_UI.panelLight });
 
-    const text = this.add.text(0, -10, '今天有客人来访，请前往接待', {
+    const text = this.add.text(0, -10, '今日有 NPC 到访！请前往接待', {
       fontSize: '18px',
       fontFamily: 'Georgia, serif',
-      color: '#ebcb8b',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     notifContainer.add(text);
@@ -1566,7 +1657,7 @@ class ShopScene extends Phaser.Scene {
     const hint = this.add.text(0, 18, '（点击任意位置关闭）', {
       fontSize: '12px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5);
     notifContainer.add(hint);
 
@@ -1581,6 +1672,9 @@ class ShopScene extends Phaser.Scene {
         onComplete: () => {
           notifContainer.destroy();
           window.gameState.setGameState(GAME_STATE.NORMAL);
+          this.time.delayedCall(100, () => {
+            showTutorialIfNeeded(this, 'firstVisitorNpcAppeared');
+          });
         }
       });
     };
@@ -1611,28 +1705,27 @@ class ShopScene extends Phaser.Scene {
     this.rewardPopup.add(overlay);
 
     const popupH = 80 + rewards.length * 30;
-    const bg = this.add.rectangle(0, 0, 350, popupH, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0xebcb8b);
-    this.rewardPopup.add(bg);
+    addWarmPanel(this, this.rewardPopup, 0, 0, 350, popupH, {});
 
-    const titleText = this.add.text(0, -popupH / 2 + 25, '获得物品', {
+    const titleText = this.add.text(0, -popupH / 2 + 32, '获得物品', {
       fontSize: '20px',
       fontFamily: 'Georgia, serif',
-      color: '#ebcb8b',
+      color: '#2b1a0e',
       fontStyle: 'bold'
     }).setOrigin(0.5);
     this.rewardPopup.add(titleText);
 
-    const divider = this.add.rectangle(0, -popupH / 2 + 45, 300, 1, 0x4c566a);
+    const divider = this.add.rectangle(0, -popupH / 2 + 52, 300, 1, WARM_UI.border, 0.45);
     this.rewardPopup.add(divider);
 
     rewards.forEach((item, i) => {
-      const y = -popupH / 2 + 65 + i * 28;
-      const prefix = item.isKeyItem ? '★ ' : '';
+      const y = -popupH / 2 + 72 + i * 28;
+      const prefix = item.isKeyItem ? '◆ ' : '';
       const itemText = this.add.text(0, y, `${prefix}${item.name} x ${item.count}`, {
-        fontSize: '15px',
+        fontSize: '16px',
         fontFamily: 'Georgia, serif',
-        color: item.isKeyItem ? '#ebcb8b' : '#a3be8c'
+        color: item.isKeyItem ? '#8a541c' : '#2b1a0e',
+        fontStyle: 'bold'
       }).setOrigin(0.5);
       this.rewardPopup.add(itemText);
     });
@@ -1640,7 +1733,7 @@ class ShopScene extends Phaser.Scene {
     const closeHint = this.add.text(0, popupH / 2 - 20, '点击任意位置关闭', {
       fontSize: '12px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: '#6b5038'
     }).setOrigin(0.5);
     this.rewardPopup.add(closeHint);
 
@@ -1662,23 +1755,21 @@ class ShopScene extends Phaser.Scene {
   showMessage(message) {
     const msgBox = this.add.container(400, 300).setDepth(100);
 
-    const bg = this.add.rectangle(0, 0, 380, 160, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0x88c0d0);
-    msgBox.add(bg);
+    addWarmPanel(this, msgBox, 0, 0, 380, 160, { fill: WARM_UI.panelLight });
 
     const text = this.add.text(0, 0, message, {
       fontSize: '15px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       align: 'center',
       lineSpacing: 6
     }).setOrigin(0.5).setWordWrapWidth(340);
     msgBox.add(text);
 
-    const hint = this.add.text(0, 65, '(点击任意处继续)', {
+    const hint = this.add.text(0, 65, '（点击任意处继续）', {
       fontSize: '11px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5);
     msgBox.add(hint);
 
@@ -1687,17 +1778,56 @@ class ShopScene extends Phaser.Scene {
     });
   }
 
+  // ========== ESC exit confirm ==========
+
+  _showExitConfirm() {
+    if (this._exitConfirmContainer) return;
+    const w = this.cameras.main.width;
+    const h = this.cameras.main.height;
+    this._exitConfirmContainer = this.add.container(w / 2, h / 2).setDepth(300);
+    this._exitConfirmContainer.add(this.add.rectangle(0, 0, w, h, 0x000000, 0.45).setInteractive());
+    addWarmPanel(this, this._exitConfirmContainer, 0, 0, 400, 180, { title: '提示', fill: WARM_UI.panel, alpha: 0.98 });
+    this._exitConfirmContainer.add(this.add.text(0, -20, '确定要返回主菜单吗？\n返回前会自动存档。', {
+      fontSize: '17px', fontFamily: 'Georgia, serif', color: WARM_UI.text, align: 'center', lineSpacing: 6
+    }).setOrigin(0.5));
+    const yesBtn = this.createPopupButton(-80, 50, '是', () => {
+      getSfxManager().confirm();
+      if (this._exitConfirmContainer) { this._exitConfirmContainer.destroy(); this._exitConfirmContainer = null; }
+      this._doExitToMenu();
+    });
+    this._exitConfirmContainer.add(yesBtn);
+    const noBtn = this.createPopupButton(80, 50, '否', () => {
+      getSfxManager().cancel();
+      if (this._exitConfirmContainer) { this._exitConfirmContainer.destroy(); this._exitConfirmContainer = null; }
+    }, 0xbf616a);
+    this._exitConfirmContainer.add(noBtn);
+    this._exitConfirmContainer.setAlpha(0);
+    this.tweens.add({ targets: this._exitConfirmContainer, alpha: 1, duration: 300 });
+  }
+
+  _doExitToMenu() {
+    this.savePlayerPosition();
+    this.timeManager?._syncToGameState?.();
+    try {
+      const result = new SaveLoadManager(window.gameState).autoSave('returnToMenu');
+      if (!result.success) {
+        console.warn('[ShopScene] 自动存档失败:', result.message);
+      }
+    } catch (e) {
+      console.warn('[ShopScene] 自动存档异常:', e);
+    }
+    this.scene.start('TitleScene');
+  }
+
   showToast(message, duration = 2000) {
     const toast = this.add.container(400, 280).setDepth(100);
 
-    const bg = this.add.rectangle(0, 0, 350, 50, 0x2e3440, 0.95)
-      .setStrokeStyle(2, 0xa3be8c);
-    toast.add(bg);
+    addWarmPanel(this, toast, 0, 0, 350, 54, { fill: WARM_UI.panelLight });
 
     const text = this.add.text(0, 0, message, {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#a3be8c'
+      color: WARM_UI.alchemyText
     }).setOrigin(0.5);
     toast.add(text);
 
@@ -1725,10 +1855,10 @@ class ShopScene extends Phaser.Scene {
     if (this.dayPhaseText) {
       this.dayPhaseText.setText(this._getDayPhaseLabel());
     }
-    this.fundsText.setText(`资金: ${window.gameState.funds}`);
-    this.popularityText.setText(`人气: ${window.gameState.popularity}`);
+    this.fundsText.setText(`资金 ${window.gameState.funds}`);
+    this.popularityText.setText(`人气 ${window.gameState.popularity}`);
     if (this.shopLevelText) {
-      this.shopLevelText.setText(`万事屋等级: Lv${window.gameState.wanShiWuLevel || 1}`);
+      this.shopLevelText.setText(`Lv.${window.gameState.wanShiWuLevel || 1}`);
     }
     this.showPendingSystemMessages();
 

@@ -69,6 +69,11 @@ export default class InventorySystem {
       name: itemData ? itemData.name : '未知物品',
       type: itemData ? itemData.type : 'normal_item',
       description: itemData ? itemData.description : '尚未记录说明',
+      icon: itemData?.icon || '',
+      previewIcon: itemData?.previewIcon || itemData?.icon || '',
+      previewImage: itemData?.previewImage || '',
+      value: itemData ? this.itemSystem.getItemValue(itemId) : 0,
+      quality: itemData?.quality || '',
       isKeyItem: false,
       sourceNpcId: sourceNpcId || ''
     });
@@ -94,6 +99,10 @@ export default class InventorySystem {
       name: itemData ? itemData.name : '未知物品',
       type: itemData ? itemData.type : 'key_item',
       description: itemData ? itemData.description : '尚未记录说明',
+      icon: itemData?.icon || '',
+      previewIcon: itemData?.previewIcon || itemData?.icon || '',
+      previewImage: itemData?.previewImage || '',
+      value: itemData ? this.itemSystem.getItemValue(itemId) : 0,
       isKeyItem: true,
       sourceNpcId: sourceNpcId || ''
     });
@@ -204,6 +213,11 @@ export default class InventorySystem {
       name: item.name || this.itemSystem.getItemName(item.id),
       type: item.type || this.itemSystem.getItemType(item.id),
       description: item.description || this.itemSystem.getItemDescription(item.id),
+      icon: item.icon || this.itemSystem.getItemIcon(item.id),
+      previewIcon: item.previewIcon || this.itemSystem.getItemPreviewIcon(item.id),
+      previewImage: item.previewImage || this.itemSystem.getItemPreviewImage(item.id),
+      value: item.value ?? this.itemSystem.getItemValue(item.id),
+      quality: item.quality || this.itemSystem.getItem(item.id)?.quality || '',
       count: item.count,
       isKeyItem: false,
       sourceNpcId: item.sourceNpcId || ''
@@ -217,6 +231,10 @@ export default class InventorySystem {
       name: item.name || this.itemSystem.getItemName(item.id),
       type: item.type || this.itemSystem.getItemType(item.id),
       description: item.description || this.itemSystem.getItemDescription(item.id),
+      icon: item.icon || this.itemSystem.getItemIcon(item.id),
+      previewIcon: item.previewIcon || this.itemSystem.getItemPreviewIcon(item.id),
+      previewImage: item.previewImage || this.itemSystem.getItemPreviewImage(item.id),
+      value: item.value ?? this.itemSystem.getItemValue(item.id),
       obtainedAt: item.obtainedAt,
       isKeyItem: true,
       sourceNpcId: item.sourceNpcId || ''

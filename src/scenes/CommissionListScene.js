@@ -1,9 +1,12 @@
 // 委托列表场景 - 支持长期/短期委托分页
 import gameConfig from '../data/gameConfig.json';
+import { getSfxManager } from '../systems/SfxManager';
 import dialogues from '../data/dialogues.json';
 import CommissionSystem from '../systems/CommissionSystem';
 import ScrollableListUI from '../systems/ScrollableListUI';
 import { GAME_STATE } from '../systems/GameState';
+import { WARM_UI, addWarmButton, addWarmPanel } from '../ui/WarmUITheme';
+import { showTutorialIfNeeded } from '../systems/TutorialManager';
 
 class CommissionListScene extends Phaser.Scene {
   constructor() {
@@ -37,37 +40,35 @@ class CommissionListScene extends Phaser.Scene {
     const panelHeight = 520;
     this.panel = this.add.container(width / 2, height / 2);
 
-    const panelBg = this.add.rectangle(0, 0, panelWidth, panelHeight, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0x88c0d0);
-    this.panel.add(panelBg);
+    addWarmPanel(this, this.panel, 0, 0, panelWidth, panelHeight, {});
 
     // 标题
     const title = this.add.text(0, -235, '委托列表', {
       fontSize: '28px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     this.panel.add(title);
 
     // ========== 分页标签 ==========
-    this.longTabBg = this.add.rectangle(-80, -195, 140, 34, 0x5e81ac, 0.9)
-      .setStrokeStyle(2, 0x81a1c1)
+    this.longTabBg = this.add.rectangle(-80, -195, 140, 34, WARM_UI.button, 0.9)
+      .setStrokeStyle(2, WARM_UI.buttonHover)
       .setInteractive({ useHandCursor: true });
     this.longTabText = this.add.text(-80, -195, '长期委托', {
       fontSize: '15px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     
-    this.shortTabBg = this.add.rectangle(80, -195, 140, 34, 0x3b4252, 0.9)
-      .setStrokeStyle(2, 0x4c566a)
+    this.shortTabBg = this.add.rectangle(80, -195, 140, 34, WARM_UI.panelLight, 0.9)
+      .setStrokeStyle(2, WARM_UI.border)
       .setInteractive({ useHandCursor: true });
     this.shortTabText = this.add.text(80, -195, '短期委托', {
       fontSize: '15px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       fontStyle: 'bold'
     }).setOrigin(0.5);
 
@@ -81,16 +82,16 @@ class CommissionListScene extends Phaser.Scene {
       this.switchTab('shortTerm');
     });
     this.longTabBg.on('pointerover', () => {
-      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(0x4c566a, 0.9);
+      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(WARM_UI.border, 0.9);
     });
     this.longTabBg.on('pointerout', () => {
-      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(0x3b4252, 0.9);
+      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
     });
     this.shortTabBg.on('pointerover', () => {
-      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(0x4c566a, 0.9);
+      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(WARM_UI.border, 0.9);
     });
     this.shortTabBg.on('pointerout', () => {
-      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(0x3b4252, 0.9);
+      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
     });
 
     // 委托列表容器
@@ -114,7 +115,7 @@ class CommissionListScene extends Phaser.Scene {
     const returnHint = this.add.text(width / 2, height - 30, '按 ESC 或 点击此处 返回', {
       fontSize: '14px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5).setDepth(20);
     
     this.input.on('pointerdown', (pointer) => {
@@ -125,11 +126,15 @@ class CommissionListScene extends Phaser.Scene {
 
     // ESC 返回
     this.input.keyboard.on('keydown-ESC', () => {
+      if (this.__tutorialModalOpen) return;
       this.returnToShop();
     });
 
     // 淡入
     this.cameras.main.fadeIn(300);
+    this.time.delayedCall(120, () => {
+      showTutorialIfNeeded(this, 'counterOpened');
+    });
   }
 
   // ========== 分页切换 ==========
@@ -143,19 +148,19 @@ class CommissionListScene extends Phaser.Scene {
 
   updateTabStyles() {
     if (this.currentTab === 'longTerm') {
-      this.longTabBg.setFillStyle(0x5e81ac, 0.9);
-      this.longTabBg.setStrokeStyle(2, 0x81a1c1);
-      this.longTabText.setColor('#eceff4');
-      this.shortTabBg.setFillStyle(0x3b4252, 0.9);
-      this.shortTabBg.setStrokeStyle(2, 0x4c566a);
-      this.shortTabText.setColor('#d8dee9');
+      this.longTabBg.setFillStyle(WARM_UI.button, 0.9);
+      this.longTabBg.setStrokeStyle(2, WARM_UI.buttonHover);
+      this.longTabText.setColor(WARM_UI.textLight);
+      this.shortTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
+      this.shortTabBg.setStrokeStyle(2, WARM_UI.border);
+      this.shortTabText.setColor(WARM_UI.textMuted);
     } else {
-      this.shortTabBg.setFillStyle(0xbf616a, 0.9);
-      this.shortTabBg.setStrokeStyle(2, 0xd08770);
-      this.shortTabText.setColor('#eceff4');
-      this.longTabBg.setFillStyle(0x3b4252, 0.9);
-      this.longTabBg.setStrokeStyle(2, 0x4c566a);
-      this.longTabText.setColor('#d8dee9');
+      this.shortTabBg.setFillStyle(WARM_UI.warning, 0.9);
+      this.shortTabBg.setStrokeStyle(2, WARM_UI.gold);
+      this.shortTabText.setColor(WARM_UI.textLight);
+      this.longTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
+      this.longTabBg.setStrokeStyle(2, WARM_UI.border);
+      this.longTabText.setColor(WARM_UI.textMuted);
     }
   }
 
@@ -190,7 +195,7 @@ class CommissionListScene extends Phaser.Scene {
       const noComm = this.add.text(0, 0, `目前没有${tabName}委托，\n请明天再来看看。`, {
         fontSize: '18px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a',
+        color: WARM_UI.textMuted,
         align: 'center',
         lineSpacing: 8
       }).setOrigin(0.5);
@@ -212,23 +217,23 @@ class CommissionListScene extends Phaser.Scene {
   createCommissionItem(commission, x, y, index) {
     const item = this.add.container(x, y);
 
-    const fixedBg = this.add.rectangle(0, 0, 620, 75, 0x3b4252, 0.8)
-      .setStrokeStyle(2, 0x4c566a);
+    const fixedBg = this.add.rectangle(0, 0, 620, 75, WARM_UI.panelLight, 0.8)
+      .setStrokeStyle(2, WARM_UI.border);
     item.add(fixedBg);
 
-    const fixedTypeColor = commission.type === 'shortTerm' ? 0xbf616a : 0xa3be8c;
+    const fixedTypeColor = commission.type === 'shortTerm' ? WARM_UI.warning : WARM_UI.alchemy;
     const fixedTypeText = commission.type === 'shortTerm' ? '短期' : '长期';
     item.add(this.add.rectangle(-260, -22, 50, 22, fixedTypeColor, 0.8).setStrokeStyle(1, fixedTypeColor));
     item.add(this.add.text(-260, -22, fixedTypeText, {
       fontSize: '11px',
       fontFamily: 'Courier New',
-      color: '#eceff4'
+      color: WARM_UI.textLight
     }).setOrigin(0.5));
 
     item.add(this.add.text(-225, -23, commission.title || '未命名委托', {
       fontSize: '15px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold',
       wordWrap: { width: 285, useAdvancedWrap: true },
       maxLines: 1
@@ -237,7 +242,7 @@ class CommissionListScene extends Phaser.Scene {
     item.add(this.add.text(-280, 4, commission.description || '这项委托的详细说明已记录在柜台档案中。', {
       fontSize: '12px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       wordWrap: { width: 360, useAdvancedWrap: true },
       lineSpacing: 2,
       maxLines: 2
@@ -246,32 +251,22 @@ class CommissionListScene extends Phaser.Scene {
     item.add(this.add.text(95, -18, `剩余时间：${commission.availableTimeText || `${commission.daysRemaining ?? '?'} 天`}`, {
       fontSize: '11px',
       fontFamily: 'Courier New',
-      color: '#d8dee9'
+      color: WARM_UI.textMuted
     }).setOrigin(0, 0.5));
 
     item.add(this.add.text(95, 10, `收益：+${commission.reward.funds}资金 +${commission.reward.popularity}人气`, {
       fontSize: '11px',
       fontFamily: 'Courier New',
-      color: '#a3be8c',
+      color: WARM_UI.alchemyText,
       wordWrap: { width: 145, useAdvancedWrap: true },
       maxLines: 1
     }).setOrigin(0, 0.5));
 
-    const fixedBtn = this.add.container(270, 12);
-    const fixedBtnBg = this.add.rectangle(0, 0, 58, 42, 0x5e81ac, 0.9)
-      .setStrokeStyle(1, 0x81a1c1);
-    fixedBtn.add(fixedBtnBg);
-    fixedBtn.add(this.add.text(0, 0, '接取', {
-      fontSize: '12px',
-      fontFamily: 'Georgia, serif',
-      color: '#eceff4'
-    }).setOrigin(0.5));
-    fixedBtn.setSize(58, 42);
-    fixedBtn.setInteractive({ useHandCursor: true });
-    fixedBtn.on('pointerover', () => fixedBtnBg.setFillStyle(0x81a1c1));
-    fixedBtn.on('pointerout', () => fixedBtnBg.setFillStyle(0x5e81ac));
-    fixedBtn.on('pointerdown', () => this.acceptCommission(commission));
-    item.add(fixedBtn);
+    addWarmButton(this, item, 270, 12, '接取', () => this.acceptCommission(commission), {
+      width: 58,
+      height: 42,
+      fontSize: '12px'
+    });
 
     return item;
   }
@@ -280,11 +275,20 @@ class CommissionListScene extends Phaser.Scene {
     const success = this.commissionSystem.acceptCommission(commission.id);
     
     if (!success) {
+      getSfxManager().error();
       this.showToast('接取失败');
       return;
     }
 
+    getSfxManager().questAccept();
     this.showToast(`成功接取「${commission.title}」的委托！`);
+
+    const shownTutorial = showTutorialIfNeeded(this, 'firstCommissionAccepted', {
+      onClose: () => {
+        this.time.delayedCall(500, () => this.startCommissionDialogue(commission));
+      }
+    });
+    if (shownTutorial) return;
 
     this.time.delayedCall(1500, () => {
       this.startCommissionDialogue(commission);
@@ -309,14 +313,14 @@ class CommissionListScene extends Phaser.Scene {
     
     const toast = this.add.container(width / 2, height / 2 - 50).setDepth(100);
     
-    const bg = this.add.rectangle(0, 0, 350, 50, 0x2e3440, 0.95)
+    const bg = this.add.rectangle(0, 0, 350, 50, WARM_UI.panel, 0.95)
       .setStrokeStyle(2, 0xa3be8c);
     toast.add(bg);
     
     const text = this.add.text(0, 0, message, {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#a3be8c'
+      color: WARM_UI.alchemyText
     }).setOrigin(0.5);
     toast.add(text);
     

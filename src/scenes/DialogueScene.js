@@ -1,4 +1,6 @@
-// 对话场景 - 数据驱动的对话系统（支持对话历史滚动 + 物品奖励）
+﻿import { WARM_UI, addWarmButton, addWarmPanel, addWarmTag } from '../ui/WarmUITheme';
+import { getSfxManager } from '../systems/SfxManager';
+// 瀵硅瘽鍦烘櫙 - 鏁版嵁椹卞姩鐨勫璇濈郴缁燂紙鏀寔瀵硅瘽鍘嗗彶婊氬姩 + 鐗╁搧濂栧姳锛?
 import dialogues from '../data/dialogues.json';
 import InventorySystem from '../systems/InventorySystem';
 import VisitorSystem from '../systems/VisitorSystem';
@@ -25,20 +27,20 @@ class DialogueScene extends Phaser.Scene {
     this._inputLocked = false;
     this._onTypingComplete = null;
 
-    // ========== 对话历史 ==========
+    // ========== 瀵硅瘽鍘嗗彶 ==========
     this.dialogueHistory = [];       // { speakerName, text, isPlayerChoice, choiceText, dialogueIndex }
-    this.scrollOffset = 0;          // 0 = 当前对话, >0 = 查看历史
-    this.isViewingHistory = false;   // 是否正在查看历史
-    this.historyOverlay = null;      // 历史文本容器
+    this.scrollOffset = 0;          // 0 = 褰撳墠瀵硅瘽, >0 = 鏌ョ湅鍘嗗彶
+    this.isViewingHistory = false;   // 鏄惁姝ｅ湪鏌ョ湅鍘嗗彶
+    this.historyOverlay = null;      // 鍘嗗彶鏂囨湰瀹瑰櫒
 
-    // ========== NPC 对话结束处理 ==========
-    this.npcIdForVisitor = null;     // 用于标记随机 NPC 对话结束
+    // ========== NPC 瀵硅瘽缁撴潫澶勭悊 ==========
+    this.npcIdForVisitor = null;     // 鐢ㄤ簬鏍囪闅忔満 NPC 瀵硅瘽缁撴潫
     this.visitorConfigId = null;
     this.visitorDialogueMarked = false;
   }
 
   init(data) {
-    // 如果是从 MemoryScene 返回，直接处理返回逻辑
+    // 濡傛灉鏄粠 MemoryScene 杩斿洖锛岀洿鎺ュ鐞嗚繑鍥為€昏緫
     if (data.fromMemory) {
       this.fromMemory = true;
       this.returnScene = data.returnScene || 'ShopScene';
@@ -51,7 +53,7 @@ class DialogueScene extends Phaser.Scene {
     this.currentDialogueId = data.dialogueId || null;
     this.returnScene = data.returnScene || 'ShopScene';
     this.npcId = data.npcId || null;
-    this.npcIdForVisitor = data.npcId || null; // 用于标记来访 NPC 对话结束
+    this.npcIdForVisitor = data.npcId || null; // 鐢ㄤ簬鏍囪鏉ヨ NPC 瀵硅瘽缁撴潫
     this.visitorConfigId = data.visitorConfigId || null;
     this.visitorDialogueMarked = false;
     this.pendingMemory = null;
@@ -62,7 +64,7 @@ class DialogueScene extends Phaser.Scene {
     this.scrollOffset = 0;
     this.isViewingHistory = false;
     
-    // 初始化背包系统
+    // 鍒濆鍖栬儗鍖呯郴缁?
     if (window.gameState) {
       this.inventorySystem = new InventorySystem(window.gameState);
       window.gameState.setReturnScene(this.returnScene);
@@ -74,59 +76,59 @@ class DialogueScene extends Phaser.Scene {
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
-    // 重置相机状态，防止残留黑屏
+    // 閲嶇疆鐩告満鐘舵€侊紝闃叉娈嬬暀榛戝睆
     this.cameras.main.resetFX();
 
-    // 半透明背景
+    // 鍗婇€忔槑鑳屾櫙
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.75);
 
-    // 对话框容器
+    // 瀵硅瘽妗嗗鍣?
     this.dialogBox = this.add.container(0, 0).setDepth(10);
 
-    // NPC 立绘区域（左侧）
+    // NPC 绔嬬粯鍖哄煙锛堝乏渚э級
     this.portraitContainer = this.add.container(100, height / 2 - 50).setDepth(11);
     this.dialogBox.add(this.portraitContainer);
 
-    // 立绘背景
-    const portraitBg = this.add.rectangle(0, 0, 150, 200, 0x2e3440)
-      .setStrokeStyle(3, 0x4c566a);
-    this.portraitContainer.add(portraitBg);
+    // 绔嬬粯鑳屾櫙
+    addWarmPanel(this, this.portraitContainer, 0, 0, 150, 200, {
+      fill: WARM_UI.panelAlt
+    });
 
-    // 立绘基础底板
-    this.portraitImage = this.add.rectangle(0, 0, 130, 180, 0x3b4252)
-      .setStrokeStyle(2, 0x4c566a);
+    // 绔嬬粯鍩虹搴曟澘
+    this.portraitImage = this.add.rectangle(0, 0, 130, 180, WARM_UI.panelLight)
+      .setStrokeStyle(2, WARM_UI.border);
     this.portraitContainer.add(this.portraitImage);
 
-    // 对话框主体
-    const dialogBg = this.add.rectangle(width / 2, height - 100, width - 80, 180, 0x2e3440)
-      .setStrokeStyle(3, 0x88c0d0);
-    this.dialogBox.add(dialogBg);
+    // 瀵硅瘽妗嗕富浣?
+    addWarmPanel(this, this.dialogBox, width / 2, height - 100, width - 80, 180, {
+      fill: WARM_UI.panelLight
+    });
 
     const dialogLeft = 70;
     const dialogTextWidth = width - 180;
     const dialogTop = height - 190;
 
-    // 说话人名字区域放在对话框内部，并在背景之后绘制，避免被对话框遮挡。
-    const nameBg = this.add.rectangle(dialogLeft, dialogTop + 26, 240, 30, 0x2e3440)
+    // 角色名木牌
+    const nameBg = this.add.rectangle(dialogLeft, dialogTop + 26, 240, 30, WARM_UI.panelDark)
       .setOrigin(0, 0.5)
-      .setStrokeStyle(2, 0x88c0d0);
+      .setStrokeStyle(2, WARM_UI.border);
     this.dialogBox.add(nameBg);
 
     this.nameText = this.add.text(dialogLeft + 14, dialogTop + 26, '', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.textLight,
       fontStyle: 'bold',
       wordWrap: { width: 210, useAdvancedWrap: true },
       maxLines: 1
     }).setOrigin(0, 0.5);
     this.dialogBox.add(this.nameText);
 
-    // 对话文本
+    // 瀵硅瘽鏂囨湰
     this.dialogueText = this.add.text(dialogLeft + 42, dialogTop + 48, '', {
       fontSize: '18px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       wordWrap: { width: dialogTextWidth, useAdvancedWrap: true },
       lineSpacing: 6,
       fixedWidth: dialogTextWidth,
@@ -134,15 +136,15 @@ class DialogueScene extends Phaser.Scene {
     });
     this.dialogBox.add(this.dialogueText);
 
-    // 选项容器
+    // 閫夐」瀹瑰櫒
     this.choicesContainer = this.add.container(width / 2, height - 54).setDepth(12);
     this.dialogBox.add(this.choicesContainer);
 
-    // 继续提示
-    this.continueHint = this.add.text(width - 60, height - 20, '▼', {
+    // 缁х画鎻愮ず
+    this.continueHint = this.add.text(width - 60, height - 20, '>>', {
       fontSize: '16px',
       fontFamily: 'Courier New',
-      color: '#88c0d0'
+      color: WARM_UI.text
     }).setDepth(13);
     this.tweens.add({
       targets: this.continueHint,
@@ -152,29 +154,29 @@ class DialogueScene extends Phaser.Scene {
       repeat: -1
     });
 
-    // 历史浏览提示
-    this.historyHint = this.add.text(width / 2, height - 18, '↑↓ 浏览历史对话', {
+    // 鍘嗗彶娴忚鎻愮ず
+    this.historyHint = this.add.text(width / 2, height - 18, '鈫戔啌 娴忚鍘嗗彶瀵硅瘽', {
       fontSize: '12px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5).setDepth(13).setVisible(false);
 
-    // 点击继续
+    // 鐐瑰嚮缁х画
     this.input.on('pointerdown', () => {
       this.handleClick();
     });
 
-    // 空格键继续
+    // 绌烘牸閿户缁?
     this.input.keyboard.on('keydown-SPACE', () => {
       this.handleClick();
     });
 
-    // ========== 鼠标滚轮查看对话历史 ==========
+    // ========== 榧犳爣婊氳疆鏌ョ湅瀵硅瘽鍘嗗彶 ==========
     this.input.on('wheel', (pointer, currentlyOver, dx, dy) => {
       this.handleWheel(dy);
     });
 
-    // 加载对话数据
+    // 鍔犺浇瀵硅瘽鏁版嵁
     if (this.fromMemory) {
       this.inventorySystem = new InventorySystem(window.gameState);
       if (this.pendingNextDialogue) {
@@ -186,22 +188,22 @@ class DialogueScene extends Phaser.Scene {
       this.loadDialogue(this.currentDialogueId);
     }
 
-    // 淡入
+    // 娣″叆
     this.cameras.main.fadeIn(300);
   }
 
-  // ========== 鼠标滚轮处理 ==========
+  // ========== 榧犳爣婊氳疆澶勭悊 ==========
 
   handleWheel(dy) {
     if (this.dialogueHistory.length === 0) return;
 
-    // dy < 0 = 上滚（查看更早的对话）
-    // dy > 0 = 下滚（回到更新的对话）
+    // dy < 0 = 涓婃粴锛堟煡鐪嬫洿鏃╃殑瀵硅瘽锛?
+    // dy > 0 = 涓嬫粴锛堝洖鍒版洿鏂扮殑瀵硅瘽锛?
     if (dy < 0) {
-      // 上滚 — 查看更早的对话
+      // 涓婃粴 鈥?鏌ョ湅鏇存棭鐨勫璇?
       this.scrollOffset = Math.min(this.scrollOffset + 1, this.dialogueHistory.length - 1);
     } else if (dy > 0) {
-      // 下滚 — 回到更新的对话
+      // 涓嬫粴 鈥?鍥炲埌鏇存柊鐨勫璇?
       this.scrollOffset = Math.max(this.scrollOffset - 1, 0);
     }
 
@@ -212,22 +214,22 @@ class DialogueScene extends Phaser.Scene {
     }
   }
 
-  // 显示历史条目
+  // 鏄剧ず鍘嗗彶鏉＄洰
   showHistoryEntry() {
     this.isViewingHistory = true;
     const entryIndex = this.dialogueHistory.length - 1 - this.scrollOffset;
     const entry = this.dialogueHistory[entryIndex];
     if (!entry) return;
 
-    // 隐藏选项按钮（查看历史时不显示选项）
+    // 闅愯棌閫夐」鎸夐挳锛堟煡鐪嬪巻鍙叉椂涓嶆樉绀洪€夐」锛?
     this.choicesContainer.removeAll(true);
     this.choiceButtons = [];
     this.continueHint.setVisible(false);
 
-    // 更新名字
+    // 鏇存柊鍚嶅瓧
     this.nameText.setText(this.getSpeakerName(entry.speakerName || ''));
 
-    // 更新文本（显示历史文本，半透明效果表示是历史）
+    // 鏇存柊鏂囨湰锛堟樉绀哄巻鍙叉枃鏈紝鍗婇€忔槑鏁堟灉琛ㄧず鏄巻鍙诧級
     if (entry.isPlayerChoice) {
       this.dialogueText.setText(`【你的选择】${entry.choiceText}`);
       this.dialogueText.setAlpha(0.7);
@@ -236,24 +238,24 @@ class DialogueScene extends Phaser.Scene {
       this.dialogueText.setAlpha(0.7);
     }
 
-    // 显示历史提示
+    // 鏄剧ず鍘嗗彶鎻愮ず
     this.historyHint.setVisible(true);
-    this.historyHint.setText(`浏览历史 (${this.scrollOffset}/${this.dialogueHistory.length - 1}) ↑↓`);
+    this.historyHint.setText(`娴忚鍘嗗彶 (${this.scrollOffset}/${this.dialogueHistory.length - 1}) 鈫戔啌`);
   }
 
-  // 隐藏历史条目，回到当前对话
+  // 闅愯棌鍘嗗彶鏉＄洰锛屽洖鍒板綋鍓嶅璇?
   hideHistoryEntry() {
     this.isViewingHistory = false;
     this.dialogueText.setAlpha(1.0);
     this.historyHint.setVisible(false);
 
-    // 重新显示当前对话
+    // 閲嶆柊鏄剧ず褰撳墠瀵硅瘽
     if (this.currentDialogue) {
       const lines = this.currentDialogue.lines;
       if (lines && this.currentLineIndex < lines.length) {
         this.dialogueText.setText(this.fullText || lines[this.currentLineIndex].text);
         this.nameText.setText(this.getSpeakerName(this.currentDialogue.speaker || ''));
-        // 如果之前有选项，重新显示
+        // 濡傛灉涔嬪墠鏈夐€夐」锛岄噸鏂版樉绀?
         if (this.currentLineIndex >= lines.length - 1 && this.currentChoices && this.currentChoices.length > 0) {
           this.showChoices();
         } else {
@@ -267,7 +269,7 @@ class DialogueScene extends Phaser.Scene {
     }
   }
 
-  // ========== 对话历史记录 ==========
+  // ========== 瀵硅瘽鍘嗗彶璁板綍 ==========
 
   addToHistory(entry) {
     this.dialogueHistory.push({
@@ -279,12 +281,12 @@ class DialogueScene extends Phaser.Scene {
     });
   }
 
-  // ========== 对话逻辑 ==========
+  // ========== 瀵硅瘽閫昏緫 ==========
 
   getSpeakerName(rawSpeaker) {
     const speaker = String(rawSpeaker || '');
     const playerName = window.gameState?.getPlayerName?.() || '玩家';
-    if (speaker === 'player' || speaker === '玩家' || speaker === '玩家id' || speaker === '【玩家id】') {
+    if (speaker === 'player' || speaker === '玩家' || speaker === 'playerId' || speaker === '【玩家id】') {
       return playerName;
     }
     return speaker.replaceAll('【玩家id】', playerName);
@@ -311,13 +313,13 @@ class DialogueScene extends Phaser.Scene {
     this.historyHint.setVisible(false);
     this.dialogueText.setAlpha(1.0);
 
-    // 设置立绘颜色
+    // 璁剧疆绔嬬粯棰滆壊
     if (dialogueData.portrait) {
-      this.portraitImage.setFillStyle(0x5e81ac);
-      this.portraitImage.setStrokeStyle(2, 0x81a1c1);
+      this.portraitImage.setFillStyle(WARM_UI.button);
+      this.portraitImage.setStrokeStyle(2, WARM_UI.buttonHover);
     }
 
-    // 显示第一行
+    // 鏄剧ず绗竴琛?
     this.showCurrentLine();
   }
 
@@ -330,7 +332,7 @@ class DialogueScene extends Phaser.Scene {
 
     const line = lines[this.currentLineIndex];
     
-    // 清除之前的选项
+    // 娓呴櫎涔嬪墠鐨勯€夐」
     this.clearChoices();
 
     // 显示角色名
@@ -348,7 +350,7 @@ class DialogueScene extends Phaser.Scene {
       dialogueIndex: this.currentLineIndex
     });
 
-    // 打字机效果
+    // 鎵撳瓧鏈烘晥鏋?
     this.startTyping(line.text, () => {
       if (this.currentLineIndex < lines.length - 1) {
         this.continueHint.setVisible(true);
@@ -431,21 +433,21 @@ class DialogueScene extends Phaser.Scene {
   createChoiceButton(text, y, index) {
     const btn = this.add.container(0, y);
 
-    const bg = this.add.rectangle(0, 0, 520, 40, 0x3b4252)
-      .setStrokeStyle(2, 0x4c566a);
+    const bg = this.add.rectangle(0, 0, 520, 40, WARM_UI.panelLight)
+      .setStrokeStyle(2, WARM_UI.border);
     btn.add(bg);
 
     const numText = this.add.text(-240, 0, `${index + 1}.`, {
       fontSize: '16px',
       fontFamily: 'Courier New',
-      color: '#88c0d0'
+      color: WARM_UI.text
     }).setOrigin(0, 0.5);
     btn.add(numText);
 
     const choiceText = this.add.text(-205, 0, text, {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       wordWrap: { width: 430, useAdvancedWrap: true },
       fixedWidth: 430,
       maxLines: 2
@@ -456,16 +458,17 @@ class DialogueScene extends Phaser.Scene {
     btn.setInteractive({ useHandCursor: true });
 
     btn.on('pointerover', () => {
-      bg.setFillStyle(0x4c566a);
-      bg.setStrokeStyle(2, 0x88c0d0);
+      bg.setFillStyle(WARM_UI.panelAlt);
+      bg.setStrokeStyle(2, WARM_UI.button);
     });
 
     btn.on('pointerout', () => {
-      bg.setFillStyle(0x3b4252);
-      bg.setStrokeStyle(2, 0x4c566a);
+      bg.setFillStyle(WARM_UI.panelLight);
+      bg.setStrokeStyle(2, WARM_UI.border);
     });
 
     btn.on('pointerdown', () => {
+      getSfxManager().clickButton();
       this.selectChoice(index);
     });
 
@@ -477,24 +480,24 @@ class DialogueScene extends Phaser.Scene {
     const choice = this.currentChoices[index];
     if (!choice) return;
 
-    // 记录玩家选择到历史
+    // 璁板綍鐜╁閫夋嫨鍒板巻鍙?
     this.addToHistory({
-      speakerName: this.getSpeakerName('玩家'),
+      speakerName: this.getSpeakerName('鐜╁'),
       text: '',
       isPlayerChoice: true,
       choiceText: choice.text,
       dialogueIndex: this.currentLineIndex
     });
 
-    // 防止重复点击
+    // 闃叉閲嶅鐐瑰嚮
     this.clearChoices();
     this.currentChoices = null;
     this._inputLocked = true;
 
-    // 收集获得的物品（用于奖励弹窗）
+    // 鏀堕泦鑾峰緱鐨勭墿鍝侊紙鐢ㄤ簬濂栧姳寮圭獥锛?
     const rewardItems = this.collectRewardItems(choice.effects);
 
-    // 应用效果
+    // 搴旂敤鏁堟灉
     if (choice.effects) {
       this.applyItemEffects(choice.effects);
       if (window.gameState) {
@@ -507,12 +510,12 @@ class DialogueScene extends Phaser.Scene {
       this.showEffectPopup(choice.effects);
     }
 
-    // 设置待展示的奖励物品
+    // 璁剧疆寰呭睍绀虹殑濂栧姳鐗╁搧
     if (rewardItems.length > 0) {
       window.gameState.setPendingRewardItems(rewardItems);
     }
 
-    // 延迟切换
+    // 寤惰繜鍒囨崲
     this.time.delayedCall(600, () => {
       if (this._transitioning) return;
       this._inputLocked = false;
@@ -529,7 +532,7 @@ class DialogueScene extends Phaser.Scene {
     });
   }
 
-  // 收集对话选项中获得的物品
+  // 鏀堕泦瀵硅瘽閫夐」涓幏寰楃殑鐗╁搧
   collectRewardItems(effects) {
     if (!effects) return [];
     const items = [];
@@ -546,7 +549,7 @@ class DialogueScene extends Phaser.Scene {
     return items;
   }
 
-  // 标记来访 NPC 对话结束
+  // 鏍囪鏉ヨ NPC 瀵硅瘽缁撴潫
   markVisitorDialogueEnd() {
     if (this.visitorDialogueMarked || !this.visitorConfigId) return;
     try {
@@ -558,7 +561,7 @@ class DialogueScene extends Phaser.Scene {
     }
   }
 
-  // 处理物品相关效果（增强版 — 传入 sourceNpcId）
+  // 澶勭悊鐗╁搧鐩稿叧鏁堟灉锛堝寮虹増 鈥?浼犲叆 sourceNpcId锛?
   applyItemEffects(effects) {
     if (!this.inventorySystem || !window.gameState) return;
 
@@ -585,14 +588,14 @@ class DialogueScene extends Phaser.Scene {
     if (effects.popularity > 0) dailyLoop.recordPopularityGained(effects.popularity);
   }
 
-  // 创建临时委托
+  // 鍒涘缓涓存椂濮旀墭
   createTempCommission(tempCommissionId) {
     if (!window.gameState) return;
     const visitorSystem = new VisitorSystem(window.gameState);
     visitorSystem.addTemporaryCommission(tempCommissionId);
   }
 
-  // 获取物品名称
+  // 鑾峰彇鐗╁搧鍚嶇О
   getItemName(itemId) {
     if (this.inventorySystem?.itemSystem) {
       return this.inventorySystem.itemSystem.getItemName(itemId);
@@ -628,47 +631,47 @@ class DialogueScene extends Phaser.Scene {
     
     if (effects.funds) {
       const sign = effects.funds > 0 ? '+' : '';
-      parts.push({ text: `${sign}${effects.funds} 资金`, color: '#a3be8c' });
+      parts.push({ text: `${sign}${effects.funds} 资金`, color: WARM_UI.alchemyText });
     }
     if (effects.popularity) {
       const sign = effects.popularity > 0 ? '+' : '';
-      parts.push({ text: `${sign}${effects.popularity} 人气`, color: '#bf616a' });
+      parts.push({ text: `${sign}${effects.popularity} 人气`, color: WARM_UI.warningText });
     }
     if (effects.flags) {
-      parts.push({ text: '剧情已更新', color: '#88c0d0' });
+      parts.push({ text: '剧情已更新', color: WARM_UI.text });
     }
     if (effects.npcAffinity) {
-      parts.push({ text: '好感度变化', color: '#b48ead' });
+      parts.push({ text: '好感度变化', color: '#6B4A7A' });
     }
     if (effects.completeCommission) {
-      parts.push({ text: '委托完成', color: '#a3be8c' });
+      parts.push({ text: '委托完成', color: WARM_UI.alchemyText });
     }
     
     if (effects.addItem) {
       const itemName = this.getItemName(effects.addItem);
-      parts.push({ text: `获得 ${itemName}`, color: '#ebcb8b' });
+      parts.push({ text: `获得 ${itemName}`, color: WARM_UI.goldText });
     }
     if (effects.addKeyItem) {
       const itemName = this.getItemName(effects.addKeyItem);
-      parts.push({ text: `获得关键物品: ${itemName}`, color: '#ebcb8b' });
+      parts.push({ text: `获得关键物品: ${itemName}`, color: WARM_UI.goldText });
     }
     if (effects.removeItem) {
       const itemName = this.getItemName(effects.removeItem);
-      parts.push({ text: `失去 ${itemName}`, color: '#bf616a' });
+      parts.push({ text: `失去 ${itemName}`, color: WARM_UI.warningText });
     }
     if (effects.setEndingFlag) {
-      parts.push({ text: '结局条件已更新', color: '#88c0d0' });
+      parts.push({ text: '结局条件已更新', color: WARM_UI.text });
     }
     if (effects.startTemporaryCommission) {
-      parts.push({ text: '临时委托已添加', color: '#a3be8c' });
+      parts.push({ text: '临时委托已添加', color: WARM_UI.alchemyText });
     }
 
     if (parts.length === 0) return;
 
     const popup = this.add.container(400, 200).setDepth(100);
     
-    const bg = this.add.rectangle(0, 0, 200, 30 + parts.length * 22, 0x2e3440, 0.95)
-      .setStrokeStyle(2, 0x4c566a);
+    const bg = this.add.rectangle(0, 0, 200, 30 + parts.length * 22, WARM_UI.panel, 0.95)
+      .setStrokeStyle(2, WARM_UI.border);
     popup.add(bg);
 
     parts.forEach((part, i) => {
@@ -696,10 +699,11 @@ class DialogueScene extends Phaser.Scene {
   }
 
   handleClick() {
-    // 防止在场景切换期间或输入锁定时被触发
+    // 闃叉鍦ㄥ満鏅垏鎹㈡湡闂存垨杈撳叆閿佸畾鏃惰瑙﹀彂
     if (this._transitioning || this._inputLocked) return;
+    getSfxManager().clickButton();
 
-    // 如果正在查看历史，点击回到当前对话
+    // 濡傛灉姝ｅ湪鏌ョ湅鍘嗗彶锛岀偣鍑诲洖鍒板綋鍓嶅璇?
     if (this.isViewingHistory) {
       this.scrollOffset = 0;
       this.hideHistoryEntry();
@@ -735,7 +739,7 @@ class DialogueScene extends Phaser.Scene {
     // 恢复游戏状态
     window.gameState.setGameState(GAME_STATE.NORMAL);
 
-    // 直接切换场景
+    // 鐩存帴鍒囨崲鍦烘櫙
     this.scene.start(this.returnScene);
   }
 }

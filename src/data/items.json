@@ -7,7 +7,9 @@
       "type": "normal_item",
       "icon": "material_silk",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_silk",
+      "previewImage": "/assets/items/alchemy_material_002_旧布样.png"
     },
     {
       "id": "alchemy_material_003",
@@ -16,7 +18,9 @@
       "type": "clue_item",
       "icon": "material_key",
       "stackable": false,
-      "maxStack": 1
+      "maxStack": 1,
+      "previewIcon": "material_key",
+      "previewImage": "/assets/items/alchemy_material_003_旧钥匙.png"
     },
     {
       "id": "alchemy_material_004",
@@ -25,7 +29,9 @@
       "type": "normal_item",
       "icon": "material_herb",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_herb",
+      "previewImage": "/assets/items/alchemy_material_004_干枯草药标本.png"
     },
     {
       "id": "alchemy_material_005",
@@ -34,7 +40,9 @@
       "type": "normal_item",
       "icon": "material_quartz",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_quartz",
+      "previewImage": "/assets/items/alchemy_material_005_石英碎片.png"
     },
     {
       "id": "alchemy_product_001",
@@ -44,7 +52,12 @@
       "icon": "product_potion_purify",
       "stackable": true,
       "maxStack": 10,
-      "craftFrom": ["material_old_coin", "alchemy_material_004"]
+      "previewIcon": "product_potion_purify",
+      "previewImage": "/assets/items/alchemy_product_001_净化药剂.png",
+      "craftFrom": [
+        "material_old_coin",
+        "alchemy_material_004"
+      ]
     },
     {
       "id": "alchemy_product_002",
@@ -54,7 +67,12 @@
       "icon": "product_potion_memory",
       "stackable": true,
       "maxStack": 5,
-      "craftFrom": ["alchemy_material_002", "alchemy_material_005"]
+      "previewIcon": "product_potion_memory",
+      "previewImage": "/assets/items/alchemy_product_002_记忆提取液.png",
+      "craftFrom": [
+        "alchemy_material_002",
+        "alchemy_material_005"
+      ]
     },
     {
       "id": "usable_item_001",
@@ -63,7 +81,9 @@
       "type": "usable_item",
       "icon": "item_potion_health",
       "stackable": true,
-      "maxStack": 20
+      "maxStack": 20,
+      "previewIcon": "item_potion_health",
+      "previewImage": "/assets/items/usable_item_001_体力恢复药.png"
     },
     {
       "id": "key_item_001",
@@ -73,7 +93,11 @@
       "icon": "keyitem_charm_a",
       "stackable": false,
       "maxStack": 1,
-      "relatedEndingFlags": ["ending_family_truth"]
+      "previewIcon": "keyitem_charm_a",
+      "previewImage": "/assets/items/key_item_001_铜纹碎片A.png",
+      "relatedEndingFlags": [
+        "ending_family_truth"
+      ]
     },
     {
       "id": "key_item_002",
@@ -83,7 +107,11 @@
       "icon": "keyitem_charm_b",
       "stackable": false,
       "maxStack": 1,
-      "relatedEndingFlags": ["ending_family_truth"]
+      "previewIcon": "keyitem_charm_b",
+      "previewImage": "/assets/items/key_item_002_药签纹章片.png",
+      "relatedEndingFlags": [
+        "ending_family_truth"
+      ]
     },
     {
       "id": "key_item_003",
@@ -93,7 +121,11 @@
       "icon": "keyitem_charm_c",
       "stackable": false,
       "maxStack": 1,
-      "relatedEndingFlags": ["ending_family_truth"]
+      "previewIcon": "keyitem_charm_c",
+      "previewImage": "/assets/items/key_item_003_子时铜齿轮.png",
+      "relatedEndingFlags": [
+        "ending_family_truth"
+      ]
     },
     {
       "id": "key_item_004",
@@ -103,7 +135,11 @@
       "icon": "keyitem_note",
       "stackable": false,
       "maxStack": 1,
-      "relatedEndingFlags": ["ending_mystery_traces"]
+      "previewIcon": "keyitem_note",
+      "previewImage": "/assets/items/key_item_004_油印纸条.png",
+      "relatedEndingFlags": [
+        "ending_mystery_traces"
+      ]
     },
     {
       "id": "clue_item_001",
@@ -112,7 +148,9 @@
       "type": "clue_item",
       "icon": "clue_photo",
       "stackable": false,
-      "maxStack": 1
+      "maxStack": 1,
+      "previewIcon": "clue_photo",
+      "previewImage": "/assets/items/clue_item_001_褪色街景照片.png"
     },
     {
       "id": "clue_item_002",
@@ -121,7 +159,9 @@
       "type": "clue_item",
       "icon": "clue_letter",
       "stackable": false,
-      "maxStack": 1
+      "maxStack": 1,
+      "previewIcon": "clue_letter",
+      "previewImage": "/assets/items/clue_item_002_泛黄旧信.png"
     },
     {
       "id": "quest_item_001",
@@ -130,7 +170,9 @@
       "type": "quest_item",
       "icon": "quest_item_sample",
       "stackable": true,
-      "maxStack": 10
+      "maxStack": 10,
+      "previewIcon": "quest_item_sample",
+      "previewImage": "/assets/items/quest_old_ring_老旧的戒指.png"
     },
     {
       "id": "material_beetle",
@@ -139,7 +181,10 @@
       "type": "alchemy_material",
       "icon": "material_beetle",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_beetle",
+      "previewImage": "/assets/items/material_beetle_甲壳虫.png",
+      "value": 10
     },
     {
       "id": "material_carrot",
@@ -148,7 +193,10 @@
       "type": "alchemy_material",
       "icon": "material_carrot",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_carrot",
+      "previewImage": "/assets/items/material_carrot_萝卜.png",
+      "value": 8
     },
     {
       "id": "material_bellflower",
@@ -157,7 +205,10 @@
       "type": "alchemy_material",
       "icon": "material_bellflower",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_bellflower",
+      "previewImage": "/assets/items/material_bellflower_风铃草.png",
+      "value": 12
     },
     {
       "id": "material_foxtail_grass",
@@ -166,7 +217,10 @@
       "type": "alchemy_material",
       "icon": "material_foxtail_grass",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_foxtail_grass",
+      "previewImage": "/assets/items/material_foxtail_grass_狗尾巴草.png",
+      "value": 6
     },
     {
       "id": "material_night_dew",
@@ -175,7 +229,10 @@
       "type": "alchemy_material",
       "icon": "material_night_dew",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_night_dew",
+      "previewImage": "/assets/items/material_night_dew_夜露.png",
+      "value": 15
     },
     {
       "id": "material_old_coin",
@@ -184,7 +241,10 @@
       "type": "alchemy_material",
       "icon": "material_old_coin",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "material_old_coin",
+      "previewImage": "/assets/items/material_old_coin_旧铜钱.png",
+      "value": 20
     },
     {
       "id": "digestive_tablet_perfect",
@@ -195,7 +255,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "perfect",
-      "baseRecipeId": "digestive_tablet"
+      "baseRecipeId": "digestive_tablet",
+      "previewIcon": "product_digestive_tablet",
+      "previewImage": "/assets/items/product_digestive_tablet_消食片.png"
     },
     {
       "id": "digestive_tablet_excellent",
@@ -206,7 +268,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "excellent",
-      "baseRecipeId": "digestive_tablet"
+      "baseRecipeId": "digestive_tablet",
+      "previewIcon": "product_digestive_tablet",
+      "previewImage": "/assets/items/product_digestive_tablet_消食片.png"
     },
     {
       "id": "digestive_tablet_normal",
@@ -217,7 +281,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "normal",
-      "baseRecipeId": "digestive_tablet"
+      "baseRecipeId": "digestive_tablet",
+      "previewIcon": "product_digestive_tablet",
+      "previewImage": "/assets/items/product_digestive_tablet_消食片.png"
     },
     {
       "id": "digestive_tablet_poor",
@@ -228,7 +294,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "poor",
-      "baseRecipeId": "digestive_tablet"
+      "baseRecipeId": "digestive_tablet",
+      "previewIcon": "product_digestive_tablet",
+      "previewImage": "/assets/items/product_digestive_tablet_消食片.png"
     },
     {
       "id": "herbal_powder_perfect",
@@ -239,7 +307,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "perfect",
-      "baseRecipeId": "herbal_powder"
+      "baseRecipeId": "herbal_powder",
+      "previewIcon": "product_herbal_powder",
+      "previewImage": "/assets/items/product_herbal_powder_中药粉末.png"
     },
     {
       "id": "herbal_powder_excellent",
@@ -250,7 +320,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "excellent",
-      "baseRecipeId": "herbal_powder"
+      "baseRecipeId": "herbal_powder",
+      "previewIcon": "product_herbal_powder",
+      "previewImage": "/assets/items/product_herbal_powder_中药粉末.png"
     },
     {
       "id": "herbal_powder_normal",
@@ -261,7 +333,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "normal",
-      "baseRecipeId": "herbal_powder"
+      "baseRecipeId": "herbal_powder",
+      "previewIcon": "product_herbal_powder",
+      "previewImage": "/assets/items/product_herbal_powder_中药粉末.png"
     },
     {
       "id": "herbal_powder_poor",
@@ -272,7 +346,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "poor",
-      "baseRecipeId": "herbal_powder"
+      "baseRecipeId": "herbal_powder",
+      "previewIcon": "product_herbal_powder",
+      "previewImage": "/assets/items/product_herbal_powder_中药粉末.png"
     },
     {
       "id": "calming_incense_perfect",
@@ -283,7 +359,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "perfect",
-      "baseRecipeId": "calming_incense"
+      "baseRecipeId": "calming_incense",
+      "previewIcon": "product_calming_incense",
+      "previewImage": "/assets/items/product_calming_incense_安神香.png"
     },
     {
       "id": "calming_incense_excellent",
@@ -294,7 +372,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "excellent",
-      "baseRecipeId": "calming_incense"
+      "baseRecipeId": "calming_incense",
+      "previewIcon": "product_calming_incense",
+      "previewImage": "/assets/items/product_calming_incense_安神香.png"
     },
     {
       "id": "calming_incense_normal",
@@ -305,7 +385,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "normal",
-      "baseRecipeId": "calming_incense"
+      "baseRecipeId": "calming_incense",
+      "previewIcon": "product_calming_incense",
+      "previewImage": "/assets/items/product_calming_incense_安神香.png"
     },
     {
       "id": "calming_incense_poor",
@@ -316,7 +398,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "poor",
-      "baseRecipeId": "calming_incense"
+      "baseRecipeId": "calming_incense",
+      "previewIcon": "product_calming_incense",
+      "previewImage": "/assets/items/product_calming_incense_安神香.png"
     },
     {
       "id": "fortune_pill_perfect",
@@ -327,7 +411,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "perfect",
-      "baseRecipeId": "fortune_pill"
+      "baseRecipeId": "fortune_pill",
+      "previewIcon": "product_fortune_pill",
+      "previewImage": "/assets/items/product_fortune_pill_招财丸.png"
     },
     {
       "id": "fortune_pill_excellent",
@@ -338,7 +424,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "excellent",
-      "baseRecipeId": "fortune_pill"
+      "baseRecipeId": "fortune_pill",
+      "previewIcon": "product_fortune_pill",
+      "previewImage": "/assets/items/product_fortune_pill_招财丸.png"
     },
     {
       "id": "fortune_pill_normal",
@@ -349,7 +437,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "normal",
-      "baseRecipeId": "fortune_pill"
+      "baseRecipeId": "fortune_pill",
+      "previewIcon": "product_fortune_pill",
+      "previewImage": "/assets/items/product_fortune_pill_招财丸.png"
     },
     {
       "id": "fortune_pill_poor",
@@ -360,7 +450,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "poor",
-      "baseRecipeId": "fortune_pill"
+      "baseRecipeId": "fortune_pill",
+      "previewIcon": "product_fortune_pill",
+      "previewImage": "/assets/items/product_fortune_pill_招财丸.png"
     },
     {
       "id": "cleansing_powder_perfect",
@@ -371,7 +463,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "perfect",
-      "baseRecipeId": "cleansing_powder"
+      "baseRecipeId": "cleansing_powder",
+      "previewIcon": "product_cleansing_powder",
+      "previewImage": "/assets/items/product_cleansing_powder_驱秽粉.png"
     },
     {
       "id": "cleansing_powder_excellent",
@@ -382,7 +476,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "excellent",
-      "baseRecipeId": "cleansing_powder"
+      "baseRecipeId": "cleansing_powder",
+      "previewIcon": "product_cleansing_powder",
+      "previewImage": "/assets/items/product_cleansing_powder_驱秽粉.png"
     },
     {
       "id": "cleansing_powder_normal",
@@ -393,7 +489,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "normal",
-      "baseRecipeId": "cleansing_powder"
+      "baseRecipeId": "cleansing_powder",
+      "previewIcon": "product_cleansing_powder",
+      "previewImage": "/assets/items/product_cleansing_powder_驱秽粉.png"
     },
     {
       "id": "cleansing_powder_poor",
@@ -404,7 +502,9 @@
       "stackable": true,
       "maxStack": 99,
       "quality": "poor",
-      "baseRecipeId": "cleansing_powder"
+      "baseRecipeId": "cleansing_powder",
+      "previewIcon": "product_cleansing_powder",
+      "previewImage": "/assets/items/product_cleansing_powder_驱秽粉.png"
     },
     {
       "id": "normal_item_001",
@@ -413,7 +513,9 @@
       "type": "normal_item",
       "icon": "normal_item_sample",
       "stackable": true,
-      "maxStack": 99
+      "maxStack": 99,
+      "previewIcon": "normal_item_sample",
+      "previewImage": "/assets/items/normal_item_001_街坊谢礼.png"
     }
   ],
   "itemTypes": {

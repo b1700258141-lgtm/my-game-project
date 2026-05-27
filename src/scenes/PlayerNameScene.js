@@ -1,6 +1,9 @@
+﻿import { WARM_UI, addWarmButton, addWarmPanel, addWarmTag } from '../ui/WarmUITheme';
+import { getSfxManager } from '../systems/SfxManager';
 import { GAME_STATE } from '../systems/GameState';
 import { validatePlayerName } from '../security/nameModeration';
 import { moderatePlayerName } from '../security/cloud/moderatePlayerNameApi';
+import { getBgmManager } from '../systems/BgmManager';
 
 class PlayerNameScene extends Phaser.Scene {
   constructor() {
@@ -22,21 +25,23 @@ class PlayerNameScene extends Phaser.Scene {
     const height = this.cameras.main.height;
     window.gameState.setGameState(GAME_STATE.NAME_INPUT);
 
-    this.add.rectangle(width / 2, height / 2, width, height, 0x1a1a2e);
-    this.add.rectangle(width / 2, height / 2, 520, 320, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0x88c0d0);
+    // 播放主菜单 BGM
+    getBgmManager().syncBySceneAndTime('mainMenu');
+
+    this.add.rectangle(width / 2, height / 2, width, height, WARM_UI.shadow, 0.92);
+    addWarmPanel(this, null, width / 2, height / 2, 520, 320, { title: '万事屋登记簿' });
 
     this.add.text(width / 2, height / 2 - 105, '请输入你的名字', {
       fontSize: '30px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5);
 
     this.add.text(width / 2, height / 2 - 62, '1 到 12 个字符', {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: '#d8dee9'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5);
 
     const inputStyle = [
@@ -44,9 +49,9 @@ class PlayerNameScene extends Phaser.Scene {
       'height: 42px',
       'font-size: 20px',
       'font-family: Georgia, serif',
-      'color: #eceff4',
-      'background: #1f2530',
-      'border: 2px solid #4c566a',
+      'color: #2B1E17',
+      'background: #F3DFB9',
+      'border: 2px solid #3A2418',
       'border-radius: 4px',
       'outline: none',
       'text-align: center',
@@ -68,32 +73,33 @@ class PlayerNameScene extends Phaser.Scene {
 
   createButton(x, y, text, callback) {
     const btn = this.add.container(x, y);
-    const bg = this.add.rectangle(0, 0, 240, 46, 0x5e81ac, 0.94)
-      .setStrokeStyle(2, 0x81a1c1)
+    const bg = this.add.rectangle(0, 0, 240, 46, WARM_UI.button, 0.94)
+      .setStrokeStyle(2, WARM_UI.buttonHover)
       .setInteractive({ useHandCursor: true });
     const label = this.add.text(0, 0, text, {
       fontSize: '18px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4'
+      color: WARM_UI.text
     }).setOrigin(0.5);
     btn.add([bg, label]);
     btn._bg = bg;
     btn._label = label;
-    bg.on('pointerover', () => { if (!this.isSubmitting) bg.setFillStyle(0x81a1c1); });
-    bg.on('pointerout', () => { if (!this.isSubmitting) bg.setFillStyle(0x5e81ac); });
+    bg.on('pointerover', () => { if (!this.isSubmitting) bg.setFillStyle(WARM_UI.buttonHover); });
+    bg.on('pointerout', () => { if (!this.isSubmitting) bg.setFillStyle(WARM_UI.button); });
     bg.on('pointerdown', () => { if (!this.isSubmitting) callback(); });
     return btn;
   }
 
   /**
-   * 确认名字：本地校验 → 云审核 → 进入游戏
+   * 纭鍚嶅瓧锛氭湰鍦版牎楠?鈫?浜戝鏍?鈫?杩涘叆娓告垙
    */
   async confirmName() {
-    // 防重复提交
+    // 防止重复提交。
     if (this.isSubmitting) return;
+    getBgmManager().markUserInteracted();
     const name = String(this.nameInput?.node?.value || '').trim();
 
-    // ========== 第 1 步：本地校验 ==========
+    // ========== 绗?1 姝ワ細鏈湴鏍￠獙 ==========
     const validation = validatePlayerName(name);
     if (!validation.valid) {
       this.showToast(validation.errorMessage);
@@ -101,13 +107,13 @@ class PlayerNameScene extends Phaser.Scene {
     }
     const safeName = validation.sanitizedName || name;
 
-    // ========== 第 2 步：云审核（CloudBase 云函数）==========
+    // ========== 绗?2 姝ワ細浜戝鏍革紙CloudBase 浜戝嚱鏁帮級==========
     this.isSubmitting = true;
     this._setSubmittingUI(true);
     try {
       const cloudResult = await moderatePlayerName(safeName);
 
-      // 必须 ok=true 且 action='pass' 才进入游戏（fail-closed）
+      // 必须 ok=true 且 action='pass' 才进入游戏。
       if (cloudResult.ok && cloudResult.action === 'pass') {
         console.log('[nameModeration] cloud function passed, entering game, nameLength:', safeName.length);
       } else {
@@ -116,7 +122,6 @@ class PlayerNameScene extends Phaser.Scene {
         return;
       }
     } catch (_error) {
-      // 云审核异常 → 绝对不能放行（fail-closed）
       console.log('[nameModeration] cloud function FAILED, blocking entry, error:', _error.message);
       this.showToast('【系统】：名字审核暂时不可用，请稍后重试。');
       return;
@@ -125,19 +130,18 @@ class PlayerNameScene extends Phaser.Scene {
       this._setSubmittingUI(false);
     }
 
-    // ========== 第 3 步：通过，进入游戏 ==========
+    // ========== 绗?3 姝ワ細閫氳繃锛岃繘鍏ユ父鎴?==========
     this._proceedToGame(safeName);
   }
 
   /**
-   * 设置提交中 UI 状态
-   */
+   * 璁剧疆鎻愪氦涓?UI 鐘舵€?   */
   _setSubmittingUI(submitting) {
     if (this.submitLabel) {
       this.submitLabel.setText(submitting ? '正在审核名字...' : '开始经营万事屋');
     }
     if (this.submitButton?._bg) {
-      this.submitButton._bg.setFillStyle(submitting ? 0x4c566a : 0x5e81ac);
+      this.submitButton._bg.setFillStyle(submitting ? WARM_UI.border : WARM_UI.button);
       if (!submitting) {
         this.submitButton._bg.setInteractive({ useHandCursor: true });
       } else {
@@ -147,8 +151,7 @@ class PlayerNameScene extends Phaser.Scene {
   }
 
   /**
-   * 审核通过后进入游戏
-   */
+   * 瀹℃牳閫氳繃鍚庤繘鍏ユ父鎴?   */
   _proceedToGame(safeName) {
     window.gameState.setPlayerName(safeName);
     try {
@@ -157,18 +160,21 @@ class PlayerNameScene extends Phaser.Scene {
       // localStorage is optional; formal persistence is handled by save data.
     }
     window.gameState.setGameState(GAME_STATE.NORMAL);
-    this.scene.start(this.returnScene);
+    // 先进入开场剧情
+    this.scene.start('OpeningStoryScene', {
+      playerName: safeName
+    });
   }
 
   showToast(message) {
     if (this.toast) this.toast.destroy();
     this.toast = this.add.container(this.cameras.main.width / 2, 96).setDepth(100);
-    this.toast.add(this.add.rectangle(0, 0, 420, 46, 0x1f2530, 0.98)
-      .setStrokeStyle(2, 0xbf616a));
+    this.toast.add(this.add.rectangle(0, 0, 420, 46, WARM_UI.panel, 0.98)
+      .setStrokeStyle(2, WARM_UI.warning));
     this.toast.add(this.add.text(0, 0, message, {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#bf616a'
+      color: WARM_UI.warningText
     }).setOrigin(0.5));
   }
 }

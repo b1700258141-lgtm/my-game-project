@@ -39,6 +39,11 @@
 | 家具升级系统 | ✅ | 接待台/炼金釜/书架/床/门牌升级 |
 | 书架/万事屋档案 | ✅ | 回忆、素材图鉴、产物图鉴、委托记录、关键物品记录、成就 |
 | 万事屋等级系统 | ✅ | 根据人气升级 Lv1-Lv5，委托成功收益按等级倍率结算，不降级 |
+| 音效系统 (SFX) | ✅ | Kenney CC0 27 个音效文件，SfxManager 统一管理，打开/关闭/确认/购买等音效 |
+| BGM 系统 | ✅ | 主菜单 / 白天 BGM / 夜晚 BGM 三时段自动切换 |
+| 开场剧情 | ✅ | 打字机效果对话 + 主角立绘 + 可配背景，系统提示框动态定位 |
+| ESC 返回主菜单 | ✅ | 主界面 ESC 自动存档到槽位 1 并返回标题；弹窗状态优先关闭弹窗 |
+| 昼夜光照渐进系统 | ✅ | 12 关键帧平滑插值，双层渲染（环境光 + 暖色渐变），控制台调试支持 |
 
 ### Codex 补充完成的开发进度
 
@@ -76,6 +81,108 @@
 16. 新游戏会先进入名字输入界面，输入非空且 trim 后的名字才能进入主界面。
 17. 对话系统统一将 `player`、`玩家`、`玩家id`、`【玩家id】` 映射为玩家输入的名字，不在对话数据中手写主角名。
 18. 已用 `npm run build` 验证构建通过；浏览器预览验证过新游戏名字输入与主界面等级显示。
+
+#### 2026-05-27 Codex 与用户完成进展
+
+1. 重构标题主菜单视觉风格：
+   - 将原深蓝冷色面板改为暖棕、米黄、黄昏橙色系。
+   - 使用 Phaser Graphics 绘制暖色背景、纸张/木质面板、木牌按钮、炼金釜图标、樱花花瓣、窗格、城市剪影与炼金阵暗纹。
+   - 保留“万事屋炼金物语”标题、“Mendel's General Store”副标题、“开始游戏”“继续游戏”和底部版权信息。
+2. 修复主菜单加载与 Phaser 图形兼容问题：
+   - 将不兼容的 `quadraticCurveTo()` 改为 Phaser 支持的折线贝塞尔近似绘制，避免进入标题场景时报错卡在加载页。
+   - 为 BootScene 增加标题场景启动兜底，并在启动前安全注册室内火焰动画。
+3. 优化标题主菜单按钮交互：
+   - “开始游戏”“继续游戏”改为独立透明 `Zone` 接管点击和 hover。
+   - 扩大按钮热区，改善鼠标缓慢移入时 hover/点击不灵敏的问题。
+4. 统一游戏画布外层页面氛围：
+   - `index.html` 的页面背景由冷深蓝改为暖棕/暖橙/米黄渐变。
+   - 游戏容器边框与阴影改为暖色系，减少画布内外割裂。
+5. 接入开场白剧情背景图：
+   - 新增 `public/assets/backgrounds/opening_general_store_bg.png`，来源为用户提供的 `pix/万事屋背景.png`。
+   - OpeningStoryScene 使用该图片作为玩家起名后的开场剧情背景。
+   - 背景按 cover 逻辑等比例铺满开场剧情区域，避免强行拉伸，允许轻微边缘裁切。
+   - 保留左侧主角立绘预留区、底部暖色对话框和开场剧情结束后进入万事屋主界面的流程。
+6. 验证情况：
+   - 多次运行 `npm run build`，最终构建通过。
+   - 开发服务可访问 `/assets/backgrounds/opening_general_store_bg.png`。
+
+### CodeBuddy 补充完成的开发进度
+
+以下内容由 CodeBuddy 在 `feature/security-system` 分支上完成：
+
+#### 1. 音效系统 (SFX)
+
+- 新增 `src/systems/SfxManager.js`：单例音效管理器，统一管理所有游戏音效
+- 新增 `src/data/sfxConfig.js`：音效配置映射表（菜单打开/关闭、确认、取消、购买成功/失败、获得物品、错误提示等）
+- 集成 Kenney CC0 免费音效包（`.ogg` 格式），共 27 个音效文件
+- 所有 UI 操作（打开背包、炼金、商店、家具升级、对话框等）均已接入对应音效
+- 炼金釜打开音效切换为 `bookOpen.ogg`（原 `open_alchemy` 过于刺耳）
+
+#### 2. 背景音乐系统 (BGM)
+
+- 新增 `src/systems/BgmManager.js`：单例 BGM 管理器，支持播放/切换/暂停
+- 新增 `src/data/bgmConfig.js`：三时段 BGM 配置
+  - 主菜单：`main_menu_so_long_days.mp3`
+  - 白天 (6:00-17:59)：`shop_day_asayo.mp3` (solfa - 新しい朝)
+  - 夜晚 (18:00-5:59)：`shop_night_tranquility.mp3` (Christina Kuong)
+- ShopScene 每帧检测时段变化，自动切换 BGM
+- TitleScene 进入时播放主菜单 BGM，首次点击解锁浏览器自动播放限制
+- BGM 设置持久化到 localStorage
+
+#### 3. 开场剧情
+
+- 新增 `src/scenes/OpeningStoryScene.js`：新游戏开场的剧情演出场景
+- 新增 `src/data/openingStory.js`：开场剧情对话数据
+- 支持打字机效果逐字显示
+- 左侧预留 220px 主角立绘区域（`/assets/portraits/player_opening.png`）
+- 可配置背景图片（`/assets/backgrounds/opening_bg.png`）
+- 系统提示框面板高度 320px，确认按钮动态定位在文字下方，不与内容重叠
+
+#### 4. 床铺交互改进
+
+- 新增睡眠次数限制：每天只能睡一次（`hasSleptToday` 标记）
+- 已睡过时显示提示"今天已经休息过了"，睡眠按钮仅弹出 toast 提示
+- 存档和取消按钮始终可用
+- 跨天自动重置睡眠标记（`GameState.nextDay()` 中重置 `hasSleptToday = false`）
+- 睡眠过场动画：800ms 黑屏淡出 + 600ms 淡入
+
+#### 5. UI 修复
+
+- **DayEndScene**：修复第一行"今日接待客人"被 viewport 遮罩裁剪的问题；调整 `contentY` 从 -142 → -118，使内容正确位于遮罩范围内
+- **FurnitureUpgradeScene**：修复"条件"文字与"升级"按钮重叠，将条件文字移至按钮正下方居中显示
+- **ShopScene**：底部快捷键提示新增 `| ESC 主菜单`
+
+#### 6. ESC 返回主菜单
+
+- ShopScene 新增 ESC 键处理逻辑：
+  - SLEEP_CHOICE / LOCATION_CHOICE / SHOP 状态 → 优先关闭弹窗回 NORMAL
+  - REWARD_POPUP 状态 → 关闭奖励弹窗回 NORMAL
+  - TRANSITION 状态 → 恢复 NORMAL
+  - NORMAL 状态 → 自动存档到槽位 1 → 跳转到 TitleScene
+- 不刷新页面、不重置 GameState、不丢失数据
+- 子场景（背包/炼金/委托等）已有独立 ESC 处理，按 ESC 先返回 ShopScene，再按 ESC 才回主菜单
+
+#### 7. 昼夜光照渐进变化系统
+
+- 新增 `src/systems/DayNightLighting.js`：
+  - 12 个关键时间节点定义（0:00 / 3:00 / 6:00 / 8:00 / 12:00 / 16:00 / 18:00 / 19:30 / 21:00 / 23:00 / 24:00）
+  - `calculateLightingByTime(hour, minute)`：小数小时 + RGB 分量级线性插值
+  - 返回参数：overlayColor、overlayAlpha、warmth、brightness
+  - `getDayPhaseLabel(hour)`：六时段中文标签（凌晨/清晨/上午/下午/傍晚/夜晚/深夜）
+- ShopScene 双层渲染：
+  - 环境光层（depth=5）：主色调覆盖层，不阻挡点击（`input.enabled = false`）
+  - 暖色渐变层（depth=5.1）：黄昏/清晨微暖色调，仅在 warmth > 0.02 时启用
+  - UI 层始终在最前（depth=10），不受光照影响
+- 灯笼贴图切换逻辑更新：19:00-5:59 为夜间
+- 调试功能：控制台 `window.__debugSetGameTime(h, m)` / `window.__debugGetLighting()`
+
+| 时间段 | 效果 |
+|--------|------|
+| 0:00-6:00 | 最深夜，深蓝紫 overlay α=0.48-0.52，brightness=0.60-0.62 |
+| 6:00-12:00 | 黎明→早晨→正午，α 从 0.28→0，brightness 从 0.78→1.0 |
+| 12:00-16:00 | 全天最亮，α=0-0.08，微暖 warmth=0.10-0.35 |
+| 16:00-19:00 | 明显黄昏，α=0.08-0.28，暖橙 warmth=0.35-0.55 |
+| 19:00-24:00 | 入夜→深夜，α=0.28-0.52，蓝紫夜色 warmth=0.20→0 |
 
 ### 当前委托完成规则实现概况
 
@@ -203,6 +310,7 @@ npm run preview
 │   │   ├── DialogueScene.js             # NPC 对话
 │   │   ├── FurnitureUpgradeScene.js     # 家具升级
 │   │   ├── InventoryScene.js            # 背包
+│   │   ├── OpeningStoryScene.js         # 开场剧情演出
 │   │   ├── PlayerNameScene.js           # 玩家起名（含云端审核）
 │   │   ├── QuestLogScene.js             # 委托日志
 │   │   ├── ShopScene.js                 # 万事屋主场景
@@ -229,8 +337,10 @@ npm run preview
 │   │   ├── AlchemyMaterialShapeConfig.js
 │   │   ├── AlchemyRecipeManager.js
 │   │   ├── ArchiveManager.js            # 书架档案数据管理
+│   │   ├── BgmManager.js                 # BGM 管理器（三时段自动切换）
 │   │   ├── CommissionSystem.js          # 委托系统
 │   │   ├── DailyLoopManager.js          # 每日循环管理
+│   │   ├── DayNightLighting.js           # 昼夜光照计算（12 关键帧平滑插值）
 │   │   ├── FurnitureUpgradeManager.js   # 家具升级
 │   │   ├── GameState.js                 # 游戏状态管理
 │   │   ├── InventorySystem.js           # 背包物品
@@ -238,10 +348,13 @@ npm run preview
 │   │   ├── RandomNpcManager.js          # 随机 NPC
 │   │   ├── SaveLoadManager.js           # 存档/读档（30 槽位）
 │   │   ├── ScrollableListUI.js          # 通用滚动列表组件
+│   │   ├── SfxManager.js                # 音效管理器（Kenney CC0）
 │   │   ├── SpiritMemoryManager.js       # 精魂记忆
 │   │   ├── TimeManager.js               # 游戏时间管理
 │   │   ├── VisitorSystem.js             # 来访管理
 │   │   └── WanShiWuLevelSystem.js       # 万事屋等级
+│   ├── ui/                              # UI 主题
+│   │   └── WarmUITheme.js               # 暖色 UI 主题（面板/按钮/标签）
 │   ├── config.js                        # Phaser 配置
 │   └── main.js                          # 游戏入口
 ├── .env.example                         # 环境变量占位示例

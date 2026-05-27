@@ -29,6 +29,7 @@ class TimeManager {
 
     // 新一天回调列表
     this._onNewDayCallbacks = [];
+    this._onTimeChangedCallbacks = [];
   }
 
   // ========== 核心更新 ==========
@@ -66,6 +67,7 @@ class TimeManager {
   }
 
   _advanceOneMinute() {
+    const previousTime = this.getTimeData();
     this.currentMinute += 1;
     let advancedToNewDay = false;
 
@@ -82,6 +84,7 @@ class TimeManager {
 
     // 同步到 GameState
     this._syncToGameState();
+    this._triggerTimeChanged(previousTime);
 
     if (advancedToNewDay) {
       this._triggerNewDay();
@@ -93,6 +96,7 @@ class TimeManager {
   advanceGameTime(hours) {
     const totalMinutes = hours * 60;
     const oldDay = this.currentDay;
+    const previousTime = this.getTimeData();
 
     this.currentMinute += totalMinutes;
 
@@ -106,6 +110,9 @@ class TimeManager {
       this.currentDay += 1;
     }
 
+    this._syncToGameState();
+    this._triggerTimeChanged(previousTime);
+
     // 如果跨天了，触发新一天逻辑
     if (this.currentDay > oldDay) {
       const daysAdvanced = this.currentDay - oldDay;
@@ -113,8 +120,6 @@ class TimeManager {
         this._triggerNewDay();
       }
     }
-
-    this._syncToGameState();
   }
 
   // ========== 新一天逻辑 ==========
@@ -132,6 +137,27 @@ class TimeManager {
 
   onNewDay(callback) {
     this._onNewDayCallbacks.push(callback);
+    return () => {
+      this._onNewDayCallbacks = this._onNewDayCallbacks.filter(cb => cb !== callback);
+    };
+  }
+
+  _triggerTimeChanged(previousTime = null) {
+    const time = this.getTimeData();
+    this._onTimeChangedCallbacks.forEach(cb => {
+      try {
+        cb(time, previousTime);
+      } catch (e) {
+        console.warn('[TimeManager] onTimeChanged callback error:', e);
+      }
+    });
+  }
+
+  onTimeChanged(callback) {
+    this._onTimeChangedCallbacks.push(callback);
+    return () => {
+      this._onTimeChangedCallbacks = this._onTimeChangedCallbacks.filter(cb => cb !== callback);
+    };
   }
 
   // ========== 同步到 GameState ==========
@@ -153,6 +179,17 @@ class TimeManager {
     const h = String(this.currentHour).padStart(2, '0');
     const m = String(this.currentMinute).padStart(2, '0');
     return `第 ${this.currentDay} 天 ${h}:${m}`;
+  }
+
+  getTimeData() {
+    return {
+      currentDay: this.currentDay,
+      currentHour: this.currentHour,
+      currentMinute: this.currentMinute,
+      day: this.currentDay,
+      hour: this.currentHour,
+      minute: this.currentMinute
+    };
   }
 
   getDayPhase() {

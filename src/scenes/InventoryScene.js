@@ -1,6 +1,8 @@
-// 背包场景 - 按 B 键打开/关闭，显示玩家所有物品
+﻿import { WARM_UI, addWarmButton, addWarmPanel, addWarmTag } from '../ui/WarmUITheme';
+// 鑳屽寘鍦烘櫙 - 鎸?B 閿墦寮€/鍏抽棴锛屾樉绀虹帺瀹舵墍鏈夌墿鍝?
 import InventorySystem from '../systems/InventorySystem';
 import ScrollableListUI from '../systems/ScrollableListUI';
+import { getSfxManager } from '../systems/SfxManager';
 
 class InventoryScene extends Phaser.Scene {
   constructor() {
@@ -19,38 +21,36 @@ class InventoryScene extends Phaser.Scene {
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
-    // 重置相机状态
+    // 閲嶇疆鐩告満鐘舵€?
     this.cameras.main.resetFX();
 
-    // 初始化背包系统
+    // 鍒濆鍖栬儗鍖呯郴缁?
     this.inventorySystem = new InventorySystem(window.gameState);
 
-    // 半透明遮罩
+    // 鍗婇€忔槑閬僵
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8);
 
-    // 主面板
+    // 涓婚潰鏉?
     const panelWidth = 720;
     const panelHeight = 520;
     this.panel = this.add.container(width / 2, height / 2);
 
-    const panelBg = this.add.rectangle(0, 0, panelWidth, panelHeight, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0x88c0d0);
-    this.panel.add(panelBg);
+    addWarmPanel(this, this.panel, 0, 0, panelWidth, panelHeight, {});
 
-    // 标题
+    // 鏍囬
     const title = this.add.text(0, -230, '背包', {
       fontSize: '28px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     this.panel.add(title);
 
-    // 分隔线
-    const divider = this.add.rectangle(0, -200, panelWidth - 60, 2, 0x4c566a);
+    // 鍒嗛殧绾?
+    const divider = this.add.rectangle(0, -200, panelWidth - 60, 2, WARM_UI.border);
     this.panel.add(divider);
 
-    // 左侧：物品列表区域
+    // 宸︿晶锛氱墿鍝佸垪琛ㄥ尯鍩?
     this.listContainer = new ScrollableListUI(this, {
       parent: this.panel,
       x: -170,
@@ -61,38 +61,38 @@ class InventoryScene extends Phaser.Scene {
       rowGap: 4
     });
 
-    // 右侧：物品详情区域
+    // 鍙充晶锛氱墿鍝佽鎯呭尯鍩?
     this.detailContainer = this.add.container(180, 15).setDepth(10);
     this.panel.add(this.detailContainer);
 
-    // 加载物品列表
+    // 鍔犺浇鐗╁搧鍒楄〃
     this.loadItems();
 
-    // 关闭提示
-    const closeHint = this.add.text(width / 2, height - 30, '按 B / ESC / 点击空白处 关闭', {
+    // 鍏抽棴鎻愮ず
+    const closeHint = this.add.text(width / 2, height - 30, '按 B / ESC / 点击空白处关闭', {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5).setDepth(20);
 
-    // B 键关闭
+    // B 閿叧闂?
     this.input.keyboard.on('keydown-B', () => {
       this.closeInventory();
     });
 
-    // ESC 关闭
+    // ESC 鍏抽棴
     this.input.keyboard.on('keydown-ESC', () => {
       this.closeInventory();
     });
 
-    // 点击空白处关闭
+    // 鐐瑰嚮绌虹櫧澶勫叧闂?
     this.input.on('pointerdown', (pointer) => {
       if (pointer.y < 50 || pointer.y > height - 50) {
         this.closeInventory();
       }
     });
 
-    // 淡入
+    // 娣″叆
     this.cameras.main.fadeIn(200);
   }
 
@@ -108,11 +108,11 @@ class InventoryScene extends Phaser.Scene {
     const combinedItems = [...allItems, ...keyItems];
 
     if (combinedItems.length === 0) {
-      this.listContainer.render([], () => null, { emptyText: '背包是空的\n\n去和NPC对话或购买物品吧' });
+      this.listContainer.render([], () => null, { emptyText: '背包是空的\n\n去和 NPC 对话或购买物品吧' });
       const detailHint = this.add.text(0, 0, '选择左侧物品\n查看详情', {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a',
+        color: WARM_UI.textMuted,
         align: 'center',
         lineSpacing: 6
       }).setOrigin(0.5);
@@ -158,7 +158,7 @@ class InventoryScene extends Phaser.Scene {
         row.add(this.add.text(10, rowHeight / 2, `【${entry.label}】`, {
           fontSize: '13px',
           fontFamily: 'Georgia, serif',
-          color: '#88c0d0',
+          color: WARM_UI.text,
           fontStyle: 'bold'
         }).setOrigin(0, 0.5));
         return row;
@@ -186,10 +186,10 @@ class InventoryScene extends Phaser.Scene {
     const combinedItems = [...allItems, ...keyItems];
 
     if (combinedItems.length === 0) {
-      const noItem = this.add.text(0, 0, '背包是空的\n\n去和NPC对话或购买物品吧', {
+      const noItem = this.add.text(0, 0, '背包是空的\n\n去和 NPC 对话或购买物品吧', {
         fontSize: '16px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a',
+        color: WARM_UI.textMuted,
         align: 'center',
         lineSpacing: 8
       }).setOrigin(0.5);
@@ -198,7 +198,7 @@ class InventoryScene extends Phaser.Scene {
       const detailHint = this.add.text(0, 0, '选择左侧物品\n查看详情', {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a',
+        color: WARM_UI.textMuted,
         align: 'center',
         lineSpacing: 6
       }).setOrigin(0.5);
@@ -206,7 +206,7 @@ class InventoryScene extends Phaser.Scene {
       return;
     }
 
-    // 按类型分组显示
+    // 鎸夌被鍨嬪垎缁勬樉绀?
     let yOffset = -180;
     const typeOrder = [
       { type: 'alchemy_material', label: '炼金材料' },
@@ -223,18 +223,18 @@ class InventoryScene extends Phaser.Scene {
       const groupItems = combinedItems.filter(item => item.type === groupDef.type);
       if (groupItems.length === 0) continue;
 
-      // 分组标题
+      // 鍒嗙粍鏍囬
       const groupLabel = this.add.text(-140, yOffset, `【${groupDef.label}】`, {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: '#88c0d0',
+        color: WARM_UI.text,
         fontStyle: 'bold'
       });
       this.listContainer.add(groupLabel);
       yOffset += 22;
 
       for (const item of groupItems) {
-        if (yOffset > 200) break; // 防止溢出
+        if (yOffset > 200) break; // 闃叉婧㈠嚭
         const itemRow = this.createItemRow(item, yOffset, itemIndex);
         this.listContainer.add(itemRow);
         this.itemGroups.push({ container: itemRow, item, index: itemIndex });
@@ -245,7 +245,7 @@ class InventoryScene extends Phaser.Scene {
       yOffset += 8;
     }
 
-    // 默认选中第一个
+    // 榛樿閫変腑绗竴涓?
     if (this.itemGroups.length > 0) {
       this.selectItem(0);
     }
@@ -269,43 +269,73 @@ class InventoryScene extends Phaser.Scene {
     return String(value);
   }
 
+  getPreviewIconKey(item) {
+    const itemId = item?.id || item?.itemId;
+    const itemData = itemId ? this.inventorySystem.itemSystem.getItem(itemId) : null;
+    return item?.previewIcon || itemData?.previewIcon || item?.icon || itemData?.icon || '';
+  }
+
+  getItemValueText(item) {
+    const itemId = item?.id || item?.itemId;
+    const value = item?.value ?? item?.price ?? (itemId ? this.inventorySystem.itemSystem.getItemValue(itemId) : 0);
+    return Number(value) > 0 ? `${value} 金` : '';
+  }
+
+  addPreviewImage(iconKey, y, maxWidth = 96, maxHeight = 96) {
+    if (iconKey && this.textures.exists(iconKey)) {
+      const preview = this.add.image(0, y, iconKey).setOrigin(0.5);
+      const source = this.textures.get(iconKey).getSourceImage();
+      const scale = Math.min(maxWidth / source.width, maxHeight / source.height, 1);
+      preview.setScale(scale);
+      this.detailContainer.add(preview);
+      return;
+    }
+
+    const empty = this.add.text(0, y, '暂无图片', {
+      fontSize: '12px',
+      fontFamily: 'Georgia, serif',
+      color: WARM_UI.textMuted
+    }).setOrigin(0.5);
+    this.detailContainer.add(empty);
+  }
+
   createScrollableItemRow(item, index, width, rowHeight) {
     const row = this.add.container(0, 0);
     const centerY = rowHeight / 2;
 
-    const bg = this.add.rectangle(width / 2, centerY, width - 8, 34, 0x3b4252, 0.8)
-      .setStrokeStyle(2, 0x4c566a)
+    const bg = this.add.rectangle(width / 2, centerY, width - 8, 34, WARM_UI.panelLight, 0.8)
+      .setStrokeStyle(2, WARM_UI.border)
       .setInteractive({ useHandCursor: true });
     row.add(bg);
 
     if (item.isKeyItem) {
-      row.add(this.add.rectangle(12, centerY, 8, 8, 0xebcb8b));
+      row.add(this.add.rectangle(12, centerY, 8, 8, WARM_UI.gold));
     }
 
     row.add(this.add.text(item.isKeyItem ? 24 : 14, centerY, item.name || '未命名物品', {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       wordWrap: { width: width - 78, useAdvancedWrap: true }
     }).setOrigin(0, 0.5));
 
     row.add(this.add.text(width - 18, centerY, `x${item.count || 1}`, {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: '#a3be8c'
+      color: WARM_UI.alchemyText
     }).setOrigin(1, 0.5));
 
     bg.on('pointerover', () => {
       if (this.selectedItem !== index) {
-        bg.setFillStyle(0x4c566a, 0.8);
-        bg.setStrokeStyle(2, 0x88c0d0);
+        bg.setFillStyle(WARM_UI.border, 0.8);
+        bg.setStrokeStyle(2, WARM_UI.border);
       }
     });
 
     bg.on('pointerout', () => {
       if (this.selectedItem !== index) {
-        bg.setFillStyle(0x3b4252, 0.8);
-        bg.setStrokeStyle(2, 0x4c566a);
+        bg.setFillStyle(WARM_UI.panelLight, 0.8);
+        bg.setStrokeStyle(2, WARM_UI.border);
       }
     });
 
@@ -319,48 +349,48 @@ class InventoryScene extends Phaser.Scene {
   createItemRow(item, y, index) {
     const row = this.add.container(0, y);
 
-    // 行背景
-    const bg = this.add.rectangle(0, 0, 300, 36, 0x3b4252, 0.8)
-      .setStrokeStyle(2, 0x4c566a);
+    // 琛岃儗鏅?
+    const bg = this.add.rectangle(0, 0, 300, 36, WARM_UI.panelLight, 0.8)
+      .setStrokeStyle(2, WARM_UI.border);
     row.add(bg);
 
-    // 物品名称
+    // 鐗╁搧鍚嶇О
     const nameText = this.add.text(-130, -6, item.name, {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4'
+      color: WARM_UI.text
     });
     row.add(nameText);
 
-    // 数量
+    // 鏁伴噺
     const countText = this.add.text(120, -6, `x${item.count || 1}`, {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: '#a3be8c'
+      color: WARM_UI.alchemyText
     });
     row.add(countText);
 
-    // 关键物品标记
+    // 鍏抽敭鐗╁搧鏍囪
     if (item.isKeyItem) {
-      const keyBadge = this.add.rectangle(-140, -6, 8, 8, 0xebcb8b);
+      const keyBadge = this.add.rectangle(-140, -6, 8, 8, WARM_UI.gold);
       row.add(keyBadge);
     }
 
-    // 交互
+    // 浜や簰
     row.setSize(300, 36);
     row.setInteractive({ useHandCursor: true });
 
     row.on('pointerover', () => {
       if (this.selectedItem !== index) {
-        bg.setFillStyle(0x4c566a, 0.8);
-        bg.setStrokeStyle(2, 0x88c0d0);
+        bg.setFillStyle(WARM_UI.border, 0.8);
+        bg.setStrokeStyle(2, WARM_UI.border);
       }
     });
 
     row.on('pointerout', () => {
       if (this.selectedItem !== index) {
-        bg.setFillStyle(0x3b4252, 0.8);
-        bg.setStrokeStyle(2, 0x4c566a);
+        bg.setFillStyle(WARM_UI.panelLight, 0.8);
+        bg.setStrokeStyle(2, WARM_UI.border);
       }
     });
 
@@ -372,13 +402,13 @@ class InventoryScene extends Phaser.Scene {
   }
 
   selectItem(index) {
-    // 取消之前的选中
+    // 鍙栨秷涔嬪墠鐨勯€変腑
     if (this.selectedItem >= 0 && this.itemGroups[this.selectedItem]) {
       const prevRow = this.itemGroups[this.selectedItem].container;
       const prevBg = prevRow.list[0];
       if (prevBg) {
-        prevBg.setFillStyle(0x3b4252, 0.8);
-        prevBg.setStrokeStyle(2, 0x4c566a);
+        prevBg.setFillStyle(WARM_UI.panelLight, 0.8);
+        prevBg.setStrokeStyle(2, WARM_UI.border);
       }
     }
 
@@ -386,15 +416,17 @@ class InventoryScene extends Phaser.Scene {
     const listItem = this.itemGroups[index];
     if (!listItem) return;
 
-    // 高亮选中项
+    // 楂樹寒閫変腑椤?
     const curRow = listItem.container;
     const curBg = curRow.list[0];
     if (curBg) {
-      curBg.setFillStyle(0x4c566a, 0.9);
-      curBg.setStrokeStyle(2, 0x88c0d0);
+      curBg.setFillStyle(WARM_UI.border, 0.9);
+      curBg.setStrokeStyle(2, WARM_UI.border);
     }
 
-    // 更新详情
+    getSfxManager().selectItem();
+
+    // 鏇存柊璇︽儏
     this.showItemDetail(listItem.item);
   }
 
@@ -402,19 +434,19 @@ class InventoryScene extends Phaser.Scene {
     this.detailContainer.removeAll(true);
     if (!item) return;
 
-    // 详情背景
-    const detailBg = this.add.rectangle(0, 0, 310, 370, 0x3b4252, 0.6)
-      .setStrokeStyle(2, 0x4c566a);
+    // 璇︽儏鑳屾櫙
+    const detailBg = this.add.rectangle(0, 0, 310, 390, WARM_UI.panelLight, 0.6)
+      .setStrokeStyle(2, WARM_UI.border);
     this.detailContainer.add(detailBg);
 
-    let yOffset = -163;
+    let yOffset = -173;
 
-    // 物品名称
+    // 鐗╁搧鍚嶇О
     const itemName = this.formatDetailValue(item.name || item.itemName, '未命名物品');
     const nameText = this.add.text(0, yOffset, itemName, {
       fontSize: '20px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold',
       align: 'center',
       wordWrap: { width: 260, useAdvancedWrap: true },
@@ -424,12 +456,12 @@ class InventoryScene extends Phaser.Scene {
     this.detailContainer.add(nameText);
     yOffset += Math.max(35, nameText.height + 12);
 
-    // 分隔线
-    const divider = this.add.rectangle(0, yOffset, 270, 1, 0x4c566a);
+    // 鍒嗛殧绾?
+    const divider = this.add.rectangle(0, yOffset, 270, 1, WARM_UI.border);
     this.detailContainer.add(divider);
     yOffset += 20;
 
-    // 类型
+    // 绫诲瀷
     const typeLabels = {
       'alchemy_material': '炼金材料',
       'alchemy_product': '炼金成品',
@@ -440,38 +472,59 @@ class InventoryScene extends Phaser.Scene {
       'clue_item': '线索物品'
     };
     const itemType = this.getInventoryItemType(item);
-    this.addDetailLine('类型', typeLabels[itemType] || itemType, yOffset, '#d08770');
+    this.addDetailLine('类型', typeLabels[itemType] || itemType, yOffset, WARM_UI.goldText);
     yOffset += 26;
 
-    // 数量
+    // 鏁伴噺
     this.addDetailLine('数量', this.formatDetailValue(item.count ?? item.itemCount ?? 1, '1'), yOffset);
-    yOffset += 35;
+    yOffset += 26;
 
-    const description = this.formatDetailValue(item.description || item.itemDescription, '尚未记录说明');
+    const valueText = this.getItemValueText(item);
+    if (valueText) {
+      this.addDetailLine('价值', valueText, yOffset);
+      yOffset += 26;
+    }
+
+    const quality = item.quality || this.inventorySystem.itemSystem.getItem(item.id)?.quality || '';
+    if (quality) {
+      const qualityLabels = {
+        perfect: '完美品质',
+        excellent: '优秀品质',
+        normal: '普通品质',
+        poor: '劣等品质'
+      };
+      this.addDetailLine('品质', qualityLabels[quality] || quality, yOffset, WARM_UI.alchemyText);
+      yOffset += 26;
+    }
+
+    const description = this.formatDetailValue(item.description || item.itemDescription, '【素材说明待补充】');
     const descText = this.add.text(-130, yOffset, description, {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       wordWrap: { width: 250, useAdvancedWrap: true },
       lineSpacing: 4,
       fixedWidth: 250,
-      maxLines: 10
+      maxLines: 5
     });
     this.detailContainer.add(descText);
+
+    const previewY = Math.min(Math.max(yOffset + descText.height + 58, 142), 174);
+    this.addPreviewImage(this.getPreviewIconKey(item), previewY, 96, 96);
   }
 
   addDetailLine(label, value, y, valueColor) {
     const labelObj = this.add.text(-130, y, `${label}:`, {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0'
+      color: WARM_UI.text
     });
     this.detailContainer.add(labelObj);
 
     const valueObj = this.add.text(-40, y, value, {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: valueColor || '#eceff4',
+      color: valueColor || WARM_UI.text,
       wordWrap: { width: 190, useAdvancedWrap: true },
       maxLines: 2
     });
@@ -479,9 +532,10 @@ class InventoryScene extends Phaser.Scene {
   }
 
   closeInventory() {
-    // 恢复游戏状态
+    // 鎭㈠娓告垙鐘舵€?
     window.gameState.setGameState('normal');
-    // 直接切换回主场景
+    getSfxManager().closeMenu();
+    // 鐩存帴鍒囨崲鍥炰富鍦烘櫙
     this.scene.start(this.returnScene);
   }
 }

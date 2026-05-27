@@ -96,6 +96,8 @@ export default class ArchiveManager {
       shapeCells: shape ? shape.footprintCells.map(cell => [...cell]) : [],
       firstUnlockedDay: this.getCurrentDay(),
       discoveredFrom: discoveredFrom || item.sourceNpcId || 'inventory',
+      previewIcon: itemData.previewIcon || itemData.icon || '',
+      previewImage: itemData.previewImage || '',
       isUnlocked: true
     };
 
@@ -111,6 +113,9 @@ export default class ArchiveManager {
     const normalizedQuality = QUALITY_RANK[quality] ? quality : 'normal';
     const recipe = ALCHEMY_RECIPES.find(item =>
       item.recipeId === relatedRecipeId || item.resultBaseItemId === productBaseId
+    );
+    const previewItem = this.itemSystem.items.find(item =>
+      item.baseRecipeId === productBaseId || item.id === `${productBaseId}_normal`
     );
     const finalProductName = safeText(productName || recipe?.resultName, productBaseId);
     const addCount = Math.max(1, Number(count) || 1);
@@ -132,6 +137,8 @@ export default class ArchiveManager {
       bestQualityCrafted: normalizedQuality,
       craftedCount: addCount,
       relatedRecipeId: relatedRecipeId || recipe?.recipeId || productBaseId,
+      previewIcon: previewItem?.previewIcon || previewItem?.icon || '',
+      previewImage: previewItem?.previewImage || '',
       isUnlocked: true
     };
 
@@ -168,6 +175,10 @@ export default class ArchiveManager {
     }
 
     const reward = quest.reward || {};
+    const deliveredItemIds = options.deliveredItemIds || quest.deliveredItemIds || [];
+    const previewItem = deliveredItemIds
+      .map(itemId => this.itemSystem.getItem(itemId))
+      .find(Boolean);
     const record = {
       questId,
       questName: safeText(quest.title || quest.questName, questId),
@@ -177,8 +188,10 @@ export default class ArchiveManager {
       completedDay: this.getCurrentDay(),
       rewardMoney: reward.funds || quest.rewardMoney || 0,
       rewardPopularity: reward.popularity || quest.rewardPopularity || 0,
-      deliveredItemIds: options.deliveredItemIds || quest.deliveredItemIds || [],
+      deliveredItemIds,
       relatedMemoryIds: quest.relatedMemoryIds || [],
+      previewIcon: previewItem?.previewIcon || previewItem?.icon || '',
+      previewImage: previewItem?.previewImage || '',
       description: safeText(quest.description || quest.questDescription, QUEST_TEXT_FALLBACK)
     };
 
@@ -239,6 +252,8 @@ export default class ArchiveManager {
       acquiredDay: keyItem.acquiredDay || keyItem.obtainedAt || this.getCurrentDay(),
       culturalTag: safeText(keyItem.culturalTag, '万事屋旧事'),
       relatedMemoryId: keyItem.relatedMemoryId || '',
+      previewIcon: itemData.previewIcon || itemData.icon || '',
+      previewImage: itemData.previewImage || '',
       isStoryCritical: Boolean(keyItem.isStoryCritical),
       isUnlocked: true
     };
@@ -388,6 +403,30 @@ export default class ArchiveManager {
     return Object.values(this.ensureData().keyItems)
       .filter(item => item.isUnlocked)
       .sort((a, b) => a.acquiredDay - b.acquiredDay || a.keyItemName.localeCompare(b.keyItemName));
+  }
+
+  getInventoryItemRecords() {
+    const excludedTypes = new Set(['alchemy_material', 'alchemy_product', 'key_item']);
+    return (this.gameState.inventory || [])
+      .map(item => {
+        const itemData = this.itemSystem.getItem(item.id);
+        if (!itemData || excludedTypes.has(itemData.type)) return null;
+
+        return {
+          itemId: item.id,
+          itemName: safeText(item.name || itemData.name, item.id),
+          itemType: itemData.type,
+          itemTypeName: this.itemSystem.getItemTypeName(itemData.type),
+          count: item.count || 1,
+          description: safeText(item.description || itemData.description, '用途待补充'),
+          sourceName: safeText(item.sourceNpcId, '背包记录'),
+          previewIcon: itemData.previewIcon || itemData.icon || '',
+          previewImage: itemData.previewImage || '',
+          isUnlocked: true
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.itemTypeName.localeCompare(b.itemTypeName) || a.itemName.localeCompare(b.itemName));
   }
 
   getUnlockedAchievements() {

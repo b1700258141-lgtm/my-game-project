@@ -1,9 +1,14 @@
 import { GAME_STATE } from './GameState';
 import { sanitizeSaveData } from '../security/dataValidator';
+import { normalizeTutorialFlags } from './TutorialManager';
 
 const SAVE_VERSION = '0.1.0';
 const SAVE_SLOT_COUNT = 30;
 const STORAGE_KEY_PREFIX = 'oddjobs_alchemy_save_slot_';
+export const SAVE_TYPE = {
+  MANUAL: 'manual',
+  AUTO: 'auto'
+};
 
 function clone(value, fallback = null) {
   if (value === undefined || value === null) return fallback;
@@ -72,19 +77,81 @@ export default class SaveLoadManager {
     return Boolean(this.getSaveSlot(slotIndex));
   }
 
-  saveGame(slotIndex) {
+  saveGame(slotIndex, options = {}) {
     if (!this.isValidSlot(slotIndex) || !window.localStorage) {
       return { success: false, message: '存档失败' };
     }
 
     try {
-      const saveData = this.buildSaveData(slotIndex);
+      const saveData = this.buildSaveData(slotIndex, {
+        saveType: options.saveType || SAVE_TYPE.MANUAL,
+        autoSaveReason: options.autoSaveReason || ''
+      });
       window.localStorage.setItem(slotKey(slotIndex), JSON.stringify(saveData));
       return { success: true, message: '存档成功', saveData };
     } catch (error) {
       console.warn(`[SaveLoadManager] 存档位 ${slotIndex} 保存失败`, error);
       return { success: false, message: '存档失败' };
     }
+  }
+
+  autoSave(reason = 'auto') {
+    if (!window.localStorage || !this.canAutoSave()) {
+      return { success: false, message: '自动存档跳过' };
+    }
+
+    const slotIndex = this.findAutoSaveSlot();
+    if (!slotIndex) {
+      return { success: false, message: '没有可用的自动存档位' };
+    }
+
+    const result = this.saveGame(slotIndex, {
+      saveType: SAVE_TYPE.AUTO,
+      autoSaveReason: reason
+    });
+
+    return {
+      ...result,
+      slotIndex
+    };
+  }
+
+  canAutoSave() {
+    if (!this.gameState) return false;
+    return Boolean(this.gameState.getPlayerName?.() || this.gameState.playerName);
+  }
+
+  findAutoSaveSlot() {
+    const slots = this.getAllSaveSlots();
+    const filledSlots = slots.filter(slot => slot.hasSave && slot.saveData);
+    const latestSlot = this.getLatestSaveSlot(filledSlots);
+    const startIndex = latestSlot?.slotIndex || 0;
+
+    const emptyBelowLatest = slots.find(slot => !slot.hasSave && slot.slotIndex > startIndex);
+    if (emptyBelowLatest) return emptyBelowLatest.slotIndex;
+
+    const emptySlot = slots.find(slot => !slot.hasSave);
+    if (emptySlot) return emptySlot.slotIndex;
+
+    const oldestAutoSlot = filledSlots
+      .filter(slot => slot.saveData.saveType === SAVE_TYPE.AUTO)
+      .sort((a, b) => this.getSavedAtMs(a.saveData) - this.getSavedAtMs(b.saveData))[0];
+
+    return oldestAutoSlot?.slotIndex || null;
+  }
+
+  getLatestSaveSlot(slots = null) {
+    const filledSlots = slots || this.getAllSaveSlots().filter(slot => slot.hasSave && slot.saveData);
+    if (!filledSlots.length) return null;
+    return [...filledSlots].sort((a, b) => {
+      const delta = this.getSavedAtMs(b.saveData) - this.getSavedAtMs(a.saveData);
+      return delta || b.slotIndex - a.slotIndex;
+    })[0];
+  }
+
+  getSavedAtMs(saveData = {}) {
+    const ms = Date.parse(saveData.savedAt || '');
+    return Number.isFinite(ms) ? ms : 0;
   }
 
   loadGame(slotIndex) {
@@ -112,7 +179,7 @@ export default class SaveLoadManager {
     return { success: true, message: '删除成功' };
   }
 
-  buildSaveData(slotIndex) {
+  buildSaveData(slotIndex, options = {}) {
     const timeData = this.gameState.timeData || {};
     const archiveData = normalizeArchiveData(clone(this.gameState.archiveData, {}));
     const playerPosition = this.gameState.getPlayerPosition
@@ -122,6 +189,8 @@ export default class SaveLoadManager {
     return {
       saveSlotIndex: slotIndex,
       saveVersion: this.saveVersion,
+      saveType: options.saveType === SAVE_TYPE.AUTO ? SAVE_TYPE.AUTO : SAVE_TYPE.MANUAL,
+      autoSaveReason: options.saveType === SAVE_TYPE.AUTO ? (options.autoSaveReason || 'auto') : '',
       savedAt: new Date().toISOString(),
 
       currentDay: normalizeNumber(timeData.currentDay, this.gameState.day || 1),
@@ -151,6 +220,8 @@ export default class SaveLoadManager {
       achievements: clone(archiveData.achievements, {}),
       dailyStats: clone(this.gameState.dailyStats, null),
       randomNpcState: clone(this.gameState.randomNpcStates, {}),
+      randomNpcSpawnTimes: clone(this.gameState.randomNpcSpawnTimes, {}),
+      visitedRandomNpcTypes: clone(this.gameState.visitedRandomNpcTypes, []),
       playerPosition: clone(playerPosition, null),
       currentSceneId: 'ShopScene',
 
@@ -162,7 +233,14 @@ export default class SaveLoadManager {
       endingFlags: clone(this.gameState.endingFlags, {}),
       todayVisitors: clone(this.gameState.todayVisitors, []),
       visitorNotificationShown: Boolean(this.gameState.visitorNotificationShown),
-      dayEndSummaryShown: Boolean(this.gameState.dayEndSummaryShown)
+      dayEndSummaryShown: Boolean(this.gameState.dayEndSummaryShown),
+      hasSleptToday: Boolean(this.gameState.hasSleptToday),
+      lastSleepDay: this.gameState.lastSleepDay === null || this.gameState.lastSleepDay === undefined
+        ? null
+        : normalizeNumber(this.gameState.lastSleepDay, null),
+      dailySettlementShownDay: normalizeNumber(this.gameState.dailySettlementShownDay, 0),
+      hasSeenOpeningStory: Boolean(this.gameState.hasSeenOpeningStory),
+      tutorialFlags: normalizeTutorialFlags(this.gameState.tutorialFlags)
     };
   }
 
@@ -197,6 +275,8 @@ export default class SaveLoadManager {
     this.gameState.furnitureLevels = clone(data.furnitureData, {});
     this.gameState.dailyStats = clone(data.dailyStats, null);
     this.gameState.randomNpcStates = clone(data.randomNpcState, {});
+    this.gameState.randomNpcSpawnTimes = clone(data.randomNpcSpawnTimes, {});
+    this.gameState.visitedRandomNpcTypes = clone(data.visitedRandomNpcTypes, []);
     this.gameState.playerPosition = clone(data.playerPosition, this.gameState.playerPosition);
 
     this.gameState.flags = clone(data.flags, {});
@@ -208,6 +288,11 @@ export default class SaveLoadManager {
     this.gameState.todayVisitors = clone(data.todayVisitors, []);
     this.gameState.visitorNotificationShown = Boolean(data.visitorNotificationShown);
     this.gameState.dayEndSummaryShown = Boolean(data.dayEndSummaryShown);
+    this.gameState.hasSleptToday = Boolean(data.hasSleptToday);
+    this.gameState.lastSleepDay = data.lastSleepDay;
+    this.gameState.dailySettlementShownDay = normalizeNumber(data.dailySettlementShownDay, data.dayEndSummaryShown ? currentDay : 0);
+    this.gameState.hasSeenOpeningStory = Boolean(data.hasSeenOpeningStory);
+    this.gameState.tutorialFlags = normalizeTutorialFlags(data.tutorialFlags);
 
     this.gameState.returnScene = 'ShopScene';
     this.gameState.pendingRewardItems = [];
@@ -230,6 +315,8 @@ export default class SaveLoadManager {
       ...data,
       saveSlotIndex: normalizeNumber(data.saveSlotIndex, fallbackSlotIndex),
       saveVersion: data.saveVersion || 'legacy',
+      saveType: data.saveType === SAVE_TYPE.AUTO ? SAVE_TYPE.AUTO : SAVE_TYPE.MANUAL,
+      autoSaveReason: typeof data.autoSaveReason === 'string' ? data.autoSaveReason : '',
       savedAt: data.savedAt || '',
       currentDay,
       currentHour: normalizeNumber(data.currentHour, 8),
@@ -251,9 +338,18 @@ export default class SaveLoadManager {
       achievements: data.achievements || archiveData.achievements || {},
       dailyStats: data.dailyStats || null,
       randomNpcState: data.randomNpcState || data.randomNpcStates || {},
+      randomNpcSpawnTimes: data.randomNpcSpawnTimes || {},
+      visitedRandomNpcTypes: Array.isArray(data.visitedRandomNpcTypes) ? data.visitedRandomNpcTypes : [],
       playerPosition: data.playerPosition || null,
       currentSceneId: data.currentSceneId || 'ShopScene',
-      shortCommissionRefresh: data.shortCommissionRefresh || null
+      shortCommissionRefresh: data.shortCommissionRefresh || null,
+      hasSleptToday: Boolean(data.hasSleptToday),
+      lastSleepDay: data.lastSleepDay === null || data.lastSleepDay === undefined
+        ? (data.hasSleptToday ? currentDay : null)
+        : normalizeNumber(data.lastSleepDay, null),
+      dailySettlementShownDay: normalizeNumber(data.dailySettlementShownDay, data.dayEndSummaryShown ? currentDay : 0),
+      hasSeenOpeningStory: Boolean(data.hasSeenOpeningStory),
+      tutorialFlags: normalizeTutorialFlags(data.tutorialFlags)
     };
   }
 

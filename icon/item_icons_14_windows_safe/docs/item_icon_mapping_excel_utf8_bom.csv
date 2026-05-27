@@ -1,0 +1,15 @@
+﻿序号,图片文件名,物品名,itemId,类型,来源文件
+01,01_alchemy_material_002_jiu_bu_yang.png,旧布样,alchemy_material_002,normal_item,src/data/items.json
+02,02_alchemy_material_003_jiu_yao_shi.png,旧钥匙,alchemy_material_003,clue_item,src/data/items.json
+03,03_alchemy_material_004_gan_ku_cao_yao_biao_ben.png,干枯草药标本,alchemy_material_004,normal_item,src/data/items.json
+04,04_alchemy_material_005_shi_ying_sui_pian.png,石英碎片,alchemy_material_005,normal_item,src/data/items.json
+05,05_alchemy_product_001_jing_hua_yao_ji.png,净化药剂,alchemy_product_001,alchemy_product,src/data/items.json
+06,06_alchemy_product_002_ji_yi_ti_qu_ye.png,记忆提取液,alchemy_product_002,alchemy_product,src/data/items.json
+07,07_usable_item_001_ti_li_hui_fu_yao.png,体力恢复药,usable_item_001,usable_item,src/data/items.json
+08,08_key_item_001_tong_wen_sui_pian_A.png,铜纹碎片A,key_item_001,key_item,src/data/items.json
+09,09_key_item_002_yao_qian_wen_zhang_pian.png,药签纹章片,key_item_002,key_item,src/data/items.json
+10,10_key_item_003_zi_shi_tong_chi_lun.png,子时铜齿轮,key_item_003,key_item,src/data/items.json
+11,11_key_item_004_you_yin_zhi_tiao.png,油印纸条,key_item_004,key_item,src/data/items.json
+12,12_clue_item_001_tui_se_jie_jing_zhao_pian.png,褪色街景照片,clue_item_001,clue_item,src/data/items.json
+13,13_clue_item_002_fan_huang_jiu_xin.png,泛黄旧信,clue_item_002,clue_item,src/data/items.json
+14,14_normal_item_001_jie_fang_xie_li.png,街坊谢礼,normal_item_001,normal_item,src/data/items.json

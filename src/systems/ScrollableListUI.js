@@ -1,3 +1,4 @@
+﻿import { WARM_UI } from '../ui/WarmUITheme';
 export default class ScrollableListUI {
   constructor(scene, options) {
     this.scene = scene;
@@ -33,10 +34,10 @@ export default class ScrollableListUI {
     this.maskGraphics.setVisible(false);
     this.content.setMask(this.maskGraphics.createGeometryMask());
 
-    this.track = scene.add.rectangle(this.width / 2 - 5, 0, 6, this.height, 0x1f2530, 0.82)
-      .setStrokeStyle(1, 0x4c566a);
-    this.thumb = scene.add.rectangle(this.width / 2 - 5, -this.height / 2 + 20, 8, 40, 0x88c0d0, 0.9)
-      .setStrokeStyle(1, 0xebcb8b)
+    this.track = scene.add.rectangle(this.width / 2 - 5, 0, 6, this.height, WARM_UI.panel, 0.82)
+      .setStrokeStyle(1, WARM_UI.border);
+    this.thumb = scene.add.rectangle(this.width / 2 - 5, -this.height / 2 + 20, 8, 40, WARM_UI.border, 0.9)
+      .setStrokeStyle(1, WARM_UI.gold)
       .setInteractive({ useHandCursor: true, draggable: true });
 
     this.root.add([this.track, this.thumb]);
@@ -86,7 +87,7 @@ export default class ScrollableListUI {
       const empty = this.scene.add.text(this.width / 2, this.height / 2, emptyText, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a',
+        color: WARM_UI.textMuted,
         align: 'center',
         lineSpacing: 6,
         wordWrap: { width: this.width - 24, useAdvancedWrap: true }

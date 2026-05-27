@@ -50,6 +50,12 @@ export default class VisitorSystem {
         continue;
       }
 
+      // 如果该 NPC 类型已经来访过，跳过
+      if (this.gameState.visitedRandomNpcTypes &&
+          this.gameState.visitedRandomNpcTypes.includes(visitorConfig.npcId)) {
+        continue;
+      }
+
       // 检查前置条件
       if (visitorConfig.requiredFlags && visitorConfig.requiredFlags.length > 0) {
         let meetsRequirements = true;
@@ -79,7 +85,15 @@ export default class VisitorSystem {
         // 标记为今天已来访
         this.gameState.addTodayVisitor(visitorConfig.id);
         // 标记 NPC 状态为已出现
-        this.randomNpcManager.onNpcSpawned(visitorConfig.id);
+        this.randomNpcManager.onNpcSpawned(visitorConfig.id, this.gameState.timeData);
+        // 标记该 NPC 类型已来访过（每种只出现一次）
+        if (this.gameState.visitedRandomNpcTypes) {
+          if (!this.gameState.visitedRandomNpcTypes.includes(visitorConfig.npcId)) {
+            this.gameState.visitedRandomNpcTypes.push(visitorConfig.npcId);
+          }
+        } else {
+          this.gameState.visitedRandomNpcTypes = [visitorConfig.npcId];
+        }
         
         result.push({
           configId: visitorConfig.id,

@@ -1,4 +1,5 @@
 import InventorySystem from '../systems/InventorySystem';
+import { getSfxManager } from '../systems/SfxManager';
 import AlchemyRecipeManager from '../systems/AlchemyRecipeManager';
 import ScrollableListUI from '../systems/ScrollableListUI';
 import { GAME_STATE } from '../systems/GameState';
@@ -11,6 +12,8 @@ import {
   calculateAlchemyScore,
   getQuality
 } from '../systems/AlchemyScoreCalculator';
+import { WARM_UI } from '../ui/WarmUITheme';
+import { showTutorialIfNeeded } from '../systems/TutorialManager';
 
 class AlchemyScene extends Phaser.Scene {
   constructor() {
@@ -53,14 +56,14 @@ class AlchemyScene extends Phaser.Scene {
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.82);
 
     this.panel = this.add.container(width / 2, height / 2);
-    const panelBg = this.add.rectangle(0, 0, 740, 540, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0x88c0d0);
+    const panelBg = this.add.rectangle(0, 0, 740, 540, WARM_UI.panel, 0.98)
+      .setStrokeStyle(3, WARM_UI.border);
     this.panel.add(panelBg);
 
     this.panel.add(this.add.text(0, -245, '炼金釜', {
       fontSize: '28px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5));
 
@@ -69,10 +72,16 @@ class AlchemyScene extends Phaser.Scene {
     this.createButtons();
     this.refreshUI();
 
-    this.input.keyboard.on('keydown-ESC', () => this.closeScene());
+    this.input.keyboard.on('keydown-ESC', () => {
+      if (this.__tutorialModalOpen) return;
+      this.closeScene();
+    });
     this.input.on('pointermove', this.updateMaterialDrag, this);
     this.input.on('pointerup', this.finishMaterialDrag, this);
     this.cameras.main.fadeIn(200);
+    this.time.delayedCall(120, () => {
+      showTutorialIfNeeded(this, 'cauldronOpened');
+    });
   }
 
   createGrid() {
@@ -82,7 +91,7 @@ class AlchemyScene extends Phaser.Scene {
     this.panel.add(this.add.text(-260, -210, '4x4 宫格', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5));
   }
@@ -91,7 +100,7 @@ class AlchemyScene extends Phaser.Scene {
     this.panel.add(this.add.text(40, -205, '已掌握配方', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }));
     this.recipeList = new ScrollableListUI(this, {
@@ -107,7 +116,7 @@ class AlchemyScene extends Phaser.Scene {
     this.panel.add(this.add.text(40, -56, '配方素材', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }));
     this.materialList = new ScrollableListUI(this, {
@@ -123,7 +132,7 @@ class AlchemyScene extends Phaser.Scene {
     this.panel.add(this.add.text(40, 82, '已放入素材', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }));
     this.placedList = new ScrollableListUI(this, {
@@ -160,12 +169,15 @@ class AlchemyScene extends Phaser.Scene {
     btn.add(this.add.text(0, 0, text, {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4'
+      color: WARM_UI.text
     }).setOrigin(0.5));
 
     bg.on('pointerover', () => bg.setAlpha(1));
     bg.on('pointerout', () => bg.setAlpha(0.92));
-    bg.on('pointerdown', callback);
+    bg.on('pointerdown', () => {
+      getSfxManager().clickButton();
+      callback();
+    });
 
     return btn;
   }
@@ -210,7 +222,7 @@ class AlchemyScene extends Phaser.Scene {
         const alpha = occupants.length > 0 ? 0.82 : 0.75;
 
         const cell = this.add.rectangle(x, y, cellSize, cellSize, fill, alpha)
-          .setStrokeStyle(2, isOverlap ? 0xebcb8b : 0x4c566a)
+          .setStrokeStyle(2, isOverlap ? WARM_UI.gold : 0x4c566a)
           .setInteractive({ useHandCursor: true });
         this.gridLayer.add(cell);
 
@@ -221,7 +233,7 @@ class AlchemyScene extends Phaser.Scene {
           this.gridLayer.add(this.add.text(x, y, label, {
             fontSize: '13px',
             fontFamily: 'Courier New',
-            color: '#ffffff',
+            color: WARM_UI.textLight,
             fontStyle: 'bold'
           }).setOrigin(0.5));
         }
@@ -252,16 +264,16 @@ class AlchemyScene extends Phaser.Scene {
     this.recipeList.render(recipes, (recipe, index, width, rowHeight) => {
       const isSelected = recipe.recipeId === this.selectedRecipeId;
       const statusText = recipe.canCraft ? '可以制作' : '素材不足';
-      const statusColor = recipe.canCraft ? '#a3be8c' : '#bf616a';
+      const statusColor = recipe.canCraft ? WARM_UI.alchemyText : WARM_UI.warningText;
       const row = this.add.container(0, 0);
-      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 8, 34, isSelected ? 0x5e81ac : 0x3b4252, 0.9)
-        .setStrokeStyle(2, isSelected ? 0x88c0d0 : 0x4c566a)
+      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 8, 34, isSelected ? WARM_UI.button : WARM_UI.panelLight, 0.9)
+        .setStrokeStyle(2, isSelected ? WARM_UI.gold : WARM_UI.border)
         .setInteractive({ useHandCursor: true });
       row.add(bg);
       row.add(this.add.text(12, rowHeight / 2 - 11, recipe.resultName, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4',
+        color: WARM_UI.text,
         fontStyle: 'bold'
       }));
       row.add(this.add.text(width - 70, rowHeight / 2 - 10, statusText, {
@@ -295,14 +307,14 @@ class AlchemyScene extends Phaser.Scene {
     this.materialList.render(availability.materialStatus, (item, index, width, rowHeight) => {
       const isSelected = item.itemId === this.selectedItemId;
       const row = this.add.container(0, 0);
-      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 8, 28, isSelected ? 0x5e81ac : 0x3b4252, item.enough ? 0.88 : 0.55)
-        .setStrokeStyle(2, isSelected ? 0x88c0d0 : (item.enough ? 0x4c566a : 0xbf616a))
+      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 8, 28, isSelected ? WARM_UI.button : WARM_UI.panelLight, item.enough ? 0.9 : 0.72)
+        .setStrokeStyle(2, isSelected ? WARM_UI.gold : (item.enough ? WARM_UI.border : WARM_UI.warning))
         .setInteractive({ useHandCursor: true });
       row.add(bg);
       row.add(this.add.text(12, rowHeight / 2 - 8, `${item.itemName} x${item.count}`, {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: item.enough ? '#eceff4' : '#bf616a'
+        color: item.enough ? WARM_UI.text : WARM_UI.warningText
       }));
 
       bg.on('pointerdown', pointer => {
@@ -328,13 +340,13 @@ class AlchemyScene extends Phaser.Scene {
     this.placedList.render(this.placedMaterials, (material, index, width, rowHeight) => {
       const label = `${material.itemName} (${material.anchorRow},${material.anchorCol})`;
       const row = this.add.container(0, 0);
-      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 8, 24, 0x3b4252, 0.75)
+      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 8, 24, WARM_UI.panelLight, 0.75)
         .setStrokeStyle(1, 0x4c566a)
         .setInteractive({ useHandCursor: true });
       const text = this.add.text(10, rowHeight / 2, label, {
         fontSize: '13px',
         fontFamily: 'Courier New',
-        color: '#d8dee9'
+        color: WARM_UI.text
       }).setOrigin(0, 0.5);
       row.add([bg, text]);
 
@@ -352,7 +364,7 @@ class AlchemyScene extends Phaser.Scene {
     this.recipeList.add(this.add.text(0, -20, '已掌握配方', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }));
 
@@ -361,16 +373,16 @@ class AlchemyScene extends Phaser.Scene {
       const y = 14 + index * 40;
       const isSelected = recipe.recipeId === this.selectedRecipeId;
       const statusText = recipe.canCraft ? '可以制作' : '素材不足';
-      const statusColor = recipe.canCraft ? '#a3be8c' : '#bf616a';
+      const statusColor = recipe.canCraft ? WARM_UI.alchemyText : WARM_UI.warningText;
       const row = this.add.container(0, y);
-      const bg = this.add.rectangle(135, 0, 270, 34, isSelected ? 0x5e81ac : 0x3b4252, 0.9)
-        .setStrokeStyle(2, isSelected ? 0x88c0d0 : 0x4c566a)
+      const bg = this.add.rectangle(135, 0, 270, 34, isSelected ? WARM_UI.button : WARM_UI.panelLight, 0.9)
+        .setStrokeStyle(2, isSelected ? WARM_UI.gold : WARM_UI.border)
         .setInteractive({ useHandCursor: true });
       row.add(bg);
       row.add(this.add.text(12, -11, recipe.resultName, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4',
+        color: WARM_UI.text,
         fontStyle: 'bold'
       }));
       row.add(this.add.text(196, -10, statusText, {
@@ -397,7 +409,7 @@ class AlchemyScene extends Phaser.Scene {
     this.materialList.add(this.add.text(0, -20, '配方素材', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }));
 
@@ -406,7 +418,7 @@ class AlchemyScene extends Phaser.Scene {
       this.materialList.add(this.add.text(0, 12, '选择要制作的产物后开始炼金', {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a'
+        color: WARM_UI.textMuted
       }));
       return;
     }
@@ -417,14 +429,14 @@ class AlchemyScene extends Phaser.Scene {
       const y = 12 + index * 34;
       const isSelected = item.itemId === this.selectedItemId;
       const row = this.add.container(0, y);
-      const bg = this.add.rectangle(135, 0, 270, 28, isSelected ? 0x5e81ac : 0x3b4252, item.enough ? 0.88 : 0.55)
-        .setStrokeStyle(2, isSelected ? 0x88c0d0 : (item.enough ? 0x4c566a : 0xbf616a))
+      const bg = this.add.rectangle(135, 0, 270, 28, isSelected ? WARM_UI.button : WARM_UI.panelLight, item.enough ? 0.9 : 0.72)
+        .setStrokeStyle(2, isSelected ? WARM_UI.gold : (item.enough ? WARM_UI.border : WARM_UI.warning))
         .setInteractive({ useHandCursor: true });
       row.add(bg);
       row.add(this.add.text(12, -8, `${item.itemName} x${item.count}`, {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: item.enough ? '#eceff4' : '#bf616a'
+        color: item.enough ? WARM_UI.text : WARM_UI.warningText
       }));
 
       bg.on('pointerdown', pointer => {
@@ -445,7 +457,7 @@ class AlchemyScene extends Phaser.Scene {
     this.placedList.add(this.add.text(0, -25, '已放入素材', {
       fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }));
 
@@ -453,7 +465,7 @@ class AlchemyScene extends Phaser.Scene {
       this.placedList.add(this.add.text(0, 10, this.selectedRecipeId ? '拖动素材到宫格放置' : '尚未选择配方', {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a'
+        color: WARM_UI.text
       }));
       return;
     }
@@ -464,7 +476,7 @@ class AlchemyScene extends Phaser.Scene {
       const text = this.add.text(0, y, label, {
         fontSize: '13px',
         fontFamily: 'Courier New',
-        color: '#d8dee9'
+        color: WARM_UI.text
       }).setInteractive({ useHandCursor: true });
 
       text.on('pointerdown', pointer => {
@@ -498,7 +510,7 @@ class AlchemyScene extends Phaser.Scene {
       this.detailPanel.add(this.add.text(0, index * 24, line, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: index === 1 && availability && !availability.canCraft ? '#bf616a' : '#eceff4'
+        color: index === 1 && availability && !availability.canCraft ? WARM_UI.warningText : WARM_UI.text
       }).setOrigin(0.5));
     });
   }
@@ -541,6 +553,7 @@ class AlchemyScene extends Phaser.Scene {
       this.placedMaterials.push(placed);
     }
 
+    getSfxManager().addMaterial();
     this.refreshUI();
   }
 
@@ -603,7 +616,7 @@ class AlchemyScene extends Phaser.Scene {
     this.clearDragPreview();
 
     const color = canPlace ? shape.color : 0xbf616a;
-    const strokeColor = canPlace ? 0xebcb8b : 0xffffff;
+    const strokeColor = canPlace ? WARM_UI.gold : 0xffffff;
     const step = this.gridCellSize + this.gridGap;
 
     this.dragPreview = this.add.container(x, y).setDepth(500);
@@ -684,9 +697,12 @@ class AlchemyScene extends Phaser.Scene {
     this.showToast(result.message);
 
     if (result.success) {
+      getSfxManager().alchemySuccess();
       this.selectedItemId = null;
       this.placedMaterials = [];
       this.refreshUI();
+    } else {
+      getSfxManager().alchemyFail();
     }
   }
 
@@ -696,12 +712,12 @@ class AlchemyScene extends Phaser.Scene {
     }
 
     this.toast = this.add.container(this.cameras.main.width / 2, 72).setDepth(300);
-    this.toast.add(this.add.rectangle(0, 0, 430, 42, 0x2e3440, 0.96)
+    this.toast.add(this.add.rectangle(0, 0, 430, 42, WARM_UI.panel, 0.96)
       .setStrokeStyle(2, 0xebcb8b));
     this.toast.add(this.add.text(0, 0, message, {
       fontSize: '15px',
       fontFamily: 'Georgia, serif',
-      color: '#ebcb8b'
+      color: WARM_UI.goldText
     }).setOrigin(0.5));
 
     this.tweens.add({
@@ -722,6 +738,7 @@ class AlchemyScene extends Phaser.Scene {
   closeScene() {
     this.clearDragPreview();
     window.gameState.setGameState(GAME_STATE.NORMAL);
+    getSfxManager().closeMenu();
     this.scene.start(this.returnScene);
   }
 }

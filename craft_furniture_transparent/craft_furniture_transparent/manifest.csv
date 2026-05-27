@@ -1,0 +1,15 @@
+file,source,coord_xywh,size_1x,size_4x,alpha_min,alpha_max,corner_alpha,note
+fridge.png,TopDownHouse_FurnitureState1.png,"35,196,26,55",26x55,104x220,0,255,"[0, 0, 0, 0]",TopDownHouse_FurnitureState1 component: purple fridge
+sofa1.png,TopDownHouse_FurnitureState1.png,"176,117,23,36",23x36,92x144,0,255,"[0, 0, 0, 0]",TopDownHouse_FurnitureState1: orange side armchair
+sofa2.png,TopDownHouse_FurnitureState1.png,"24,162,51,30",49x25,196x100,0,255,"[0, 0, 0, 0]",TopDownHouse_FurnitureState1: orange front sofa
+lantern1.png,TopDownHouse_FurnitureState1.png,"97,112,15,46",15x46,60x184,0,255,"[0, 0, 0, 0]",TopDownHouse_FurnitureState1: floor lamp
+clock.png,fancy_mansion_furnitureset.png,"6,327,20,56",20x56,80x224,0,255,"[0, 0, 0, 0]",fancy_mansion_furnitureset component: grandfather clock
+decorate2.png,fancy_mansion_furnitureset.png,"35,347,26,36",26x36,104x144,0,255,"[0, 0, 0, 0]",fancy_mansion_furnitureset: round globe/table
+decorate1.png,fancy_mansion_furnitureset.png,"67,331,26,52",26x52,104x208,0,255,"[0, 0, 0, 0]",fancy_mansion_furnitureset: vanity / round mirror chair
+desk.png,fancy_mansion_furnitureset.png,"260,20,56,42",56x42,224x168,0,255,"[0, 0, 0, 0]",fancy_mansion_furnitureset: desk/counter
+book.png,fancy_mansion_furnitureset.png,"4,252,40,68",40x68,160x272,0,255,"[0, 0, 0, 0]",fancy_mansion_furnitureset: bookshelf
+painting.png,fancy_mansion_furnitureset.png,"134,66,182,31",182x30,728x120,0,255,"[0, 255, 0, 0]",fancy_mansion_furnitureset: wall painting strip
+quest.png,fancy_mansion_furnitureset.png,"195,114,10,13",10x13,40x52,0,255,"[0, 0, 0, 0]",fancy_mansion_furnitureset: wall note / quest board candidate
+window.png,atlas_16x.png,"227,8,25,15",25x15,100x60,0,255,"[0, 0, 0, 0]",atlas_16x: blue double window
+door.png,door.png,fallback-background-removal,32x30,128x120,255,255,"[255, 255, 255, 255]",No exact same sprite was confidently identifiable in the available source sheets; this version removes the checker/white preview background from the uploaded crop without deleting interior white details.
+lantern2.png,lantern2.png,fallback-background-removal,12x34,48x136,0,255,"[0, 0, 0, 0]",No exact same sprite was confidently identifiable in the available source sheets; this version removes the checker/white preview background from the uploaded crop without deleting interior white details.

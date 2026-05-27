@@ -1,6 +1,8 @@
+﻿import { WARM_UI, addWarmButton, addWarmPanel, addWarmTag } from '../ui/WarmUITheme';
 import FurnitureUpgradeManager from '../systems/FurnitureUpgradeManager';
 import ScrollableListUI from '../systems/ScrollableListUI';
 import { GAME_STATE } from '../systems/GameState';
+import { getSfxManager } from '../systems/SfxManager';
 
 class FurnitureUpgradeScene extends Phaser.Scene {
   constructor() {
@@ -27,28 +29,19 @@ class FurnitureUpgradeScene extends Phaser.Scene {
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.82);
 
     const panel = this.add.container(width / 2, height / 2);
-    const panelBg = this.add.rectangle(0, 0, 720, 540, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0xebcb8b);
-    panel.add(panelBg);
-
-    panel.add(this.add.text(0, -245, '家具升级', {
-      fontSize: '28px',
-      fontFamily: 'Georgia, serif',
-      color: '#ebcb8b',
-      fontStyle: 'bold'
-    }).setOrigin(0.5));
+    addWarmPanel(this, panel, 0, 0, 720, 540, { title: '家具升级' });
 
     this.fundsText = this.add.text(-320, -215, '', {
       fontSize: '14px',
       fontFamily: 'Courier New',
-      color: '#a3be8c'
+      color: WARM_UI.alchemyText
     });
     panel.add(this.fundsText);
 
     this.shopLevelText = this.add.text(120, -215, '', {
       fontSize: '14px',
       fontFamily: 'Courier New',
-      color: '#88c0d0'
+      color: WARM_UI.text
     });
     panel.add(this.shopLevelText);
 
@@ -62,7 +55,7 @@ class FurnitureUpgradeScene extends Phaser.Scene {
       rowGap: 8
     });
 
-    const closeBtn = this.createButton(0, 240, '关闭', () => this.closeScene(), 0xbf616a);
+    const closeBtn = this.createButton(0, 240, '关闭', () => this.closeScene(), WARM_UI.warning);
     panel.add(closeBtn);
 
     this.input.keyboard.on('keydown-U', () => this.closeScene());
@@ -72,16 +65,16 @@ class FurnitureUpgradeScene extends Phaser.Scene {
     this.cameras.main.fadeIn(200);
   }
 
-  createButton(x, y, text, callback, color = 0x5e81ac) {
+  createButton(x, y, text, callback, color = WARM_UI.button) {
     const btn = this.add.container(x, y);
     const bg = this.add.rectangle(0, 0, 120, 34, color, 0.92)
-      .setStrokeStyle(2, 0x81a1c1)
+      .setStrokeStyle(2, WARM_UI.buttonHover)
       .setInteractive({ useHandCursor: true });
     btn.add(bg);
     btn.add(this.add.text(0, 0, text, {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4'
+      color: WARM_UI.text
     }).setOrigin(0.5));
 
     bg.on('pointerover', () => bg.setAlpha(1));
@@ -91,50 +84,51 @@ class FurnitureUpgradeScene extends Phaser.Scene {
   }
 
   renderScrollableList() {
-    this.fundsText.setText(`当前资金: ${window.gameState.funds}`);
-    this.shopLevelText.setText(`万事屋等级: ${this.furnitureManager.getShopLevel()}`);
+    this.fundsText.setText(`当前资金：${window.gameState.funds}`);
+    this.shopLevelText.setText(`万事屋等级：${this.furnitureManager.getShopLevel()}`);
 
     const furnitureList = this.furnitureManager.getFurnitureList();
     this.listContainer.render(furnitureList, (item, index, width, rowHeight) => {
       const row = this.add.container(0, 0);
 
-      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 14, 106, 0x3b4252, 0.84)
-        .setStrokeStyle(2, 0x4c566a);
+      const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 14, 106, WARM_UI.panelLight, 0.84)
+        .setStrokeStyle(2, WARM_UI.border);
       row.add(bg);
 
       row.add(this.add.text(20, rowHeight / 2 - 42, `${item.furnitureName} Lv.${item.level}`, {
         fontSize: '16px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4',
+        color: WARM_UI.text,
         fontStyle: 'bold'
       }));
 
-      row.add(this.add.text(20, rowHeight / 2 - 18, `当前: ${item.currentEffect}`, {
+      row.add(this.add.text(20, rowHeight / 2 - 18, `当前：${item.currentEffect}`, {
         fontSize: '12px',
         fontFamily: 'Georgia, serif',
-        color: '#d8dee9',
+        color: WARM_UI.textMuted,
         wordWrap: { width: 450, useAdvancedWrap: true }
       }));
 
-      row.add(this.add.text(20, rowHeight / 2 + 16, `下级: ${item.nextEffect}`, {
+      row.add(this.add.text(20, rowHeight / 2 + 16, `下级：${item.nextEffect}`, {
         fontSize: '12px',
         fontFamily: 'Georgia, serif',
-        color: item.isMaxLevel ? '#4c566a' : '#88c0d0',
+        color: item.isMaxLevel ? WARM_UI.textMuted : WARM_UI.text,
         wordWrap: { width: 450, useAdvancedWrap: true }
       }));
 
       const costText = item.isMaxLevel ? '最高级' : `条件：${item.nextRequirementText || `${item.nextCost}资金`}`;
-      row.add(this.add.text(width - 180, rowHeight / 2 - 16, costText, {
+      // 条件文字放在按钮正下方，与按钮居中对齐
+      row.add(this.add.text(width - 65, rowHeight / 2 + 26, costText, {
         fontSize: '12px',
         fontFamily: 'Courier New',
-        color: item.canAfford ? '#a3be8c' : '#bf616a',
+        color: item.canAfford ? WARM_UI.alchemyText : WARM_UI.warningText,
         align: 'center',
-        wordWrap: { width: 150, useAdvancedWrap: true }
+        wordWrap: { width: 160, useAdvancedWrap: true }
       }).setOrigin(0.5));
 
-      const btn = this.createButton(width - 80, rowHeight / 2, item.isMaxLevel ? '已满级' : '升级', () => {
+      const btn = this.createButton(width - 65, rowHeight / 2, item.isMaxLevel ? '已满级' : '升级', () => {
         this.upgrade(item.furnitureId);
-      }, item.isMaxLevel ? 0x4c566a : 0x5e81ac);
+      }, item.isMaxLevel ? WARM_UI.border : WARM_UI.button);
       if (item.isMaxLevel) {
         btn.list[0].disableInteractive();
       }
@@ -150,47 +144,47 @@ class FurnitureUpgradeScene extends Phaser.Scene {
       return;
     }
     this.listContainer.removeAll(true);
-    this.fundsText.setText(`当前资金: ${window.gameState.funds}`);
-    this.shopLevelText.setText(`万事屋等级: ${this.furnitureManager.getShopLevel()}`);
+    this.fundsText.setText(`当前资金：${window.gameState.funds}`);
+    this.shopLevelText.setText(`万事屋等级：${this.furnitureManager.getShopLevel()}`);
 
     const furnitureList = this.furnitureManager.getFurnitureList();
     furnitureList.forEach((item, index) => {
       const y = -160 + index * 78;
       const row = this.add.container(0, y);
 
-      const bg = this.add.rectangle(0, 0, 650, 66, 0x3b4252, 0.84)
-        .setStrokeStyle(2, 0x4c566a);
+      const bg = this.add.rectangle(0, 0, 650, 66, WARM_UI.panelLight, 0.84)
+        .setStrokeStyle(2, WARM_UI.border);
       row.add(bg);
 
       row.add(this.add.text(-300, -22, `${item.furnitureName} Lv.${item.level}`, {
         fontSize: '16px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4',
+        color: WARM_UI.text,
         fontStyle: 'bold'
       }));
 
-      row.add(this.add.text(-300, 0, `当前: ${item.currentEffect}`, {
+      row.add(this.add.text(-300, 0, `当前：${item.currentEffect}`, {
         fontSize: '12px',
         fontFamily: 'Georgia, serif',
-        color: '#d8dee9'
+        color: WARM_UI.textMuted
       }));
 
-      row.add(this.add.text(-300, 20, `下级: ${item.nextEffect}`, {
+      row.add(this.add.text(-300, 20, `下级：${item.nextEffect}`, {
         fontSize: '12px',
         fontFamily: 'Georgia, serif',
-        color: item.isMaxLevel ? '#4c566a' : '#88c0d0'
+        color: item.isMaxLevel ? WARM_UI.textMuted : WARM_UI.text
       }));
 
-      const costText = item.isMaxLevel ? '最高级' : `${item.nextCost} 金`;
+      const costText = item.isMaxLevel ? '最高级' : `${item.nextCost} 资金`;
       row.add(this.add.text(165, -8, costText, {
         fontSize: '13px',
         fontFamily: 'Courier New',
-        color: item.canAfford ? '#a3be8c' : '#bf616a'
+        color: item.canAfford ? WARM_UI.alchemyText : WARM_UI.warningText
       }).setOrigin(0.5));
 
       const btn = this.createButton(255, 0, item.isMaxLevel ? '已满级' : '升级', () => {
         this.upgrade(item.furnitureId);
-      }, item.isMaxLevel ? 0x4c566a : 0x5e81ac);
+      }, item.isMaxLevel ? WARM_UI.border : WARM_UI.button);
       if (item.isMaxLevel) {
         btn.list[0].disableInteractive();
       }
@@ -202,18 +196,23 @@ class FurnitureUpgradeScene extends Phaser.Scene {
 
   upgrade(furnitureId) {
     const result = this.furnitureManager.upgradeFurniture(furnitureId);
+    if (result.success) {
+      getSfxManager().confirm();
+    } else {
+      getSfxManager().error();
+    }
     this.showToast(result.message, result.success);
     this.renderScrollableList();
   }
 
   showToast(message, success = true) {
     const toast = this.add.container(this.cameras.main.width / 2, 70).setDepth(300);
-    toast.add(this.add.rectangle(0, 0, 360, 38, 0x2e3440, 0.96)
-      .setStrokeStyle(2, success ? 0xa3be8c : 0xbf616a));
+    toast.add(this.add.rectangle(0, 0, 360, 38, WARM_UI.panel, 0.96)
+      .setStrokeStyle(2, success ? WARM_UI.alchemy : WARM_UI.warning));
     toast.add(this.add.text(0, 0, message, {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: success ? '#a3be8c' : '#bf616a'
+      color: success ? WARM_UI.alchemyText : WARM_UI.warningText
     }).setOrigin(0.5));
 
     this.tweens.add({
@@ -228,6 +227,7 @@ class FurnitureUpgradeScene extends Phaser.Scene {
 
   closeScene() {
     window.gameState.setGameState(GAME_STATE.NORMAL);
+    getSfxManager().closeMenu();
     this.scene.start(this.returnScene);
   }
 }

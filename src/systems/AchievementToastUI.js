@@ -1,9 +1,10 @@
-// 成就提示 UI - 在游戏右下角显示成就解锁提示
-// 3 秒后自动消失，不暂停游戏，不阻塞玩家操作，不切换 GameState
+﻿import { WARM_UI } from '../ui/WarmUITheme';
+// 鎴愬氨鎻愮ず UI - 鍦ㄦ父鎴忓彸涓嬭鏄剧ず鎴愬氨瑙ｉ攣鎻愮ず
+// 3 绉掑悗鑷姩娑堝け锛屼笉鏆傚仠娓告垙锛屼笉闃诲鐜╁鎿嶄綔锛屼笉鍒囨崲 GameState
 
 class AchievementToastUI {
   /**
-   * @param {Phaser.Scene} scene - 游戏场景引用
+   * @param {Phaser.Scene} scene - 娓告垙鍦烘櫙寮曠敤
    */
   constructor(scene) {
     this.scene = scene;
@@ -13,12 +14,12 @@ class AchievementToastUI {
     this._toastTimer = null;
     this._isDestroyed = false;
 
-    // 显示时长（毫秒）
+    // 鏄剧ず鏃堕暱锛堟绉掞級
     this.displayDuration = 3000;
   }
 
   /**
-   * 显示成就提示（如果正在显示则加入队列）
+   * 鏄剧ず鎴愬氨鎻愮ず锛堝鏋滄鍦ㄦ樉绀哄垯鍔犲叆闃熷垪锛?
    * @param {{ achievementId: string, title: string, description: string }} achievement
    */
   show(achievement) {
@@ -32,7 +33,7 @@ class AchievementToastUI {
   }
 
   /**
-   * 显示队列中的下一个成就
+   * 鏄剧ず闃熷垪涓殑涓嬩竴涓垚灏?
    */
   _showNext() {
     if (this._isDestroyed) return;
@@ -47,7 +48,7 @@ class AchievementToastUI {
   }
 
   /**
-   * 创建提示 UI 元素
+   * 鍒涘缓鎻愮ず UI 鍏冪礌
    */
   _createToastElement(achievement) {
     if (this._isDestroyed || !this.scene || !this.scene.add) return;
@@ -55,47 +56,46 @@ class AchievementToastUI {
     const width = this.scene.cameras.main.width;
     const height = this.scene.cameras.main.height;
 
-    // 右下角位置
+    // 鍙充笅瑙掍綅缃?
     const toastX = width - 140;
     const toastY = height - 65;
 
     const container = this.scene.add.container(toastX, toastY).setDepth(200);
 
-    // 背景
-    const bg = this.scene.add.rectangle(0, 0, 250, 80, 0x2e3440, 0.95)
-      .setStrokeStyle(2, 0xebcb8b);
+    // 鑳屾櫙
+    const bg = this.scene.add.rectangle(0, 0, 250, 80, WARM_UI.panel, 0.95)
+      .setStrokeStyle(2, WARM_UI.gold);
     container.add(bg);
 
-    // 标题行：成就达成！
     const headerText = this.scene.add.text(0, -24, '成就达成！', {
       fontSize: '12px',
       fontFamily: 'Georgia, serif',
-      color: '#ebcb8b',
+      color: WARM_UI.goldText,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     container.add(headerText);
 
-    // 成就名称
+    // 鎴愬氨鍚嶇О
     const titleText = this.scene.add.text(0, -4, achievement.title, {
       fontSize: '15px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     container.add(titleText);
 
-    // 描述（如果有空间）
+    // 鎻忚堪锛堝鏋滄湁绌洪棿锛?
     if (achievement.description) {
       const descText = this.scene.add.text(0, 18, achievement.description, {
         fontSize: '11px',
         fontFamily: 'Georgia, serif',
-        color: '#d8dee9',
+        color: WARM_UI.textMuted,
         align: 'center'
       }).setOrigin(0.5).setWordWrapWidth(220);
       container.add(descText);
     }
 
-    // 初始从下方滑入动画
+    // 鍒濆浠庝笅鏂规粦鍏ュ姩鐢?
     container.setY(toastY + 40);
     container.setAlpha(0);
 
@@ -109,14 +109,14 @@ class AchievementToastUI {
 
     this._currentToast = container;
 
-    // 3 秒后自动消失
+    // 3 绉掑悗鑷姩娑堝け
     this._toastTimer = this.scene.time.delayedCall(this.displayDuration, () => {
       this._hideToast(container);
     });
   }
 
   /**
-   * 隐藏提示
+   * 闅愯棌鎻愮ず
    */
   _hideToast(container) {
     if (this._isDestroyed || !this.scene || !this.scene.tweens) {
@@ -132,21 +132,21 @@ class AchievementToastUI {
       ease: 'Power2',
       onComplete: () => {
         this._cleanupToast(container);
-        // 显示队列中的下一个
+        // 鏄剧ず闃熷垪涓殑涓嬩竴涓?
         this._showNext();
       }
     });
   }
 
   /**
-   * 清理提示元素
+   * 娓呯悊鎻愮ず鍏冪礌
    */
   _cleanupToast(container) {
     if (container && !container.isDestroyed) {
       try {
         container.destroy();
       } catch (e) {
-        // 忽略已销毁的容器
+        // 蹇界暐宸查攢姣佺殑瀹瑰櫒
       }
     }
     if (this._currentToast === container) {
@@ -155,7 +155,7 @@ class AchievementToastUI {
   }
 
   /**
-   * 销毁所有提示和队列
+   * 閿€姣佹墍鏈夋彁绀哄拰闃熷垪
    */
   destroy() {
     this._isDestroyed = true;
@@ -169,7 +169,7 @@ class AchievementToastUI {
       try {
         this._currentToast.destroy();
       } catch (e) {
-        // 忽略
+        // 蹇界暐
       }
       this._currentToast = null;
     }

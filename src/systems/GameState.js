@@ -1,6 +1,7 @@
 // 游戏状态管理
 import gameConfig from '../data/gameConfig.json';
 import { getWanShiWuLevelByPopularity } from './WanShiWuLevelSystem';
+import { normalizeTutorialFlags } from './TutorialManager';
 
 // 委托状态常量
 export const COMMISSION_STATUS = {
@@ -60,6 +61,9 @@ class GameState {
     this.spiritMemories = null;
     this.archiveData = null;
     this.dayEndSummaryShown = false;
+    this.hasSleptToday = false;
+    this.dailySettlementShownDay = 0;
+    this.lastSleepDay = null;
     
     // 已完成的委托列表
     this.completedCommissions = [];
@@ -98,6 +102,10 @@ class GameState {
 
     // 随机 NPC 状态 { visitorConfigId: state }
     this.randomNpcStates = {};
+    this.randomNpcSpawnTimes = {};
+
+    // 已经来访过的随机 NPC 类型（每种 NPC 只出现一次）
+    this.visitedRandomNpcTypes = [];
 
     // 待展示的获得物品（用于奖励弹窗）
     this.pendingRewardItems = [];
@@ -117,6 +125,24 @@ class GameState {
       currentHour: 8,
       currentMinute: 0
     };
+
+    // 是否已看过开场剧情
+    this.hasSeenOpeningStory = false;
+
+    // 新手教程标记 { counter: true, alchemy: true, ... }
+    this.tutorialFlags = normalizeTutorialFlags();
+  }
+
+  // ========== 教程标记 ==========
+
+  markTutorialShown(key) {
+    this.tutorialFlags = normalizeTutorialFlags(this.tutorialFlags);
+    this.tutorialFlags[key] = true;
+  }
+
+  isTutorialShown(key) {
+    this.tutorialFlags = normalizeTutorialFlags(this.tutorialFlags);
+    return !!this.tutorialFlags[key];
   }
 
   // ========== 游戏状态机 ==========
@@ -160,6 +186,8 @@ class GameState {
     this.todayVisitors = [];
     // 重置来访提示
     this.visitorNotificationShown = false;
+    // 重置每日睡眠限制
+    this.hasSleptToday = false;
     // 重置游戏状态
     this.currentGameState = GAME_STATE.NORMAL;
   }
@@ -170,9 +198,11 @@ class GameState {
       if (state === 'spawnedToday') {
         // 当天生成了但未对话 → 错过
         this.randomNpcStates[visitorId] = 'missed';
+        delete this.randomNpcSpawnTimes?.[visitorId];
       } else if (state === 'talked') {
         // 已对话完毕 → 离开
         this.randomNpcStates[visitorId] = 'left';
+        delete this.randomNpcSpawnTimes?.[visitorId];
       }
     }
   }
@@ -591,11 +621,16 @@ class GameState {
     this.spiritMemories = null;
     this.archiveData = null;
     this.dayEndSummaryShown = false;
+    this.hasSleptToday = false;
+    this.dailySettlementShownDay = 0;
+    this.lastSleepDay = null;
     this.completedCommissions = [];
     this.acceptedCommissions = [];
     this.expiredCommissions = [];
     this.currentCommissionId = null;
     this.todayVisitors = [];
+    this.hasSeenOpeningStory = false;
+    this.tutorialFlags = normalizeTutorialFlags();
     this.returnScene = 'ShopScene';
     this.inventory = [];
     this.keyItems = [];
@@ -603,6 +638,8 @@ class GameState {
     this.endingFlags = {};
     this.currentGameState = GAME_STATE.NORMAL;
     this.randomNpcStates = {};
+    this.randomNpcSpawnTimes = {};
+    this.visitedRandomNpcTypes = [];
     this.pendingRewardItems = [];
     this.visitorNotificationShown = false;
     this.playerPosition = {

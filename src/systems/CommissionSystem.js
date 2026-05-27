@@ -7,6 +7,7 @@ import DailyLoopManager from './DailyLoopManager';
 import SpiritMemoryManager from './SpiritMemoryManager';
 import ArchiveManager from './ArchiveManager';
 import { applyCommissionReward as applyWanShiWuCommissionReward } from './WanShiWuLevelSystem';
+import { getSfxManager } from './SfxManager';
 
 export default class CommissionSystem {
   constructor(gameState) {
@@ -330,6 +331,7 @@ export default class CommissionSystem {
     
     // 更新状态
     this.gameState.completeCommission(commissionId);
+    getSfxManager().questComplete();
     new ArchiveManager(this.gameState).addCompletedQuestRecord({
       ...commission,
       reward: appliedReward
@@ -631,6 +633,7 @@ export default class CommissionSystem {
     }
 
     this.gameState.completeCommission(commissionId);
+    getSfxManager().questComplete();
     new ArchiveManager(this.gameState).addCompletedQuestRecord({
       ...commission,
       reward: appliedReward
@@ -675,6 +678,7 @@ export default class CommissionSystem {
     this.recordSubmissionRewardStats(commission, appliedReward);
 
     this.gameState.completeCommission(commissionId);
+    getSfxManager().questComplete();
     new ArchiveManager(this.gameState).addCompletedQuestRecord({
       ...commission,
       reward: appliedReward

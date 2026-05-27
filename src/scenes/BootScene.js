@@ -1,9 +1,11 @@
 // 启动场景 - 加载所有场景资源
 import gameConfig from '../data/gameConfig.json';
+import itemsData from '../data/items.json';
 
 class BootScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BootScene' });
+    this.hasStartedTitleScene = false;
   }
 
   preload() {
@@ -23,10 +25,19 @@ class BootScene extends Phaser.Scene {
       progressBar.fillStyle(0x88c0d0, 1);
       progressBar.fillRect(260, 280, 280 * v, 30);
       percentText.setText(Math.floor(v * 100) + '%');
+
+      if (v >= 1 && !this.hasStartedTitleScene) {
+        window.setTimeout(() => {
+          if (!this.hasStartedTitleScene && this.scene.isActive('BootScene')) {
+            this.startTitleScene();
+          }
+        }, 800);
+      }
     });
     this.load.on('complete', () => {
       progressBar.destroy(); progressBox.destroy();
       loadingText.destroy(); percentText.destroy();
+      window.setTimeout(() => this.startTitleScene(), 0);
     });
 
     // tile 图集（SuperRetroWorld 32px tiles）
@@ -51,9 +62,20 @@ class BootScene extends Phaser.Scene {
     this.load.image('furnitureLantern1', `/assets/scene-pieces/${F}Lantern1.png`);
     this.load.image('furnitureLantern2', `/assets/scene-pieces/${F}Lantern2.png`);
     this.load.image('furnitureWindow', `/assets/scene-pieces/${F}Window.png`);
+    this.load.image('openingBg', '/assets/backgrounds/opening_general_store_bg.png');
 
     this.loadInteriorAssets();
+    this.loadItemPreviewAssets();
     this.createPlaceholderAssets();
+  }
+
+  loadItemPreviewAssets() {
+    const loadedKeys = new Set();
+    itemsData.items.forEach(item => {
+      if (!item.previewIcon || !item.previewImage || loadedKeys.has(item.previewIcon)) return;
+      this.load.image(item.previewIcon, item.previewImage);
+      loadedKeys.add(item.previewIcon);
+    });
   }
 
   loadInteriorAssets() {
@@ -117,12 +139,18 @@ class BootScene extends Phaser.Scene {
   }
 
   create() {
+    this.startTitleScene();
+  }
+
+  startTitleScene() {
+    if (this.hasStartedTitleScene) return;
+    this.hasStartedTitleScene = true;
     this.createInteriorAnimations();
     this.scene.start('TitleScene');
   }
 
   createInteriorAnimations() {
-    if (!this.anims.exists('srwFireLoop')) {
+    if (this.textures.exists('srwFire') && !this.anims.exists('srwFireLoop')) {
       this.anims.create({
         key: 'srwFireLoop',
         frames: this.anims.generateFrameNumbers('srwFire', { start: 0, end: 2 }),
@@ -131,7 +159,7 @@ class BootScene extends Phaser.Scene {
       });
     }
 
-    if (!this.anims.exists('srwFire2Loop')) {
+    if (this.textures.exists('srwFire2') && !this.anims.exists('srwFire2Loop')) {
       this.anims.create({
         key: 'srwFire2Loop',
         frames: this.anims.generateFrameNumbers('srwFire2', { start: 0, end: 2 }),
@@ -140,6 +168,7 @@ class BootScene extends Phaser.Scene {
       });
     }
   }
+
 }
 
 export default BootScene;

@@ -2,6 +2,8 @@
 import { Game } from 'phaser';
 import config from './config.js';
 import GameState from './systems/GameState.js';
+import SaveLoadManager from './systems/SaveLoadManager.js';
+import { getTimeManager } from './systems/TimeManager.js';
 
 // 导入所有场景
 import BootScene from './scenes/BootScene.js';
@@ -18,6 +20,7 @@ import FurnitureUpgradeScene from './scenes/FurnitureUpgradeScene.js';
 import BookshelfArchiveScene from './scenes/BookshelfArchiveScene.js';
 import SaveLoadScene from './scenes/SaveLoadScene.js';
 import PlayerNameScene from './scenes/PlayerNameScene.js';
+import OpeningStoryScene from './scenes/OpeningStoryScene.js';
 
 // 注册场景
 config.scene = [
@@ -34,7 +37,8 @@ config.scene = [
   FurnitureUpgradeScene,
   BookshelfArchiveScene,
   SaveLoadScene,
-  PlayerNameScene
+  PlayerNameScene,
+  OpeningStoryScene
 ];
 
 // 初始化游戏状态
@@ -46,5 +50,55 @@ const game = new Game(config);
 // 将游戏状态挂载到全局，方便调试
 window.gameState = gameState;
 window.game = game;
+
+function shouldAutoSaveOnPageExit() {
+  if (!window.gameState?.getPlayerName?.()) return false;
+
+  const activeSceneKeys = window.game?.scene?.getScenes(true)?.map(scene => scene.scene.key) || [];
+  const activeSaveLoadScene = window.game?.scene?.getScene?.('SaveLoadScene');
+  if (activeSceneKeys.includes('SaveLoadScene') && activeSaveLoadScene?.returnScene === 'TitleScene') {
+    return false;
+  }
+
+  const titleOnly = activeSceneKeys.length > 0 && activeSceneKeys.every(key => (
+    key === 'BootScene' ||
+    key === 'TitleScene' ||
+    key === 'PlayerNameScene' ||
+    key === 'OpeningStoryScene'
+  ));
+
+  return !titleOnly;
+}
+
+function autoSaveOnPageExit(reason) {
+  if (!shouldAutoSaveOnPageExit()) return;
+
+  const now = Date.now();
+  if (window.__oddJobsLastAutoSaveAt && now - window.__oddJobsLastAutoSaveAt < 1500) {
+    return;
+  }
+  window.__oddJobsLastAutoSaveAt = now;
+
+  try {
+    getTimeManager(window.gameState)?._syncToGameState?.();
+    new SaveLoadManager(window.gameState).autoSave(reason);
+  } catch (error) {
+    console.warn('[AutoSave] 页面退出自动存档失败:', error);
+  }
+}
+
+window.addEventListener('beforeunload', () => {
+  autoSaveOnPageExit('beforeUnload');
+});
+
+window.addEventListener('pagehide', () => {
+  autoSaveOnPageExit('pagehide');
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    autoSaveOnPageExit('visibilitychange');
+  }
+});
 
 export { game, gameState };

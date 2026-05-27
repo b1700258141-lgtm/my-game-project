@@ -1,5 +1,6 @@
 // 记忆场景 - 展示精魂的古代记忆
 import memories from '../data/memories.json';
+import { getSfxManager } from '../systems/SfxManager';
 import CommissionSystem from '../systems/CommissionSystem';
 import SpiritMemoryManager from '../systems/SpiritMemoryManager';
 import InventorySystem from '../systems/InventorySystem';
@@ -85,6 +86,7 @@ class MemoryScene extends Phaser.Scene {
 
     // 淡入动画
     memoryContainer.setScale(0.8).setAlpha(0);
+    getSfxManager().memoryTrigger();
     this.cameras.main.fadeIn(800);
     
     this.tweens.add({

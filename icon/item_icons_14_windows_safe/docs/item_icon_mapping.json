@@ -1,0 +1,114 @@
+[
+  {
+    "index": "01",
+    "filename": "images/01_alchemy_material_002_jiu_bu_yang.png",
+    "name": "旧布样",
+    "itemId": "alchemy_material_002",
+    "type": "normal_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "02",
+    "filename": "images/02_alchemy_material_003_jiu_yao_shi.png",
+    "name": "旧钥匙",
+    "itemId": "alchemy_material_003",
+    "type": "clue_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "03",
+    "filename": "images/03_alchemy_material_004_gan_ku_cao_yao_biao_ben.png",
+    "name": "干枯草药标本",
+    "itemId": "alchemy_material_004",
+    "type": "normal_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "04",
+    "filename": "images/04_alchemy_material_005_shi_ying_sui_pian.png",
+    "name": "石英碎片",
+    "itemId": "alchemy_material_005",
+    "type": "normal_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "05",
+    "filename": "images/05_alchemy_product_001_jing_hua_yao_ji.png",
+    "name": "净化药剂",
+    "itemId": "alchemy_product_001",
+    "type": "alchemy_product",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "06",
+    "filename": "images/06_alchemy_product_002_ji_yi_ti_qu_ye.png",
+    "name": "记忆提取液",
+    "itemId": "alchemy_product_002",
+    "type": "alchemy_product",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "07",
+    "filename": "images/07_usable_item_001_ti_li_hui_fu_yao.png",
+    "name": "体力恢复药",
+    "itemId": "usable_item_001",
+    "type": "usable_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "08",
+    "filename": "images/08_key_item_001_tong_wen_sui_pian_A.png",
+    "name": "铜纹碎片A",
+    "itemId": "key_item_001",
+    "type": "key_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "09",
+    "filename": "images/09_key_item_002_yao_qian_wen_zhang_pian.png",
+    "name": "药签纹章片",
+    "itemId": "key_item_002",
+    "type": "key_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "10",
+    "filename": "images/10_key_item_003_zi_shi_tong_chi_lun.png",
+    "name": "子时铜齿轮",
+    "itemId": "key_item_003",
+    "type": "key_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "11",
+    "filename": "images/11_key_item_004_you_yin_zhi_tiao.png",
+    "name": "油印纸条",
+    "itemId": "key_item_004",
+    "type": "key_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "12",
+    "filename": "images/12_clue_item_001_tui_se_jie_jing_zhao_pian.png",
+    "name": "褪色街景照片",
+    "itemId": "clue_item_001",
+    "type": "clue_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "13",
+    "filename": "images/13_clue_item_002_fan_huang_jiu_xin.png",
+    "name": "泛黄旧信",
+    "itemId": "clue_item_002",
+    "type": "clue_item",
+    "source": "src/data/items.json"
+  },
+  {
+    "index": "14",
+    "filename": "images/14_normal_item_001_jie_fang_xie_li.png",
+    "name": "街坊谢礼",
+    "itemId": "normal_item_001",
+    "type": "normal_item",
+    "source": "src/data/items.json"
+  }
+]

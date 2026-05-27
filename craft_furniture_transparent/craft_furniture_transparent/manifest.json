@@ -1,0 +1,226 @@
+[
+  {
+    "file": "fridge.png",
+    "source": "TopDownHouse_FurnitureState1.png",
+    "coord_xywh": "35,196,26,55",
+    "size_1x": "26x55",
+    "size_4x": "104x220",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "TopDownHouse_FurnitureState1 component: purple fridge"
+  },
+  {
+    "file": "sofa1.png",
+    "source": "TopDownHouse_FurnitureState1.png",
+    "coord_xywh": "176,117,23,36",
+    "size_1x": "23x36",
+    "size_4x": "92x144",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "TopDownHouse_FurnitureState1: orange side armchair"
+  },
+  {
+    "file": "sofa2.png",
+    "source": "TopDownHouse_FurnitureState1.png",
+    "coord_xywh": "24,162,51,30",
+    "size_1x": "49x25",
+    "size_4x": "196x100",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "TopDownHouse_FurnitureState1: orange front sofa"
+  },
+  {
+    "file": "lantern1.png",
+    "source": "TopDownHouse_FurnitureState1.png",
+    "coord_xywh": "97,112,15,46",
+    "size_1x": "15x46",
+    "size_4x": "60x184",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "TopDownHouse_FurnitureState1: floor lamp"
+  },
+  {
+    "file": "clock.png",
+    "source": "fancy_mansion_furnitureset.png",
+    "coord_xywh": "6,327,20,56",
+    "size_1x": "20x56",
+    "size_4x": "80x224",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "fancy_mansion_furnitureset component: grandfather clock"
+  },
+  {
+    "file": "decorate2.png",
+    "source": "fancy_mansion_furnitureset.png",
+    "coord_xywh": "35,347,26,36",
+    "size_1x": "26x36",
+    "size_4x": "104x144",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "fancy_mansion_furnitureset: round globe/table"
+  },
+  {
+    "file": "decorate1.png",
+    "source": "fancy_mansion_furnitureset.png",
+    "coord_xywh": "67,331,26,52",
+    "size_1x": "26x52",
+    "size_4x": "104x208",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "fancy_mansion_furnitureset: vanity / round mirror chair"
+  },
+  {
+    "file": "desk.png",
+    "source": "fancy_mansion_furnitureset.png",
+    "coord_xywh": "260,20,56,42",
+    "size_1x": "56x42",
+    "size_4x": "224x168",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "fancy_mansion_furnitureset: desk/counter"
+  },
+  {
+    "file": "book.png",
+    "source": "fancy_mansion_furnitureset.png",
+    "coord_xywh": "4,252,40,68",
+    "size_1x": "40x68",
+    "size_4x": "160x272",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "fancy_mansion_furnitureset: bookshelf"
+  },
+  {
+    "file": "painting.png",
+    "source": "fancy_mansion_furnitureset.png",
+    "coord_xywh": "134,66,182,31",
+    "size_1x": "182x30",
+    "size_4x": "728x120",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      255,
+      0,
+      0
+    ],
+    "note": "fancy_mansion_furnitureset: wall painting strip"
+  },
+  {
+    "file": "quest.png",
+    "source": "fancy_mansion_furnitureset.png",
+    "coord_xywh": "195,114,10,13",
+    "size_1x": "10x13",
+    "size_4x": "40x52",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "fancy_mansion_furnitureset: wall note / quest board candidate"
+  },
+  {
+    "file": "window.png",
+    "source": "atlas_16x.png",
+    "coord_xywh": "227,8,25,15",
+    "size_1x": "25x15",
+    "size_4x": "100x60",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "atlas_16x: blue double window"
+  },
+  {
+    "file": "door.png",
+    "source": "door.png",
+    "coord_xywh": "fallback-background-removal",
+    "size_1x": "32x30",
+    "size_4x": "128x120",
+    "alpha_min": 255,
+    "alpha_max": 255,
+    "corner_alpha": [
+      255,
+      255,
+      255,
+      255
+    ],
+    "note": "No exact same sprite was confidently identifiable in the available source sheets; this version removes the checker/white preview background from the uploaded crop without deleting interior white details."
+  },
+  {
+    "file": "lantern2.png",
+    "source": "lantern2.png",
+    "coord_xywh": "fallback-background-removal",
+    "size_1x": "12x34",
+    "size_4x": "48x136",
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "note": "No exact same sprite was confidently identifiable in the available source sheets; this version removes the checker/white preview background from the uploaded crop without deleting interior white details."
+  }
+]

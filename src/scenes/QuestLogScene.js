@@ -1,7 +1,9 @@
-// 委托日志场景 - J 键打开，显示进行中的委托列表（支持长期/短期分页）
+﻿import { WARM_UI, addWarmButton, addWarmPanel, addWarmTag } from '../ui/WarmUITheme';
+// 濮旀墭鏃ュ織鍦烘櫙 - J 閿墦寮€锛屾樉绀鸿繘琛屼腑鐨勫鎵樺垪琛紙鏀寔闀挎湡/鐭湡鍒嗛〉锛?
 import CommissionSystem from '../systems/CommissionSystem';
 import ScrollableListUI from '../systems/ScrollableListUI';
 import { COMMISSION_STATUS, GAME_STATE } from '../systems/GameState';
+import { getSfxManager } from '../systems/SfxManager';
 
 class QuestLogScene extends Phaser.Scene {
   constructor() {
@@ -25,51 +27,42 @@ class QuestLogScene extends Phaser.Scene {
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
-    // 重置相机状态
+    // 閲嶇疆鐩告満鐘舵€?
     this.cameras.main.resetFX();
 
-    // 设置游戏状态
+    // 璁剧疆娓告垙鐘舵€?
     window.gameState.setGameState(GAME_STATE.QUEST_LIST);
 
-    // 半透明遮罩
+    // 鍗婇€忔槑閬僵
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8);
 
-    // 主面板
+    // 涓婚潰鏉?
     const panelWidth = 720;
     const panelHeight = 520;
     this.panel = this.add.container(width / 2, height / 2);
 
-    const panelBg = this.add.rectangle(0, 0, panelWidth, panelHeight, 0x2e3440, 0.98)
-      .setStrokeStyle(3, 0x88c0d0);
-    this.panel.add(panelBg);
+    addWarmPanel(this, this.panel, 0, 0, panelWidth, panelHeight, {
+      title: '委托账本'
+    });
 
-    // 标题
-    const title = this.add.text(0, -230, '委托日志', {
-      fontSize: '28px',
-      fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
-      fontStyle: 'bold'
-    }).setOrigin(0.5);
-    this.panel.add(title);
-
-    // ========== 分页标签 ==========
-    this.longTabBg = this.add.rectangle(-80, -195, 120, 30, 0x5e81ac, 0.9)
-      .setStrokeStyle(2, 0x81a1c1)
+    // ========== 鍒嗛〉鏍囩 ==========
+    this.longTabBg = this.add.rectangle(-80, -195, 120, 30, WARM_UI.button, 0.9)
+      .setStrokeStyle(2, WARM_UI.buttonHover)
       .setInteractive({ useHandCursor: true });
     this.longTabText = this.add.text(-80, -195, '长期委托', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     
-    this.shortTabBg = this.add.rectangle(60, -195, 120, 30, 0x3b4252, 0.9)
-      .setStrokeStyle(2, 0x4c566a)
+    this.shortTabBg = this.add.rectangle(60, -195, 120, 30, WARM_UI.panelLight, 0.9)
+      .setStrokeStyle(2, WARM_UI.border)
       .setInteractive({ useHandCursor: true });
     this.shortTabText = this.add.text(60, -195, '短期委托', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       fontStyle: 'bold'
     }).setOrigin(0.5);
 
@@ -78,19 +71,19 @@ class QuestLogScene extends Phaser.Scene {
     this.longTabBg.on('pointerdown', () => this.switchTab('longTerm'));
     this.shortTabBg.on('pointerdown', () => this.switchTab('shortTerm'));
     this.longTabBg.on('pointerover', () => {
-      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(0x4c566a, 0.9);
+      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(WARM_UI.border, 0.9);
     });
     this.longTabBg.on('pointerout', () => {
-      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(0x3b4252, 0.9);
+      if (this.currentTab !== 'longTerm') this.longTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
     });
     this.shortTabBg.on('pointerover', () => {
-      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(0x4c566a, 0.9);
+      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(WARM_UI.border, 0.9);
     });
     this.shortTabBg.on('pointerout', () => {
-      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(0x3b4252, 0.9);
+      if (this.currentTab !== 'shortTerm') this.shortTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
     });
 
-    // 左侧：委托列表
+    // 宸︿晶锛氬鎵樺垪琛?
     this.listContainer = new ScrollableListUI(this, {
       parent: this.panel,
       x: -180,
@@ -101,21 +94,21 @@ class QuestLogScene extends Phaser.Scene {
       rowGap: 8
     });
 
-    // 右侧：委托详情
+    // 鍙充晶锛氬鎵樿鎯?
     this.detailContainer = this.add.container(180, 45).setDepth(10);
     this.panel.add(this.detailContainer);
 
-    // 初始化委托系统
+    // 鍒濆鍖栧鎵樼郴缁?
     this.commissionSystem = new CommissionSystem(window.gameState);
 
-    // 加载进行中的委托
+    // 鍔犺浇杩涜涓殑濮旀墭
     this.loadQuests();
 
-    // 返回提示
-    const returnHint = this.add.text(width / 2, height - 30, '按 J / ESC / 点击空白处 关闭', {
+    // 杩斿洖鎻愮ず
+    const returnHint = this.add.text(width / 2, height - 30, '按 J / ESC / 点击空白处关闭', {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: '#4c566a'
+      color: WARM_UI.textMuted
     }).setOrigin(0.5).setDepth(20);
 
     this.input.on('pointerdown', (pointer) => {
@@ -144,19 +137,19 @@ class QuestLogScene extends Phaser.Scene {
 
   updateTabStyles() {
     if (this.currentTab === 'longTerm') {
-      this.longTabBg.setFillStyle(0x5e81ac, 0.9);
-      this.longTabBg.setStrokeStyle(2, 0x81a1c1);
-      this.longTabText.setColor('#eceff4');
-      this.shortTabBg.setFillStyle(0x3b4252, 0.9);
-      this.shortTabBg.setStrokeStyle(2, 0x4c566a);
-      this.shortTabText.setColor('#d8dee9');
+      this.longTabBg.setFillStyle(WARM_UI.button, 0.9);
+      this.longTabBg.setStrokeStyle(2, WARM_UI.buttonHover);
+      this.longTabText.setColor(WARM_UI.textLight);
+      this.shortTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
+      this.shortTabBg.setStrokeStyle(2, WARM_UI.border);
+      this.shortTabText.setColor(WARM_UI.textMuted);
     } else {
-      this.shortTabBg.setFillStyle(0xbf616a, 0.9);
-      this.shortTabBg.setStrokeStyle(2, 0xd08770);
-      this.shortTabText.setColor('#eceff4');
-      this.longTabBg.setFillStyle(0x3b4252, 0.9);
-      this.longTabBg.setStrokeStyle(2, 0x4c566a);
-      this.longTabText.setColor('#d8dee9');
+      this.shortTabBg.setFillStyle(WARM_UI.warning, 0.9);
+      this.shortTabBg.setStrokeStyle(2, WARM_UI.gold);
+      this.shortTabText.setColor(WARM_UI.textLight);
+      this.longTabBg.setFillStyle(WARM_UI.panelLight, 0.9);
+      this.longTabBg.setStrokeStyle(2, WARM_UI.border);
+      this.longTabText.setColor(WARM_UI.textMuted);
     }
   }
 
@@ -185,7 +178,7 @@ class QuestLogScene extends Phaser.Scene {
         const detailHint = this.add.text(0, 0, '选择左侧委托\n查看详情', {
           fontSize: '14px',
           fontFamily: 'Georgia, serif',
-          color: '#4c566a',
+          color: WARM_UI.textMuted,
           align: 'center',
           lineSpacing: 6
         }).setOrigin(0.5);
@@ -200,7 +193,7 @@ class QuestLogScene extends Phaser.Scene {
     this.selectedQuest = null;
     this.selectedIndex = -1;
 
-    // 获取进行中和可提交的委托，按当前分页过滤
+    // 鑾峰彇杩涜涓拰鍙彁浜ょ殑濮旀墭锛屾寜褰撳墠鍒嗛〉杩囨护
     const allInProgress = this.commissionSystem.getInProgressCommissions();
     const inProgressQuests = allInProgress.filter(q => q.type === this.currentTab);
 
@@ -209,7 +202,7 @@ class QuestLogScene extends Phaser.Scene {
       const noQuest = this.add.text(0, 0, `当前没有进行中的${tabName}委托`, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a',
+        color: WARM_UI.textMuted,
         align: 'center',
         lineSpacing: 6
       }).setOrigin(0.5);
@@ -218,7 +211,7 @@ class QuestLogScene extends Phaser.Scene {
       const detailHint = this.add.text(0, 0, '选择左侧委托\n查看详情', {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#4c566a',
+        color: WARM_UI.textMuted,
         align: 'center',
         lineSpacing: 6
       }).setOrigin(0.5);
@@ -243,23 +236,23 @@ class QuestLogScene extends Phaser.Scene {
   createQuestItem(quest, x, y, index) {
     const item = this.add.container(x, y);
 
-    const fixedBg = this.add.rectangle(0, 0, 280, 58, 0x3b4252, 0.8)
-      .setStrokeStyle(2, 0x4c566a);
+    const fixedBg = this.add.rectangle(0, 0, 280, 58, WARM_UI.panelLight, 0.8)
+      .setStrokeStyle(2, WARM_UI.border);
     item.add(fixedBg);
 
-    const fixedTypeColor = quest.type === 'shortTerm' ? 0xbf616a : 0xa3be8c;
+    const fixedTypeColor = quest.type === 'shortTerm' ? WARM_UI.warning : WARM_UI.alchemy;
     const fixedTypeText = quest.type === 'shortTerm' ? '短期' : '长期';
     item.add(this.add.rectangle(-112, -15, 44, 18, fixedTypeColor, 0.8).setStrokeStyle(1, fixedTypeColor));
     item.add(this.add.text(-112, -15, fixedTypeText, {
       fontSize: '10px',
       fontFamily: 'Courier New',
-      color: '#eceff4'
+      color: WARM_UI.text
     }).setOrigin(0.5));
 
     item.add(this.add.text(-84, -15, quest.title || '未命名委托', {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       fontStyle: 'bold',
       wordWrap: { width: 130, useAdvancedWrap: true },
       maxLines: 1
@@ -267,7 +260,7 @@ class QuestLogScene extends Phaser.Scene {
 
     const requirementStatus = this.commissionSystem.getRequirementStatus(quest.id);
     const fixedStatusText = quest.status === COMMISSION_STATUS.SUBMITTABLE || requirementStatus.canSubmit ? '可提交' : '进行中';
-    const fixedStatusColor = quest.status === COMMISSION_STATUS.SUBMITTABLE || requirementStatus.canSubmit ? '#a3be8c' : '#d08770';
+    const fixedStatusColor = quest.status === COMMISSION_STATUS.SUBMITTABLE || requirementStatus.canSubmit ? WARM_UI.alchemyText : WARM_UI.goldText;
     item.add(this.add.text(86, -15, fixedStatusText, {
       fontSize: '11px',
       fontFamily: 'Courier New',
@@ -278,7 +271,7 @@ class QuestLogScene extends Phaser.Scene {
     item.add(this.add.text(-124, 12, `发布：${npcName}`, {
       fontSize: '11px',
       fontFamily: 'Courier New',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       wordWrap: { width: 145, useAdvancedWrap: true },
       maxLines: 1
     }).setOrigin(0, 0.5));
@@ -286,21 +279,21 @@ class QuestLogScene extends Phaser.Scene {
     item.add(this.add.text(40, 12, `限时：${quest.deadlineTimeText || `${quest.completionDaysRemaining ?? '?'} 天`}`, {
       fontSize: '10px',
       fontFamily: 'Courier New',
-      color: '#d8dee9'
+      color: WARM_UI.textMuted
     }).setOrigin(0, 0.5));
 
     item.setSize(280, 58);
     item.setInteractive({ useHandCursor: true });
     item.on('pointerover', () => {
       if (this.selectedIndex !== index) {
-        fixedBg.setFillStyle(0x4c566a, 0.8);
-        fixedBg.setStrokeStyle(2, 0x88c0d0);
+        fixedBg.setFillStyle(WARM_UI.border, 0.8);
+        fixedBg.setStrokeStyle(2, WARM_UI.border);
       }
     });
     item.on('pointerout', () => {
       if (this.selectedIndex !== index) {
-        fixedBg.setFillStyle(0x3b4252, 0.8);
-        fixedBg.setStrokeStyle(2, 0x4c566a);
+        fixedBg.setFillStyle(WARM_UI.panelLight, 0.8);
+        fixedBg.setStrokeStyle(2, WARM_UI.border);
       }
     });
     item.on('pointerdown', () => this.selectQuest(index));
@@ -313,8 +306,8 @@ class QuestLogScene extends Phaser.Scene {
       const prevItem = this.listItems[this.selectedIndex].container;
       const prevBg = prevItem.list[0];
       if (prevBg) {
-        prevBg.setFillStyle(0x3b4252, 0.8);
-        prevBg.setStrokeStyle(2, 0x4c566a);
+        prevBg.setFillStyle(WARM_UI.panelLight, 0.8);
+        prevBg.setStrokeStyle(2, WARM_UI.border);
       }
     }
 
@@ -327,10 +320,11 @@ class QuestLogScene extends Phaser.Scene {
     const curItem = listItem.container;
     const curBg = curItem.list[0];
     if (curBg) {
-      curBg.setFillStyle(0x4c566a, 0.9);
-      curBg.setStrokeStyle(2, 0x88c0d0);
+      curBg.setFillStyle(WARM_UI.border, 0.9);
+      curBg.setStrokeStyle(2, WARM_UI.border);
     }
 
+    getSfxManager().selectItem();
     this.showQuestDetail(listItem.quest);
   }
 
@@ -339,42 +333,42 @@ class QuestLogScene extends Phaser.Scene {
     if (!quest) return;
     {
 
-    const detailBg = this.add.rectangle(0, 0, 330, 370, 0x3b4252, 0.6)
-      .setStrokeStyle(2, 0x4c566a);
+    const detailBg = this.add.rectangle(0, 0, 330, 370, WARM_UI.panelLight, 0.6)
+      .setStrokeStyle(2, WARM_UI.border);
     this.detailContainer.add(detailBg);
 
     this.detailContainer.add(this.add.text(0, -140, quest.title || '未命名委托', {
       fontSize: '19px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold',
       wordWrap: { width: 280, useAdvancedWrap: true },
       align: 'center',
       maxLines: 2
     }).setOrigin(0.5));
-    this.detailContainer.add(this.add.rectangle(0, -112, 285, 1, 0x4c566a));
+    this.detailContainer.add(this.add.rectangle(0, -112, 285, 1, WARM_UI.border));
 
     const requirementStatus = this.commissionSystem.getRequirementStatus(quest.id);
     const typeText = quest.type === 'shortTerm' ? '短期委托' : '长期委托';
-    const typeColor = quest.type === 'shortTerm' ? '#bf616a' : '#a3be8c';
+    const typeColor = quest.type === 'shortTerm' ? WARM_UI.warningText : WARM_UI.alchemyText;
     const npcName = this.commissionSystem.getCommissionNPC(quest.id)?.name || '委托人';
     const statusText = quest.status === COMMISSION_STATUS.SUBMITTABLE || requirementStatus.canSubmit ? '可提交' : '进行中';
-    const statusColor = quest.status === COMMISSION_STATUS.SUBMITTABLE || requirementStatus.canSubmit ? '#a3be8c' : '#d08770';
+    const statusColor = quest.status === COMMISSION_STATUS.SUBMITTABLE || requirementStatus.canSubmit ? WARM_UI.alchemyText : WARM_UI.goldText;
 
     this.addDetailLine('类型', typeText, -92, typeColor);
     this.addDetailLine('发布者', npcName, -66);
     this.addDetailLine('状态', statusText, -40, statusColor);
-    this.addDetailLine('完成限时', quest.deadlineTimeText || `${quest.completionDaysRemaining ?? '?'} 天`, -14, '#d8dee9');
+    this.addDetailLine('完成限时', quest.deadlineTimeText || `${quest.completionDaysRemaining ?? '?'} 天`, -14, WARM_UI.textMuted);
 
     this.detailContainer.add(this.add.text(-135, 18, '委托描述:', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0'
+      color: WARM_UI.text
     }));
-    this.detailContainer.add(this.add.text(-135, 40, quest.description || '这项委托的详细说明已记录在柜台档案中。', {
+    this.detailContainer.add(this.add.text(-135, 40, quest.description || '【委托描述待补充】', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       wordWrap: { width: 270, useAdvancedWrap: true },
       lineSpacing: 4,
       maxLines: 3
@@ -383,12 +377,12 @@ class QuestLogScene extends Phaser.Scene {
     this.detailContainer.add(this.add.text(-135, 98, '任务目标:', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0'
+      color: WARM_UI.text
     }));
     this.detailContainer.add(this.add.text(-60, 98, quest.requiredItemText || '按委托要求完成任务', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: requirementStatus.canSubmit ? '#a3be8c' : '#4c566a',
+      color: requirementStatus.canSubmit ? WARM_UI.alchemyText : WARM_UI.textMuted,
       wordWrap: { width: 195, useAdvancedWrap: true },
       maxLines: 2
     }));
@@ -396,12 +390,12 @@ class QuestLogScene extends Phaser.Scene {
     this.detailContainer.add(this.add.text(-135, 126, '完成方式:', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0'
+      color: WARM_UI.text
     }));
     this.detailContainer.add(this.add.text(-60, 126, quest.completionMethodText || quest.taskText || '按任务目标进行', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       wordWrap: { width: 195, useAdvancedWrap: true },
       maxLines: 2
     }));
@@ -411,8 +405,8 @@ class QuestLogScene extends Phaser.Scene {
     return;
     }
 
-    const legacyDetailBg = this.add.rectangle(0, 0, 310, 400, 0x3b4252, 0.6)
-      .setStrokeStyle(2, 0x4c566a);
+    const legacyDetailBg = this.add.rectangle(0, 0, 310, 400, WARM_UI.panelLight, 0.6)
+      .setStrokeStyle(2, WARM_UI.border);
     this.detailContainer.add(legacyDetailBg);
   }
 
@@ -432,20 +426,20 @@ class QuestLogScene extends Phaser.Scene {
 
   createActionButton(x, y, text, callback, width = 150, height = 40) {
     const btn = this.add.container(x, y);
-    const btnBg = this.add.rectangle(0, 0, width, height, 0x5e81ac, 0.9)
-      .setStrokeStyle(2, 0x81a1c1);
+    const btnBg = this.add.rectangle(0, 0, width, height, WARM_UI.button, 0.9)
+      .setStrokeStyle(2, WARM_UI.buttonHover);
     btn.add(btnBg);
     btn.add(this.add.text(0, 0, text, {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
+      color: WARM_UI.text,
       wordWrap: { width: width - 20, useAdvancedWrap: true },
       maxLines: 2
     }).setOrigin(0.5));
     btn.setSize(width, height);
     btn.setInteractive({ useHandCursor: true });
-    btn.on('pointerover', () => btnBg.setFillStyle(0x81a1c1));
-    btn.on('pointerout', () => btnBg.setFillStyle(0x5e81ac));
+    btn.on('pointerover', () => btnBg.setFillStyle(WARM_UI.buttonHover));
+    btn.on('pointerout', () => btnBg.setFillStyle(WARM_UI.button));
     btn.on('pointerdown', callback);
     return btn;
   }
@@ -454,14 +448,14 @@ class QuestLogScene extends Phaser.Scene {
     const labelObj = this.add.text(-130, y, `${label}:`, {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0'
+      color: WARM_UI.text
     });
     this.detailContainer.add(labelObj);
 
     const valueObj = this.add.text(-40, y, value, {
       fontSize: '13px',
       fontFamily: 'Courier New',
-      color: valueColor || '#eceff4'
+      color: valueColor || WARM_UI.textLight
     });
     this.detailContainer.add(valueObj);
   }
@@ -485,7 +479,7 @@ class QuestLogScene extends Phaser.Scene {
         return;
       }
       const success = this.commissionSystem.startQuestTask(quest.id);
-      this.showToast(success ? `委托「${quest.title}」已完成！` : (requirementStatus.message || '暂时无法进行任务'));
+      this.showToast(success ? `委托《${quest.title}》已完成！` : (requirementStatus.message || '暂时无法进行任务'));
       if (success) {
         this.showPendingSystemMessages();
         this.time.delayedCall(800, () => {
@@ -504,12 +498,12 @@ class QuestLogScene extends Phaser.Scene {
     this.taskOptionContainer = this.add.container(width / 2, height / 2).setDepth(250);
     this.taskOptionContainer.add(this.add.rectangle(0, 0, width, height, 0x000000, 0.42)
       .setInteractive());
-    this.taskOptionContainer.add(this.add.rectangle(0, 0, 560, 380, 0x1f2530, 0.98)
-      .setStrokeStyle(3, 0x88c0d0));
+    this.taskOptionContainer.add(this.add.rectangle(0, 0, 560, 380, WARM_UI.panel, 0.98)
+      .setStrokeStyle(3, WARM_UI.border));
     this.taskOptionContainer.add(this.add.text(0, -160, '选择完成方式', {
       fontSize: '22px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5));
 
@@ -525,28 +519,28 @@ class QuestLogScene extends Phaser.Scene {
 
     this.taskOptionList.render(options, (option, _index, listWidth, rowHeight) => {
       const row = this.add.container(0, 0);
-      const rowBg = this.add.rectangle(listWidth / 2, rowHeight / 2, listWidth - 12, 52, 0x3b4252, 0.88)
-        .setStrokeStyle(2, 0x4c566a);
+      const rowBg = this.add.rectangle(listWidth / 2, rowHeight / 2, listWidth - 12, 52, WARM_UI.panelLight, 0.88)
+        .setStrokeStyle(2, WARM_UI.border);
       row.add(rowBg);
       row.add(this.add.text(18, rowHeight / 2 - 16, option.text, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4',
+        color: WARM_UI.text,
         wordWrap: { width: 330, useAdvancedWrap: true },
         maxLines: 2
       }));
       const btn = this.add.container(listWidth - 64, rowHeight / 2);
-      const btnBg = this.add.rectangle(0, 0, 72, 34, 0x5e81ac, 0.95)
-        .setStrokeStyle(2, 0x81a1c1)
+      const btnBg = this.add.rectangle(0, 0, 72, 34, WARM_UI.button, 0.95)
+        .setStrokeStyle(2, WARM_UI.buttonHover)
         .setInteractive({ useHandCursor: true });
       btn.add(btnBg);
       btn.add(this.add.text(0, 0, '执行', {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4'
+        color: WARM_UI.text
       }).setOrigin(0.5));
-      btnBg.on('pointerover', () => btnBg.setFillStyle(0x81a1c1));
-      btnBg.on('pointerout', () => btnBg.setFillStyle(0x5e81ac));
+      btnBg.on('pointerover', () => btnBg.setFillStyle(WARM_UI.buttonHover));
+      btnBg.on('pointerout', () => btnBg.setFillStyle(WARM_UI.button));
       btnBg.on('pointerdown', () => this.completeTaskOption(quest, option.id));
       row.add(btn);
       return row;
@@ -586,18 +580,18 @@ class QuestLogScene extends Phaser.Scene {
     this.submitContainer = this.add.container(width / 2, height / 2).setDepth(250);
     this.submitContainer.add(this.add.rectangle(0, 0, width, height, 0x000000, 0.42)
       .setInteractive());
-    this.submitContainer.add(this.add.rectangle(0, 0, 520, 360, 0x1f2530, 0.98)
-      .setStrokeStyle(3, 0x88c0d0));
+    this.submitContainer.add(this.add.rectangle(0, 0, 520, 360, WARM_UI.panel, 0.98)
+      .setStrokeStyle(3, WARM_UI.border));
     this.submitContainer.add(this.add.text(0, -150, '选择提交物品', {
       fontSize: '22px',
       fontFamily: 'Georgia, serif',
-      color: '#88c0d0',
+      color: WARM_UI.text,
       fontStyle: 'bold'
     }).setOrigin(0.5));
     this.submitContainer.add(this.add.text(0, -122, quest.requiredItemText || '选择背包中的对应物品', {
       fontSize: '13px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9',
+      color: WARM_UI.textMuted,
       wordWrap: { width: 430, useAdvancedWrap: true },
       align: 'center'
     }).setOrigin(0.5));
@@ -614,28 +608,28 @@ class QuestLogScene extends Phaser.Scene {
 
     this.submitList.render(items, (item, _index, listWidth, rowHeight) => {
       const row = this.add.container(0, 0);
-      const rowBg = this.add.rectangle(listWidth / 2, rowHeight / 2, listWidth - 12, 46, 0x3b4252, 0.88)
-        .setStrokeStyle(2, 0x4c566a);
+      const rowBg = this.add.rectangle(listWidth / 2, rowHeight / 2, listWidth - 12, 46, WARM_UI.panelLight, 0.88)
+        .setStrokeStyle(2, WARM_UI.border);
       row.add(rowBg);
       row.add(this.add.text(18, rowHeight / 2 - 8, `${item.name} x${item.count}`, {
         fontSize: '14px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4',
+        color: WARM_UI.text,
         wordWrap: { width: 295, useAdvancedWrap: true },
         maxLines: 2
       }));
       const btn = this.add.container(listWidth - 58, rowHeight / 2);
-      const btnBg = this.add.rectangle(0, 0, 64, 32, 0x5e81ac, 0.95)
-        .setStrokeStyle(2, 0x81a1c1)
+      const btnBg = this.add.rectangle(0, 0, 64, 32, WARM_UI.button, 0.95)
+        .setStrokeStyle(2, WARM_UI.buttonHover)
         .setInteractive({ useHandCursor: true });
       btn.add(btnBg);
       btn.add(this.add.text(0, 0, '提交', {
         fontSize: '13px',
         fontFamily: 'Georgia, serif',
-        color: '#eceff4'
+        color: WARM_UI.text
       }).setOrigin(0.5));
-      btnBg.on('pointerover', () => btnBg.setFillStyle(0x81a1c1));
-      btnBg.on('pointerout', () => btnBg.setFillStyle(0x5e81ac));
+      btnBg.on('pointerover', () => btnBg.setFillStyle(WARM_UI.buttonHover));
+      btnBg.on('pointerout', () => btnBg.setFillStyle(WARM_UI.button));
       btnBg.on('pointerdown', () => this.submitSelectedItem(quest, item.itemId));
       row.add(btn);
       return row;
@@ -679,14 +673,14 @@ class QuestLogScene extends Phaser.Scene {
 
     const toast = this.add.container(width / 2, height / 2 - 80).setDepth(100);
 
-    const bg = this.add.rectangle(0, 0, 380, 45, 0x2e3440, 0.95)
-      .setStrokeStyle(2, 0xa3be8c);
+    const bg = this.add.rectangle(0, 0, 380, 45, WARM_UI.panel, 0.95)
+      .setStrokeStyle(2, WARM_UI.alchemy);
     toast.add(bg);
 
     const text = this.add.text(0, 0, message, {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#a3be8c',
+      color: WARM_UI.alchemyText,
       wordWrap: true,
       wordWrapWidth: 350
     }).setOrigin(0.5);
@@ -706,6 +700,7 @@ class QuestLogScene extends Phaser.Scene {
     this.closeSubmitItemList();
     this.closeTaskOptionList();
     window.gameState.setGameState(GAME_STATE.NORMAL);
+    getSfxManager().closeMenu();
     this.scene.start(this.returnScene);
   }
 }

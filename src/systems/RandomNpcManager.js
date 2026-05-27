@@ -9,6 +9,8 @@ export const RANDOM_NPC_STATE = {
   MISSED: 'missed'              // 已错过（当天未对话）
 };
 
+export const RANDOM_NPC_STAY_MINUTES = 60;
+
 export default class RandomNpcManager {
   constructor(gameState) {
     this.gameState = gameState;
@@ -27,6 +29,24 @@ export default class RandomNpcManager {
     console.log(`[RandomNpcManager] ${visitorConfigId} → ${state}`);
   }
 
+  _getTotalMinutes(timeData = {}) {
+    const day = timeData.currentDay ?? timeData.day ?? this.gameState.timeData?.currentDay ?? this.gameState.day ?? 1;
+    const hour = timeData.currentHour ?? timeData.hour ?? this.gameState.timeData?.currentHour ?? 8;
+    const minute = timeData.currentMinute ?? timeData.minute ?? this.gameState.timeData?.currentMinute ?? 0;
+    return ((day - 1) * 24 * 60) + (hour * 60) + minute;
+  }
+
+  getNpcSpawnTime(visitorConfigId) {
+    return this.gameState.randomNpcSpawnTimes?.[visitorConfigId] ?? null;
+  }
+
+  setNpcSpawnTime(visitorConfigId, timeData) {
+    if (!this.gameState.randomNpcSpawnTimes) {
+      this.gameState.randomNpcSpawnTimes = {};
+    }
+    this.gameState.randomNpcSpawnTimes[visitorConfigId] = this._getTotalMinutes(timeData);
+  }
+
   // NPC 是否在场景中可见
   isNpcVisible(visitorConfigId) {
     const state = this.getNpcState(visitorConfigId);
@@ -42,18 +62,50 @@ export default class RandomNpcManager {
   // ========== 生命周期事件 ==========
 
   // NPC 生成了（出现在场景中）
-  onNpcSpawned(visitorConfigId) {
+  onNpcSpawned(visitorConfigId, timeData = null) {
     this.setNpcState(visitorConfigId, RANDOM_NPC_STATE.SPAWNED_TODAY);
+    this.setNpcSpawnTime(visitorConfigId, timeData || this.gameState.timeData);
   }
 
   // 与 NPC 对话结束
   onNpcDialogueEnd(visitorConfigId) {
     this.setNpcState(visitorConfigId, RANDOM_NPC_STATE.TALKED);
+    if (this.gameState.randomNpcSpawnTimes) {
+      delete this.gameState.randomNpcSpawnTimes[visitorConfigId];
+    }
   }
 
   // NPC 主动离开
   onNpcLeft(visitorConfigId) {
     this.setNpcState(visitorConfigId, RANDOM_NPC_STATE.LEFT);
+    if (this.gameState.randomNpcSpawnTimes) {
+      delete this.gameState.randomNpcSpawnTimes[visitorConfigId];
+    }
+  }
+
+  updateNpcPresenceByTime(timeData = null) {
+    const now = this._getTotalMinutes(timeData || this.gameState.timeData);
+    const leftNpcIds = [];
+
+    for (const [visitorId, state] of Object.entries(this.gameState.randomNpcStates)) {
+      if (state !== RANDOM_NPC_STATE.SPAWNED_TODAY) continue;
+
+      if (this.getNpcSpawnTime(visitorId) === null) {
+        this.setNpcSpawnTime(visitorId, timeData || this.gameState.timeData);
+        continue;
+      }
+
+      const elapsed = now - this.getNpcSpawnTime(visitorId);
+      if (elapsed >= RANDOM_NPC_STAY_MINUTES) {
+        this.setNpcState(visitorId, RANDOM_NPC_STATE.MISSED);
+        if (this.gameState.randomNpcSpawnTimes) {
+          delete this.gameState.randomNpcSpawnTimes[visitorId];
+        }
+        leftNpcIds.push(visitorId);
+      }
+    }
+
+    return leftNpcIds;
   }
 
   // ========== 天数变更 ==========
@@ -64,9 +116,15 @@ export default class RandomNpcManager {
       if (state === RANDOM_NPC_STATE.SPAWNED_TODAY) {
         // 当天生成了但未对话 → 错过
         this.setNpcState(visitorId, RANDOM_NPC_STATE.MISSED);
+        if (this.gameState.randomNpcSpawnTimes) {
+          delete this.gameState.randomNpcSpawnTimes[visitorId];
+        }
       } else if (state === RANDOM_NPC_STATE.TALKED) {
         // 已对话完毕 → 离开
         this.setNpcState(visitorId, RANDOM_NPC_STATE.LEFT);
+        if (this.gameState.randomNpcSpawnTimes) {
+          delete this.gameState.randomNpcSpawnTimes[visitorId];
+        }
       }
     }
   }

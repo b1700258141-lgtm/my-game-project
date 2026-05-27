@@ -49,7 +49,9 @@ export default class DailyLoopManager {
   }
 
   getSummary() {
-    return JSON.parse(JSON.stringify(this.ensureStats()));
+    // 直接返回当前统计数据，不调用 ensureStats（它会因日数变化重置）
+    const stats = this.gameState.dailyStats || createEmptyStats(this.gameState.day || 1);
+    return JSON.parse(JSON.stringify(stats));
   }
 
   resetForCurrentDay() {
