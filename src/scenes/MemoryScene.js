@@ -1,10 +1,11 @@
-// 记忆场景 - 展示精魂的古代记忆
+// 记忆场景 - 展示精魂的古代记忆（暖色 UI 版）
 import memories from '../data/memories.json';
 import { getSfxManager } from '../systems/SfxManager';
 import CommissionSystem from '../systems/CommissionSystem';
 import SpiritMemoryManager from '../systems/SpiritMemoryManager';
 import InventorySystem from '../systems/InventorySystem';
 import DailyLoopManager from '../systems/DailyLoopManager';
+import { WARM_UI, addWarmButton, addWarmPanel } from '../ui/WarmUITheme';
 
 class MemoryScene extends Phaser.Scene {
   constructor() {
@@ -34,51 +35,49 @@ class MemoryScene extends Phaser.Scene {
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
-    // 重置相机状态
     this.cameras.main.resetFX();
 
-    // 记忆场景特殊色调
-    this.cameras.main.setBackgroundColor('#1c1c2e');
     this.currentMemory = this.memoryId
       ? memories.memories.find(m => m.id === this.memoryId)
       : null;
 
-    // 创建背景
-    this.createMemoryBackground();
+    // 精魂记忆背景图（depth 0）
+    if (this.textures.exists('ancientSpiritBg')) {
+      const bg = this.add.image(width / 2, height / 2, 'ancientSpiritBg');
+      const scale = Math.max(width / bg.width, height / bg.height);
+      bg.setScale(scale).setDepth(0);
+    }
+    // 暖色半透明暗层遮罩（depth 1）
+    this.add.rectangle(width / 2, height / 2, width, height, 0x1b100b, 0.4).setDepth(1);
 
     // 记忆容器
-    const memoryContainer = this.add.container(width / 2, height / 2);
-
-    // 记忆画面框
-    const frame = this.add.rectangle(0, 0, 560, 380, 0x2e2440)
-      .setStrokeStyle(4, 0xa3be8c);
-    memoryContainer.add(frame);
-
-    // 背景色块（后续可替换为正式场景图）
-    const bgPlaceholder = this.add.rectangle(0, 0, 540, 360, 0x3c3050)
-      .setStrokeStyle(1, 0x5e5270);
-    memoryContainer.add(bgPlaceholder);
-
-    // 背景类型标识
-    const bgType = this.currentMemory?.background || 'ancient_ruins';
-    const bgLabel = this.add.text(0, 0, `[${bgType}]`, {
-      fontSize: '24px',
-      fontFamily: 'Georgia, serif',
-      color: '#a3be8c',
-      fontStyle: 'italic'
-    }).setOrigin(0.5);
-    memoryContainer.add(bgLabel);
+    const memoryContainer = this.add.container(width / 2, height / 2).setDepth(5);
 
     // 记忆标题
     const title = this.add.text(0, -248, this.currentMemory?.title || '未名回忆', {
       fontSize: '28px',
       fontFamily: 'Georgia, serif',
-      color: '#b48ead',
+      color: WARM_UI.textLight,
       fontStyle: 'italic'
     }).setOrigin(0.5);
     memoryContainer.add(title);
 
-    // 装饰光点
+    // 装饰标题分隔线
+    const divider = this.add.rectangle(0, -218, 320, 2, WARM_UI.border, 0.6);
+    memoryContainer.add(divider);
+
+    // 精魂名称
+    if (this.currentMemory?.spiritName) {
+      const spiritLabel = this.add.text(0, -195, this.currentMemory.spiritName, {
+        fontSize: '14px',
+        fontFamily: 'Georgia, serif',
+        color: WARM_UI.goldText,
+        fontStyle: 'italic'
+      }).setOrigin(0.5);
+      memoryContainer.add(spiritLabel);
+    }
+
+    // 漂浮记忆碎片
     this.createFloatingParticles();
 
     // 加载记忆数据
@@ -88,7 +87,7 @@ class MemoryScene extends Phaser.Scene {
     memoryContainer.setScale(0.8).setAlpha(0);
     getSfxManager().memoryTrigger();
     this.cameras.main.fadeIn(800);
-    
+
     this.tweens.add({
       targets: memoryContainer,
       scale: 1,
@@ -103,64 +102,35 @@ class MemoryScene extends Phaser.Scene {
       this.currentMemory = memories.memories.find(m => m.id === this.memoryId);
     }
 
-    // 加载对话数据
     if (this.currentMemory && this.currentMemory.dialogueId) {
       this.dialogueData = memories.dialogues?.[this.currentMemory.dialogueId];
     }
 
-    // 如果没有对话数据，使用默认
     if (!this.dialogueData) {
       this.dialogueData = {
         speaker: '旁白',
         lines: [
           { id: '1', text: '（记忆模糊不清，仿佛有什么被封印了...）' }
         ],
-        choices: [{ text: '继续', effects: {}, next: null }]
+        choices: [{ text: '（结束记忆）', effects: {}, next: null }]
       };
     }
 
-    // 创建对话 UI
     this.createMemoryDialogue();
   }
 
-  createMemoryBackground() {
-    // 渐变背景层
-    for (let i = 0; i < 20; i++) {
-      const y = i * 30;
-      const alpha = 0.02 + (i * 0.01);
-      this.add.rectangle(400, y, 800, 30, 0xa3be8c, alpha);
-    }
-
-    // 背景星点
-    for (let i = 0; i < 60; i++) {
-      const x = Phaser.Math.Between(0, 800);
-      const y = Phaser.Math.Between(0, 600);
-      const star = this.add.circle(x, y, Phaser.Math.Between(1, 3), 0xa3be8c, 0.3);
-      
-      this.tweens.add({
-        targets: star,
-        alpha: { from: 0.1, to: 0.6 },
-        duration: Phaser.Math.Between(1000, 3000),
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.easeInOut'
-      });
-    }
-  }
-
   createFloatingParticles() {
-    // 漂浮的记忆碎片
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 10; i++) {
       const x = Phaser.Math.Between(50, 750);
-      const y = Phaser.Math.Between(50, 550);
-      const particle = this.add.rectangle(x, y, 8, 8, 0xb48ead, 0.4)
-        .setRotation(Phaser.Math.Between(0, 4));
-      
+      const y = Phaser.Math.Between(80, 400);
+      const particle = this.add.rectangle(x, y, 6, 6, WARM_UI.gold, 0.25)
+        .setRotation(Phaser.Math.Between(0, 4)).setDepth(3);
+
       this.tweens.add({
         targets: particle,
-        x: x + Phaser.Math.Between(-40, 40),
-        y: y + Phaser.Math.Between(-40, 40),
-        rotation: particle.rotation + Math.PI,
+        x: x + Phaser.Math.Between(-30, 30),
+        y: y + Phaser.Math.Between(-30, 30),
+        alpha: { from: 0.15, to: 0.4 },
         duration: Phaser.Math.Between(3000, 5000),
         yoyo: true,
         repeat: -1,
@@ -176,45 +146,49 @@ class MemoryScene extends Phaser.Scene {
     // 对话框容器
     this.dialogContainer = this.add.container(0, 0).setDepth(10);
 
-    // NPC 名字背景
-    const nameBg = this.add.rectangle(width / 2 - 180, 455, 100, 32, 0x2e3440)
-      .setStrokeStyle(2, 0xa3be8c);
+    // 暖色对话框背景
+    addWarmPanel(this, this.dialogContainer, width / 2, height - 100, width - 80, 180, {
+      fill: WARM_UI.panelLight
+    });
+
+    const dialogLeft = 60;
+    const dialogTop = height - 190;
+    const dialogTextWidth = width - 120;
+
+    // 精魂名称木牌（居中显示无立绘模式）
+    const nameBg = this.add.rectangle(width / 2, dialogTop + 26, 280, 30, WARM_UI.panelDark)
+      .setOrigin(0.5, 0.5)
+      .setStrokeStyle(2, WARM_UI.border);
     this.dialogContainer.add(nameBg);
 
-    // NPC 名字
-    this.nameText = this.add.text(width / 2 - 180, 455, '旁白', {
-      fontSize: '15px',
+    this.nameText = this.add.text(width / 2, dialogTop + 26, '', {
+      fontSize: '16px',
       fontFamily: 'Georgia, serif',
-      color: '#a3be8c',
+      color: WARM_UI.textLight,
       fontStyle: 'bold'
     }).setOrigin(0.5);
     this.dialogContainer.add(this.nameText);
 
-    // 对话框主体
-    const dialogBg = this.add.rectangle(width / 2, height - 80, width - 100, 120, 0x2e3440, 0.95)
-      .setStrokeStyle(3, 0xa3be8c);
-    this.dialogContainer.add(dialogBg);
-
-    // 对话文本
-    this.dialogueText = this.add.text(width / 2 - 300, height - 120, '', {
-      fontSize: '16px',
+    // 对话文本（无立绘，居中全宽）
+    this.dialogueText = this.add.text(dialogLeft, dialogTop + 48, '', {
+      fontSize: '17px',
       fontFamily: 'Georgia, serif',
-      color: '#eceff4',
-      wordWrap: true,
-      wordWrapWidth: 600,
-      lineSpacing: 6
+      color: WARM_UI.text,
+      wordWrap: { width: dialogTextWidth, useAdvancedWrap: true },
+      lineSpacing: 6,
+      maxLines: 5
     });
     this.dialogContainer.add(this.dialogueText);
 
     // 选项容器
-    this.choicesContainer = this.add.container(width / 2, height - 40).setDepth(12);
+    this.choicesContainer = this.add.container(width / 2, height - 54).setDepth(12);
     this.dialogContainer.add(this.choicesContainer);
 
     // 继续提示
-    this.continueHint = this.add.text(width - 60, height - 20, '▼', {
+    this.continueHint = this.add.text(width - 60, height - 20, '>>', {
       fontSize: '16px',
       fontFamily: 'Courier New',
-      color: '#a3be8c'
+      color: WARM_UI.text
     }).setDepth(13);
     this.tweens.add({
       targets: this.continueHint,
@@ -234,7 +208,6 @@ class MemoryScene extends Phaser.Scene {
       this.handleClick();
     });
 
-    // 显示第一行
     this.showCurrentLine();
   }
 
@@ -248,12 +221,12 @@ class MemoryScene extends Phaser.Scene {
     const line = lines[this.currentLineIndex];
     this.clearChoices();
     this.nameText.setText(this.dialogueData.speaker || '旁白');
-    
+
     this.startTyping(line.text, () => {
       if (this.currentLineIndex < lines.length - 1) {
         this.continueHint.setVisible(true);
       } else if (this.dialogueData.choices && this.dialogueData.choices.length > 0) {
-        // 有选项，不显示继续提示
+        // choices exist, don't show hint
       } else {
         this.continueHint.setVisible(true);
       }
@@ -267,7 +240,7 @@ class MemoryScene extends Phaser.Scene {
     this.continueHint.setVisible(false);
 
     let charIndex = 0;
-    const speed = 30;
+    const speed = 28;
 
     if (this.typeTimer) {
       this.typeTimer.remove();
@@ -278,7 +251,6 @@ class MemoryScene extends Phaser.Scene {
       callback: () => {
         charIndex++;
         this.dialogueText.setText(text.substring(0, charIndex));
-
         if (charIndex >= text.length) {
           this.isTyping = false;
           if (onComplete) onComplete();
@@ -302,13 +274,11 @@ class MemoryScene extends Phaser.Scene {
 
     const choices = this.dialogueData.choices || [];
     if (choices.length === 0) {
-      // 无选项，自动结束
       this.time.delayedCall(500, () => this.finishMemory());
       return;
     }
 
     const startY = -(choices.length - 1) * 25;
-    
     choices.forEach((choice, index) => {
       const y = startY + index * 50;
       this.createChoiceButton(choice.text, y, index);
@@ -317,38 +287,35 @@ class MemoryScene extends Phaser.Scene {
 
   createChoiceButton(text, y, index) {
     const btn = this.add.container(0, y);
-
-    const bg = this.add.rectangle(0, 0, 350, 40, 0x3c3050)
-      .setStrokeStyle(2, 0x5e5270);
+    const bg = this.add.rectangle(0, 0, 360, 40, WARM_UI.panelLight, 0.95)
+      .setStrokeStyle(2, WARM_UI.border);
     btn.add(bg);
 
-    const numText = this.add.text(-155, 0, `${index + 1}.`, {
+    const numText = this.add.text(-160, 0, `${index + 1}.`, {
       fontSize: '14px',
       fontFamily: 'Courier New',
-      color: '#a3be8c'
+      color: WARM_UI.goldText
     }).setOrigin(0, 0.5);
     btn.add(numText);
 
-    const choiceText = this.add.text(-125, 0, text, {
+    const choiceText = this.add.text(-130, 0, text, {
       fontSize: '14px',
       fontFamily: 'Georgia, serif',
-      color: '#d8dee9'
+      color: WARM_UI.text
     }).setOrigin(0, 0.5);
     btn.add(choiceText);
 
-    btn.setSize(350, 40);
+    btn.setSize(360, 40);
     btn.setInteractive({ useHandCursor: true });
 
     btn.on('pointerover', () => {
-      bg.setFillStyle(0x5e5270);
-      bg.setStrokeStyle(2, 0xa3be8c);
+      bg.setFillStyle(WARM_UI.buttonHover, 0.95);
+      bg.setStrokeStyle(2, WARM_UI.border);
     });
-
     btn.on('pointerout', () => {
-      bg.setFillStyle(0x3c3050);
-      bg.setStrokeStyle(2, 0x5e5270);
+      bg.setFillStyle(WARM_UI.panelLight, 0.95);
+      bg.setStrokeStyle(2, WARM_UI.border);
     });
-
     btn.on('pointerdown', () => {
       this.selectChoice(index);
     });
@@ -360,12 +327,10 @@ class MemoryScene extends Phaser.Scene {
     const choice = this.dialogueData.choices[index];
     if (!choice) return;
 
-    // 应用对话选项效果
     if (choice.effects) {
       window.gameState.applyEffects(choice.effects);
     }
 
-    // 应用记忆奖励
     if (this.currentMemory && this.currentMemory.rewards) {
       const rewards = { ...this.currentMemory.rewards };
       const inventorySystem = new InventorySystem(window.gameState);
@@ -384,7 +349,6 @@ class MemoryScene extends Phaser.Scene {
       this.showRewardsPopup(this.currentMemory.rewards);
     }
 
-    // 延迟结束
     this.time.delayedCall(1000, () => {
       this.finishMemory();
     });
@@ -392,25 +356,22 @@ class MemoryScene extends Phaser.Scene {
 
   showRewardsPopup(rewards) {
     const parts = [];
-    
     if (rewards.funds) {
       const sign = rewards.funds > 0 ? '+' : '';
-      parts.push({ text: `${sign}${rewards.funds} 资金`, color: '#a3be8c' });
+      parts.push({ text: `${sign}${rewards.funds} 资金`, color: WARM_UI.textLight });
     }
     if (rewards.popularity) {
       const sign = rewards.popularity > 0 ? '+' : '';
-      parts.push({ text: `${sign}${rewards.popularity} 人气`, color: '#bf616a' });
+      parts.push({ text: `${sign}${rewards.popularity} 人气`, color: WARM_UI.warningText });
     }
     if (rewards.flags || rewards.npcAffinity) {
-      parts.push({ text: '记忆已解锁', color: '#b48ead' });
+      parts.push({ text: '记忆已解锁', color: WARM_UI.goldText });
     }
-
     if (parts.length === 0) return;
 
     const popup = this.add.container(400, 300).setDepth(100);
-    
-    const bg = this.add.rectangle(0, 0, 180, 30 + parts.length * 24, 0x2e2440, 0.95)
-      .setStrokeStyle(2, 0xa3be8c);
+    const bg = this.add.rectangle(0, 0, 180, 30 + parts.length * 24, WARM_UI.panel, 0.96)
+      .setStrokeStyle(2, WARM_UI.border);
     popup.add(bg);
 
     parts.forEach((part, i) => {
@@ -442,7 +403,7 @@ class MemoryScene extends Phaser.Scene {
       if (this.currentLineIndex < this.dialogueData.lines.length - 1) {
         this.continueHint.setVisible(true);
       } else if (this.dialogueData.choices && this.dialogueData.choices.length > 0) {
-        // 有选项
+        // choices exist
       } else {
         this.continueHint.setVisible(true);
       }
@@ -453,13 +414,11 @@ class MemoryScene extends Phaser.Scene {
   }
 
   finishMemory() {
-    // 停止所有定时器
     if (this.typeTimer) {
       this.typeTimer.remove();
       this.typeTimer = null;
     }
 
-    // 解锁图鉴
     if (this.currentMemory && this.currentMemory.unlockCodex) {
       window.gameState.unlockMemory(this.currentMemory.id);
       const memoryText = this.dialogueData?.lines?.map(line => line.text).join('\n') || this.currentMemory.description;
@@ -480,7 +439,6 @@ class MemoryScene extends Phaser.Scene {
       }
     }
 
-    // 直接切换场景，不用 camera fade
     if (this.fromDialogue) {
       this.scene.start('DialogueScene', {
         dialogueId: this.nextDialogueId,

@@ -66,6 +66,8 @@ class BootScene extends Phaser.Scene {
     this.load.image('openingBg', '/assets/backgrounds/opening_general_store_bg.png');
     // 委托对话背景：来自 pix/万事屋内部背景.png
     this.load.image('commissionRoomBg', '/assets/backgrounds/commission_room_bg.png');
+    // 精魂记忆背景：来自 pix/古代精魂背景.png
+    this.load.image('ancientSpiritBg', '/assets/backgrounds/ancient_spirit_bg.png');
 
     this.loadInteriorAssets();
     this.loadItemPreviewAssets();
