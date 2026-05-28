@@ -1,6 +1,6 @@
 import SaveLoadManager, { SAVE_TYPE } from '../systems/SaveLoadManager';
 import ScrollableListUI from '../systems/ScrollableListUI';
-import { getTimeManager, resetTimeManager } from '../systems/TimeManager';
+import { getTimeManager, invalidateTimeManager } from '../systems/TimeManager';
 import AchievementManager from '../systems/AchievementManager';
 import { getSfxManager } from '../systems/SfxManager';
 import { WARM_UI, addWarmButton, addWarmPanel } from '../ui/WarmUITheme';
@@ -17,6 +17,7 @@ class SaveLoadScene extends Phaser.Scene {
     this.manager = null;
     this.currentPage = 1;
     this.slots = [];
+    this.autoSaveData = null;
     this.listContainer = null;
     this.pageText = null;
     this.confirmContainer = null;
@@ -37,6 +38,7 @@ class SaveLoadScene extends Phaser.Scene {
     window.gameState.setGameState(GAME_STATE.SAVE_LOAD);
     this.manager = new SaveLoadManager(window.gameState);
     this.slots = this.manager.getAllSaveSlots();
+    this.autoSaveData = this.manager.getAutoSave();
 
     this.add.rectangle(width / 2, height / 2, width, height, 0x1b100b, 0.78);
 
@@ -87,8 +89,17 @@ class SaveLoadScene extends Phaser.Scene {
     const startIndex = (this.currentPage - 1) * SLOTS_PER_PAGE;
     const pageSlots = this.slots.slice(startIndex, startIndex + SLOTS_PER_PAGE);
 
-    this.listContainer.render(pageSlots, (slot, _index, width, rowHeight) => {
-      return this.createSlotRow(slot, width, rowHeight);
+    // 读档模式下第 1 页：最上方插入独立自动存档行
+    const displayItems = [...pageSlots];
+    if (this.mode === 'load' && this.currentPage === 1 && this.autoSaveData) {
+      displayItems.unshift({ isAutoSaveRow: true, saveData: this.autoSaveData });
+    }
+
+    this.listContainer.render(displayItems, (item, _index, width, rowHeight) => {
+      if (item.isAutoSaveRow) {
+        return this.createAutoSaveRow(item.saveData, width, rowHeight);
+      }
+      return this.createSlotRow(item, width, rowHeight);
     }, { emptyText: this.mode === 'load' ? '暂无存档' : '暂无存档位' });
 
     this.pageText.setText(`第 ${this.currentPage} / ${TOTAL_PAGES} 页`);
@@ -138,7 +149,8 @@ class SaveLoadScene extends Phaser.Scene {
     }));
 
     const autoSaveReason = isAutoSave ? this.getAutoSaveReasonText(slot.saveData.autoSaveReason) : '';
-    const typeText = isAutoSave ? `自动存档 · ${autoSaveReason}` : '';
+    const parentInfo = this._getAutoSaveParentText(slot.saveData);
+    const typeText = isAutoSave ? `${parentInfo} · ${autoSaveReason}` : '';
     row.add(this.add.text(145, 42, typeText, {
       fontSize: '10px',
       fontFamily: 'Courier New',
@@ -175,6 +187,116 @@ class SaveLoadScene extends Phaser.Scene {
     bg.on('pointerdown', () => this.onSlotSelected(slot));
 
     return row;
+  }
+
+  /**
+   * 创建独立的自动存档行（不占用 1-30 槽位）
+   */
+  createAutoSaveRow(saveData, width, rowHeight) {
+    const row = this.add.container(0, 0);
+    const infoWidth = width - 310;
+    // 深色背景使用浅色文字确保对比度
+    const textLight = '#f7e8c8';
+    const textGold = '#e8a860';
+    const textMuted = '#c8b898';
+
+    const bg = this.add.rectangle(width / 2, rowHeight / 2, width - 10, rowHeight - 4, 0x2e1c12, 0.92)
+      .setStrokeStyle(2, 0xe8a860)
+      .setInteractive({ useHandCursor: true });
+    row.add(bg);
+
+    row.add(this.add.text(16, 7, '💾 自动存档', {
+      fontSize: '15px',
+      fontFamily: 'Georgia, serif',
+      color: textGold,
+      fontStyle: 'bold'
+    }));
+
+    const playerName = this.truncateText(saveData.playerName || '未命名', 12);
+    const titleLine = `${playerName} / Lv${saveData.wanShiWuLevel || 1}`;
+    row.add(this.add.text(145, 7, titleLine, {
+      fontSize: '13px',
+      fontFamily: 'Courier New',
+      color: textLight,
+      fixedWidth: infoWidth,
+      maxLines: 1
+    }));
+
+    const summary = `第${saveData.currentDay}天 ${this.formatClock(saveData.currentHour, saveData.currentMinute)} / 资金${saveData.money} / 人气${saveData.popularity}`;
+    row.add(this.add.text(145, 25, summary, {
+      fontSize: '11px',
+      fontFamily: 'Courier New',
+      color: textLight,
+      fixedWidth: infoWidth,
+      maxLines: 1
+    }));
+
+    const reasonText = this.getAutoSaveReasonText(saveData.autoSaveReason);
+    row.add(this.add.text(145, 42, `自动存档 · ${reasonText}`, {
+      fontSize: '10px',
+      fontFamily: 'Courier New',
+      color: textGold,
+      fixedWidth: infoWidth,
+      maxLines: 1
+    }));
+
+    const savedAt = `保存时间：${this.formatSavedAt(saveData.savedAt)}`;
+    row.add(this.add.text(145, 57, savedAt, {
+      fontSize: '10px',
+      fontFamily: 'Courier New',
+      color: textMuted,
+      fixedWidth: infoWidth,
+      maxLines: 1
+    }));
+
+    const actionText = this.mode === 'save' ? '保存' : '读取';
+    row.add(this.add.text(width - 88, rowHeight / 2, actionText, {
+      fontSize: '13px',
+      fontFamily: 'Georgia, serif',
+      color: textGold
+    }).setOrigin(0.5));
+
+    bg.on('pointerover', () => bg.setFillStyle(0x4a2a18));
+    bg.on('pointerout', () => bg.setFillStyle(0x2e1c12));
+    bg.on('pointerdown', () => this.onAutoSaveSelected());
+
+    return row;
+  }
+
+  onAutoSaveSelected() {
+    if (this.confirmContainer) return;
+
+    if (this.mode === 'save') {
+      // 不允许在保存模式下创建自动存档
+      this.showToast('自动存档由系统管理，无需手动创建', 2000);
+      return;
+    }
+
+    // 读档模式：读取自动存档
+    this.showConfirm('是否读取自动存档？', '读取', () => this.loadAutoSaveSlot());
+  }
+
+  loadAutoSaveSlot() {
+    this.hideConfirm();
+    const result = this.manager.loadAutoSave();
+    if (result.success) {
+      getSfxManager().confirm();
+    } else {
+      getSfxManager().error();
+    }
+    this.showToast(result.message || (result.success ? '读取成功' : '读取失败'), 900);
+    if (!result.success) return;
+
+    invalidateTimeManager();
+    AchievementManager.markSaveLoaded();
+    this.time.delayedCall(650, () => {
+      window.gameState.setGameState(GAME_STATE.NORMAL);
+      if (!window.gameState.getPlayerName?.()) {
+        this.scene.start('PlayerNameScene', { returnScene: 'ShopScene' });
+        return;
+      }
+      this.scene.start('ShopScene');
+    });
   }
 
   onSlotSelected(slot) {
@@ -225,7 +347,8 @@ class SaveLoadScene extends Phaser.Scene {
     this.showToast(result.message || (result.success ? '读取成功' : '读取失败'), 900);
     if (!result.success) return;
 
-    resetTimeManager();
+    // 仅清除 TimeManager 单例（不调用 reset() 覆盖 state），让 ShopScene 从 gameState.timeData 重新初始化
+    invalidateTimeManager();
     // 标记存档恢复完成，防止读档后成就重复弹提示
     AchievementManager.markSaveLoaded();
     this.time.delayedCall(650, () => {
@@ -408,12 +531,16 @@ class SaveLoadScene extends Phaser.Scene {
     return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
   }
 
+  _getAutoSaveParentText(saveData) {
+    if (!saveData || saveData.saveType !== SAVE_TYPE.AUTO) return '';
+    return '自动存档';
+  }
+
   getAutoSaveReasonText(reason) {
     const map = {
-      returnToMenu: '自动保存于返回主菜单时',
-      beforeUnload: '系统自动保存',
-      pagehide: '系统自动保存',
-      visibilitychange: '系统自动保存'
+      returnToMenu: '返回主菜单时自动保存',
+      beforeUnload: '关闭页面时系统保存',
+      pagehide: '关闭页面时系统保存'
     };
     return map[reason] || '系统自动保存';
   }

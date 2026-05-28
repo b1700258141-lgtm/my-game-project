@@ -2,13 +2,12 @@ import { WARM_UI, addWarmButton, addWarmPanel } from '../ui/WarmUITheme';
 import { getSfxManager } from '../systems/SfxManager';
 import { openingStory, systemPromptText } from '../data/openingStory';
 import { getBgmManager } from '../systems/BgmManager';
+import { getCharacterAsset } from '../data/characterAssets.js';
 
 // 开场白万事屋外景背景图
 const OPENING_BG_PATH = '/assets/backgrounds/opening_general_store_bg.png';
 
 // 主角立绘路径（后续替换）
-const PLAYER_PORTRAIT_PATH = '/assets/portraits/player_opening.png';
-
 // 布局常量
 const PORTRAIT_AREA_W = 220;  // 左侧立绘区宽度
 const DIALOG_W = 620;         // 对话框宽度
@@ -26,6 +25,7 @@ class OpeningStoryScene extends Phaser.Scene {
     this.fullText = '';
     this._transitioning = false;
     this._inputLocked = false;
+    this.portraitSprite = null;
   }
 
   init(data = {}) {
@@ -49,11 +49,9 @@ class OpeningStoryScene extends Phaser.Scene {
     this.tryLoadBgImage(w, h);
 
     // 左侧主角立绘预留区
-    this.createPortraitPlaceholder(w, h);
+    this.createPortraitLayer(w, h);
 
     // 尝试加载立绘
-    this.tryLoadPortrait(w, h);
-
     // 底部暖色对话框
     this.createDialogueBox(w, h);
 
@@ -158,6 +156,8 @@ class OpeningStoryScene extends Phaser.Scene {
   }
 
   tryLoadPortrait(w, h) {
+    this.createPortraitLayer(w, h);
+    return;
     if (!this.textures.exists('playerPortrait')) {
       try {
         this.load.image('playerPortrait', PLAYER_PORTRAIT_PATH);
@@ -182,6 +182,24 @@ class OpeningStoryScene extends Phaser.Scene {
   }
 
   // ========== 对话框 ==========
+
+  createPortraitLayer(w, h) {
+    const playerAsset = getCharacterAsset('player');
+    if (!playerAsset?.portraitKey || !this.textures.exists(playerAsset.portraitKey)) {
+      return;
+    }
+
+    this.textures.get(playerAsset.portraitKey)?.setFilter?.(Phaser.Textures.FilterMode.NEAREST);
+    this.portraitSprite = this.add.image(w * 0.13, h - 108, playerAsset.portraitKey)
+      .setOrigin(0.5, 1)
+      .setDepth(8)
+      .setVisible(false);
+
+    const source = this.portraitSprite.texture.getSourceImage();
+    const targetW = w * 0.22;
+    const maxH = h * 0.78;
+    this.portraitSprite.setScale(Math.min(targetW / source.width, maxH / source.height));
+  }
 
   createDialogueBox(w, h) {
     // 对话框在底部，右偏避开立绘区
@@ -251,6 +269,7 @@ class OpeningStoryScene extends Phaser.Scene {
     }
 
     this.nameText.setText(speakerName);
+    this.updatePortraitForLine(line);
     const text = line.text;
     this.fullText = text;
 
@@ -275,6 +294,11 @@ class OpeningStoryScene extends Phaser.Scene {
       });
       this.typeText(text);
     }
+  }
+
+  updatePortraitForLine(line) {
+    if (!this.portraitSprite) return;
+    this.portraitSprite.setVisible(line?.speaker === 'player');
   }
 
   typeText(text) {

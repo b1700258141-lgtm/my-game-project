@@ -92,7 +92,7 @@ class TitleScene extends Phaser.Scene {
     }
 
     // 底部提示
-    this.add.text(centerX, panelBottom - 28, '© 2026 万事屋工作室', {
+    this.add.text(centerX, panelBottom - 28, '© 2026 苏菲莉迪丝的炼金工房', {
       fontSize: '12px',
       fontFamily: 'Courier New',
       color: '#7c6857'

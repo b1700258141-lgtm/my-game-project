@@ -298,4 +298,12 @@ export function resetTimeManager() {
   _instance = null;
 }
 
+/**
+ * 仅清除 TimeManager 单例，不调用 reset() 覆盖 gameState。
+ * 用于读档流程：让 ShopScene 从已恢复的 gameState.timeData 重建 TimeManager。
+ */
+export function invalidateTimeManager() {
+  _instance = null;
+}
+
 export default TimeManager;

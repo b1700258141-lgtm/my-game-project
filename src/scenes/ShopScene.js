@@ -20,12 +20,16 @@ import { getBgmManager } from '../systems/BgmManager';
 import { GAME_STATE } from '../systems/GameState';
 import { WARM_UI, addWarmButton, addWarmPanel } from '../ui/WarmUITheme';
 import { showTutorialIfNeeded } from '../systems/TutorialManager';
+import { getCharacterAsset } from '../data/characterAssets.js';
+import CharacterSpriteAnimator from '../systems/CharacterSpriteAnimator.js';
+import { calculateLightingByTime, getDayPhaseLabel } from '../systems/DayNightLighting.js';
 
 class ShopScene extends Phaser.Scene {
   constructor() {
     super({ key: 'ShopScene' });
 
     this.player = null;
+    this.playerAnimator = null;
     this.cursors = null;
     this.wasd = null;
     this.uiGroup = null;
@@ -43,6 +47,7 @@ class ShopScene extends Phaser.Scene {
     this.dailyLoopManager = null;
     this.furnitureManager = null;
     this.visitorNPCs = [];
+    this.characterAnimators = [];
 
     // 奖励弹窗状态
     this.rewardPopup = null;
@@ -127,6 +132,7 @@ class ShopScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D
     });
+    this.registerDirectionalInputMemory();
 
     // E 键交互
     this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
@@ -305,8 +311,12 @@ class ShopScene extends Phaser.Scene {
   updateDayNight() {
     if (!this.timeManager || !this.dayNightOverlay) return;
 
-    const overlay = this.timeManager.getDayNightOverlay();
-    this.dayNightOverlay.setFillStyle(overlay.color, overlay.alpha);
+    // 使用 DayNightLighting 的平滑插值方案替代旧的三段式
+    const lighting = calculateLightingByTime(
+      this.timeManager.currentHour,
+      this.timeManager.currentMinute
+    );
+    this.dayNightOverlay.setFillStyle(lighting.overlayColor, lighting.overlayAlpha);
 
     if (this.lanternDay && this.lanternNight) {
       const isNight = this.timeManager.getDayPhase() === 'night';
@@ -819,6 +829,7 @@ class ShopScene extends Phaser.Scene {
 
   createVisitorNPCs() {
     this.visitorNPCs = [];
+    this.characterAnimators = [];
 
     const visitors = this.visitorSystem.getTodaysVisitors();
 
@@ -841,16 +852,28 @@ class ShopScene extends Phaser.Scene {
 
   createVisitorNPC(npcConfig, position, dialogueId, configId) {
     const npc = this.add.container(position.x, position.y);
+    const assetConfig = getCharacterAsset(npcConfig.id);
+    let highlightBody = null;
+    let spriteAnimator = null;
 
-    const body = this.add.rectangle(0, 0, 36, 48, npcConfig.color)
-      .setStrokeStyle(2, npcConfig.borderColor);
-    npc.add(body);
+    if (assetConfig && this.textures.exists(assetConfig.textureKey)) {
+      const shadow = this.add.ellipse(0, 0, 38, 10, 0x2a1b14, 0.28);
+      const sprite = this.add.image(0, 0, assetConfig.textureKey);
+      spriteAnimator = new CharacterSpriteAnimator(this, sprite, assetConfig);
+      spriteAnimator.setIdle(npcConfig.defaultDirection || 'down');
+      highlightBody = this.add.rectangle(0, -28, 44, 56, 0xffffff, 0)
+        .setStrokeStyle(2, npcConfig.borderColor, 0);
+      npc.add([shadow, sprite, highlightBody]);
+    } else {
+      const body = this.add.rectangle(0, -24, 36, 48, npcConfig.color)
+        .setStrokeStyle(2, npcConfig.borderColor);
+      const leftEye = this.add.circle(-5, -34, 3, 0xffffff);
+      const rightEye = this.add.circle(5, -34, 3, 0xffffff);
+      npc.add([body, leftEye, rightEye]);
+      highlightBody = body;
+    }
 
-    const leftEye = this.add.circle(-5, -10, 3, 0xffffff);
-    const rightEye = this.add.circle(5, -10, 3, 0xffffff);
-    npc.add([leftEye, rightEye]);
-
-    const nameTag = this.add.text(0, -40, npcConfig.name, {
+    const nameTag = this.add.text(0, -72, npcConfig.name, {
       fontSize: '12px',
       fontFamily: 'Georgia, serif',
       color: '#eceff4',
@@ -868,31 +891,29 @@ class ShopScene extends Phaser.Scene {
       description: npcConfig.description,
       dialogueId: dialogueId,
       borderColor: npcConfig.borderColor,
+      assetConfig,
+      spriteAnimator,
       isNPC: true,
       isVisitor: true,
       configId: configId
     };
+    npc.highlightBody = highlightBody;
 
     npc.on('pointerover', () => {
       if (!this.nearbyObject || this.nearbyObject !== npc) {
-        body.setStrokeStyle(3, shopObjects.colors.highlight);
+        highlightBody?.setStrokeStyle?.(3, shopObjects.colors.highlight, 0.9);
       }
     });
 
     npc.on('pointerout', () => {
       if (this.nearbyObject !== npc) {
-        body.setStrokeStyle(2, npcConfig.borderColor);
+        highlightBody?.setStrokeStyle?.(2, npcConfig.borderColor, assetConfig ? 0 : 1);
       }
     });
 
-    this.tweens.add({
-      targets: npc,
-      y: npc.y - 3,
-      duration: 1000,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut'
-    });
+    if (spriteAnimator) {
+      this.characterAnimators.push(spriteAnimator);
+    }
 
     return npc;
   }
@@ -902,22 +923,32 @@ class ShopScene extends Phaser.Scene {
     const startX = savedPosition.x;
     const startY = savedPosition.y;
     const size = gameConfig.player.size;
+    const assetConfig = getCharacterAsset('player');
 
     this.player = this.add.container(startX, startY).setDepth(2.6);
+    this.player.lastInputDirection = 'down';
 
-    const playerBody = this.add.rectangle(0, 0, size, size, 0x88c0d0)
-      .setStrokeStyle(2, 0x5e81ac);
+    if (assetConfig && this.textures.exists(assetConfig.textureKey)) {
+      const shadow = this.add.ellipse(0, 0, 34, 8, 0x2a1b14, 0.25);
+      const playerSprite = this.add.image(0, 0, assetConfig.textureKey);
+      this.playerAnimator = new CharacterSpriteAnimator(this, playerSprite, assetConfig);
+      this.playerAnimator.setIdle('down');
+      this.player.add([shadow, playerSprite]);
+    } else {
+      const playerBody = this.add.rectangle(0, 0, size, size, 0x88c0d0)
+        .setStrokeStyle(2, 0x5e81ac);
 
-    const leftEye = this.add.circle(-6, -4, 3, 0xffffff);
-    const rightEye = this.add.circle(6, -4, 3, 0xffffff);
-    const leftPupil = this.add.circle(-6, -4, 1.5, 0x2e3440);
-    const rightPupil = this.add.circle(6, -4, 1.5, 0x2e3440);
+      const leftEye = this.add.circle(-6, -4, 3, 0xffffff);
+      const rightEye = this.add.circle(6, -4, 3, 0xffffff);
+      const leftPupil = this.add.circle(-6, -4, 1.5, 0x2e3440);
+      const rightPupil = this.add.circle(6, -4, 1.5, 0x2e3440);
 
-    this.player.add([playerBody, leftEye, rightEye, leftPupil, rightPupil]);
+      this.player.add([playerBody, leftEye, rightEye, leftPupil, rightPupil]);
+    }
 
     this.physics.world.enable(this.player, Phaser.Physics.Arcade.DYNAMIC_BODY);
-    this.player.body.setSize(size - 8, size - 8);
-    this.player.body.setOffset(-size / 2 + 4, -size / 2 + 4);
+    this.player.body.setSize(size - 8, Math.max(16, Math.floor(size * 0.55)));
+    this.player.body.setOffset(-size / 2 + 4, -Math.max(16, Math.floor(size * 0.55)));
     this.player.body.setCollideWorldBounds(true);
 
     this.physics.world.setBounds(60, 96, 680, 432);
@@ -1012,9 +1043,17 @@ class ShopScene extends Phaser.Scene {
 
   _getDayPhaseLabel() {
     if (!this.timeManager) return '白天';
-    const phase = this.timeManager.getDayPhase();
-    const labels = { day: '☀ 白天', evening: '🌆 傍晚', night: '🌙 夜晚' };
-    return labels[phase] || '';
+    const label = getDayPhaseLabel(this.timeManager.currentHour);
+    const emojiMap = {
+      '凌晨': '🌙 凌晨',
+      '清晨': '🌅 清晨',
+      '上午': '☀ 上午',
+      '下午': '☀ 下午',
+      '傍晚': '🌆 傍晚',
+      '夜晚': '🌙 夜晚',
+      '深夜': '🌙 深夜'
+    };
+    return emojiMap[label] || label;
   }
 
   createInteractionPrompt() {
@@ -1045,6 +1084,9 @@ class ShopScene extends Phaser.Scene {
       if (this.player && this.player.body) {
         this.player.body.setVelocity(0, 0);
       }
+      this.playerAnimator?.setIdle(this.playerAnimator.lastDirection);
+      this.characterAnimators.forEach((animator) => animator.update(delta, 0, 0));
+      this.updateCharacterDepths();
       this.updateUI();
       this.updateDayNight();
       return;
@@ -1072,10 +1114,69 @@ class ShopScene extends Phaser.Scene {
     }
 
     this.player.body.setVelocity(velocityX, velocityY);
+    this.playerAnimator?.update(delta, velocityX, velocityY, this.getPreferredMovementDirection(velocityX, velocityY));
+    this.characterAnimators.forEach((animator) => animator.update(delta, 0, 0));
+    this.updateCharacterDepths();
 
     this.checkNearbyInteractables();
     this.updateUI();
     this.updateDayNight();
+  }
+
+  updateCharacterDepths() {
+    if (this.player) {
+      this.player.setDepth(this.getCharacterDepth(this.player.y));
+    }
+    this.visitorNPCs.forEach((npc) => {
+      npc.setDepth(this.getCharacterDepth(npc.y));
+    });
+  }
+
+  getCharacterDepth(footY) {
+    return 2.4 + (footY / 10000);
+  }
+
+  registerDirectionalInputMemory() {
+    const directionKeys = {
+      left: ['keydown-A', 'keydown-LEFT'],
+      right: ['keydown-D', 'keydown-RIGHT'],
+      up: ['keydown-W', 'keydown-UP'],
+      down: ['keydown-S', 'keydown-DOWN']
+    };
+
+    Object.entries(directionKeys).forEach(([direction, events]) => {
+      events.forEach((eventName) => {
+        this.input.keyboard.on(eventName, () => {
+          if (this.player) this.player.lastInputDirection = direction;
+        });
+      });
+    });
+  }
+
+  getPreferredMovementDirection(velocityX, velocityY) {
+    const lastDirection = this.player?.lastInputDirection;
+    if (lastDirection && this.isDirectionCurrentlyPressed(lastDirection)) {
+      return lastDirection;
+    }
+
+    if (Math.abs(velocityX) > Math.abs(velocityY)) {
+      return velocityX < 0 ? 'left' : 'right';
+    }
+    if (Math.abs(velocityY) > 0) {
+      return velocityY < 0 ? 'up' : 'down';
+    }
+    return this.playerAnimator?.lastDirection || 'down';
+  }
+
+  isDirectionCurrentlyPressed(direction) {
+    if (!this.wasd || !this.cursors) return false;
+    const checks = {
+      left: this.wasd.left.isDown || this.cursors.left.isDown,
+      right: this.wasd.right.isDown || this.cursors.right.isDown,
+      up: this.wasd.up.isDown || this.cursors.up.isDown,
+      down: this.wasd.down.isDown || this.cursors.down.isDown
+    };
+    return Boolean(checks[direction]);
   }
 
   checkNearbyInteractables() {
@@ -1135,9 +1236,9 @@ class ShopScene extends Phaser.Scene {
   highlightObject(obj) {
     try {
       if (obj.npcData) {
-        const body = obj.list && obj.list[0];
+        const body = obj.highlightBody || (obj.list && obj.list[0]);
         if (body && body.setStrokeStyle) {
-          body.setStrokeStyle(3, shopObjects.colors.highlight);
+          body.setStrokeStyle(3, shopObjects.colors.highlight, 0.9);
         }
       } else {
         if (obj.setStrokeStyle) {
@@ -1153,9 +1254,9 @@ class ShopScene extends Phaser.Scene {
   resetObjectHighlight(obj) {
     try {
       if (obj.npcData) {
-        const body = obj.list && obj.list[0];
+        const body = obj.highlightBody || (obj.list && obj.list[0]);
         if (body && body.setStrokeStyle) {
-          body.setStrokeStyle(2, obj.npcData.borderColor);
+          body.setStrokeStyle(2, obj.npcData.borderColor, obj.npcData.assetConfig ? 0 : 1);
         }
       } else {
         if (obj.setStrokeStyle) {
@@ -1170,10 +1271,25 @@ class ShopScene extends Phaser.Scene {
 
   interactWith(obj) {
     if (obj.npcData) {
+      this.faceNpcTowardPlayer(obj);
       this.startNPCDialogue(obj.npcData);
     } else {
       this.interactWithObject(obj);
     }
+  }
+
+  faceNpcTowardPlayer(npc) {
+    if (!npc?.npcData?.spriteAnimator || !this.player) return;
+
+    const dx = this.player.x - npc.x;
+    const dy = this.player.y - npc.y;
+    let direction;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      direction = dx < 0 ? 'left' : 'right';
+    } else {
+      direction = dy < 0 ? 'up' : 'down';
+    }
+    npc.npcData.spriteAnimator.setIdle(direction);
   }
 
   startNPCDialogue(npcData) {
@@ -1186,7 +1302,9 @@ class ShopScene extends Phaser.Scene {
       dialogueId: npcData.dialogueId,
       npcId: npcData.id,
       visitorConfigId: npcData.isVisitor ? npcData.configId : null,
-      returnScene: 'ShopScene'
+      returnScene: 'ShopScene',
+      // 随机来访 NPC 对话显示万事屋内部背景图
+      backgroundKey: npcData.isVisitor ? 'commissionRoomBg' : null
     });
   }
 

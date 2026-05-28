@@ -95,10 +95,6 @@ window.addEventListener('pagehide', () => {
   autoSaveOnPageExit('pagehide');
 });
 
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') {
-    autoSaveOnPageExit('visibilitychange');
-  }
-});
+// 注意：不再监听 visibilitychange，切换标签页不应触发自动存档
 
 export { game, gameState };

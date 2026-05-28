@@ -1,0 +1,256 @@
+项目相关会话索引
+生成时间：2026-05-28 20:38:31
+原始日志路径：C:\Users\Aieyr\.codex\sessions
+筛选文件数量：36
+
+1. 文件名：rollout-2026-05-05T12-06-29-019df650-e3a6-7db1-b876-10498ccb97be.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\05\rollout-2026-05-05T12-06-29-019df650-e3a6-7db1-b876-10498ccb97be.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\05\rollout-2026-05-05T12-06-29-019df650-e3a6-7db1-b876-10498ccb97be.jsonl
+   修改时间：2026-05-06 13:21:36
+   文件大小：4139418 bytes
+   命中关键词：NPC, codex
+
+2. 文件名：rollout-2026-05-05T18-13-49-019df7a1-2ffd-75e1-9937-8d822a650598.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\05\rollout-2026-05-05T18-13-49-019df7a1-2ffd-75e1-9937-8d822a650598.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\05\rollout-2026-05-05T18-13-49-019df7a1-2ffd-75e1-9937-8d822a650598.jsonl
+   修改时间：2026-05-05 19:46:13
+   文件大小：5627093 bytes
+   命中关键词：NPC, codex
+
+3. 文件名：rollout-2026-05-05T20-19-56-019df814-a8c6-7b93-bc52-105e67706ff2.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\05\rollout-2026-05-05T20-19-56-019df814-a8c6-7b93-bc52-105e67706ff2.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\05\rollout-2026-05-05T20-19-56-019df814-a8c6-7b93-bc52-105e67706ff2.jsonl
+   修改时间：2026-05-06 12:23:23
+   文件大小：2722785 bytes
+   命中关键词：NPC, codex
+
+4. 文件名：rollout-2026-05-05T20-46-52-019df82d-5074-7552-b129-0045138c5239.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\05\rollout-2026-05-05T20-46-52-019df82d-5074-7552-b129-0045138c5239.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\05\rollout-2026-05-05T20-46-52-019df82d-5074-7552-b129-0045138c5239.jsonl
+   修改时间：2026-05-06 13:53:24
+   文件大小：478445 bytes
+   命中关键词：NPC, codex
+
+5. 文件名：rollout-2026-05-06T12-48-07-019dfb9d-5d5b-75a2-af12-4d1567c1cd84.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\06\rollout-2026-05-06T12-48-07-019dfb9d-5d5b-75a2-af12-4d1567c1cd84.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\06\rollout-2026-05-06T12-48-07-019dfb9d-5d5b-75a2-af12-4d1567c1cd84.jsonl
+   修改时间：2026-05-06 14:38:04
+   文件大小：1409549 bytes
+   命中关键词：NPC, codex
+
+6. 文件名：rollout-2026-05-06T12-58-13-019dfba6-9be2-7710-a43e-5419d78a8c5a.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\06\rollout-2026-05-06T12-58-13-019dfba6-9be2-7710-a43e-5419d78a8c5a.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\06\rollout-2026-05-06T12-58-13-019dfba6-9be2-7710-a43e-5419d78a8c5a.jsonl
+   修改时间：2026-05-06 13:58:20
+   文件大小：309513 bytes
+   命中关键词：NPC, codex
+
+7. 文件名：rollout-2026-05-06T14-44-03-019dfc07-807c-7141-8490-8ea0aa9a4a86.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\06\rollout-2026-05-06T14-44-03-019dfc07-807c-7141-8490-8ea0aa9a4a86.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\06\rollout-2026-05-06T14-44-03-019dfc07-807c-7141-8490-8ea0aa9a4a86.jsonl
+   修改时间：2026-05-06 23:50:46
+   文件大小：5069923 bytes
+   命中关键词：NPC, codex
+
+8. 文件名：rollout-2026-05-07T11-12-32-019e006c-374e-7133-a6ac-9127a14adf9e.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\07\rollout-2026-05-07T11-12-32-019e006c-374e-7133-a6ac-9127a14adf9e.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\07\rollout-2026-05-07T11-12-32-019e006c-374e-7133-a6ac-9127a14adf9e.jsonl
+   修改时间：2026-05-07 19:17:32
+   文件大小：857952 bytes
+   命中关键词：NPC, codex
+
+9. 文件名：rollout-2026-05-07T19-23-48-019e022d-fa01-7d02-9a58-5be7fd1e1b4a.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\07\rollout-2026-05-07T19-23-48-019e022d-fa01-7d02-9a58-5be7fd1e1b4a.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\07\rollout-2026-05-07T19-23-48-019e022d-fa01-7d02-9a58-5be7fd1e1b4a.jsonl
+   修改时间：2026-05-07 19:44:26
+   文件大小：524908 bytes
+   命中关键词：NPC, CodeBuddy, codex
+
+10. 文件名：rollout-2026-05-07T19-24-11-019e022e-5430-70e1-b305-e15da8975c61.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\07\rollout-2026-05-07T19-24-11-019e022e-5430-70e1-b305-e15da8975c61.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\07\rollout-2026-05-07T19-24-11-019e022e-5430-70e1-b305-e15da8975c61.jsonl
+   修改时间：2026-05-07 19:43:13
+   文件大小：321123 bytes
+   命中关键词：NPC, CodeBuddy, codex
+
+11. 文件名：rollout-2026-05-09T01-23-38-019e089d-c5f2-7252-ac48-6f93fc27197c.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\09\rollout-2026-05-09T01-23-38-019e089d-c5f2-7252-ac48-6f93fc27197c.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\09\rollout-2026-05-09T01-23-38-019e089d-c5f2-7252-ac48-6f93fc27197c.jsonl
+   修改时间：2026-05-10 15:11:30
+   文件大小：15094850 bytes
+   命中关键词：NPC, codex
+
+12. 文件名：rollout-2026-05-12T16-52-07-019e1b62-e869-7e71-9fab-3907930e468a.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\12\rollout-2026-05-12T16-52-07-019e1b62-e869-7e71-9fab-3907930e468a.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\12\rollout-2026-05-12T16-52-07-019e1b62-e869-7e71-9fab-3907930e468a.jsonl
+   修改时间：2026-05-12 17:45:50
+   文件大小：962947 bytes
+   命中关键词：NPC, codex
+
+13. 文件名：rollout-2026-05-13T10-06-54-019e1f16-4808-70d3-9977-0746ed9dcb76.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\13\rollout-2026-05-13T10-06-54-019e1f16-4808-70d3-9977-0746ed9dcb76.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\13\rollout-2026-05-13T10-06-54-019e1f16-4808-70d3-9977-0746ed9dcb76.jsonl
+   修改时间：2026-05-13 11:38:16
+   文件大小：4277553 bytes
+   命中关键词：NPC, codex
+
+14. 文件名：rollout-2026-05-13T10-10-59-019e1f1a-06aa-7501-b334-f1b0abfb3ff2.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\13\rollout-2026-05-13T10-10-59-019e1f1a-06aa-7501-b334-f1b0abfb3ff2.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\13\rollout-2026-05-13T10-10-59-019e1f1a-06aa-7501-b334-f1b0abfb3ff2.jsonl
+   修改时间：2026-05-23 00:21:52
+   文件大小：323931 bytes
+   命中关键词：腾讯黑客松, 游戏项目, NPC, codex
+
+15. 文件名：rollout-2026-05-13T11-46-20-019e1f71-4f80-7192-a1e9-37e27fd5545a.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\13\rollout-2026-05-13T11-46-20-019e1f71-4f80-7192-a1e9-37e27fd5545a.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\13\rollout-2026-05-13T11-46-20-019e1f71-4f80-7192-a1e9-37e27fd5545a.jsonl
+   修改时间：2026-05-13 14:16:38
+   文件大小：4124678 bytes
+   命中关键词：NPC, codex
+
+16. 文件名：rollout-2026-05-13T13-12-35-019e1fc0-4889-7912-8c35-81107e506929.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\13\rollout-2026-05-13T13-12-35-019e1fc0-4889-7912-8c35-81107e506929.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\13\rollout-2026-05-13T13-12-35-019e1fc0-4889-7912-8c35-81107e506929.jsonl
+   修改时间：2026-05-13 13:29:36
+   文件大小：566816 bytes
+   命中关键词：NPC, codex
+
+17. 文件名：rollout-2026-05-20T14-38-45-019e441b-ad50-71c2-8c58-b7cc73f36fe0.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\20\rollout-2026-05-20T14-38-45-019e441b-ad50-71c2-8c58-b7cc73f36fe0.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\20\rollout-2026-05-20T14-38-45-019e441b-ad50-71c2-8c58-b7cc73f36fe0.jsonl
+   修改时间：2026-05-22 12:01:21
+   文件大小：5654745 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 主场景, 炼金
+
+18. 文件名：rollout-2026-05-20T14-49-14-019e4425-496f-73c1-a6a5-428e8a706ab6.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\20\rollout-2026-05-20T14-49-14-019e4425-496f-73c1-a6a5-428e8a706ab6.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\20\rollout-2026-05-20T14-49-14-019e4425-496f-73c1-a6a5-428e8a706ab6.jsonl
+   修改时间：2026-05-20 17:57:50
+   文件大小：235696 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 主场景, 炼金
+
+19. 文件名：rollout-2026-05-22T11-50-30-019e4dce-480a-7ab2-9bfd-564d1777ae44.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\22\rollout-2026-05-22T11-50-30-019e4dce-480a-7ab2-9bfd-564d1777ae44.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\22\rollout-2026-05-22T11-50-30-019e4dce-480a-7ab2-9bfd-564d1777ae44.jsonl
+   修改时间：2026-05-22 12:00:56
+   文件大小：350150 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 主场景, 炼金
+
+20. 文件名：rollout-2026-05-23T00-24-50-019e5080-d929-7c03-9692-77e01b677645.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\23\rollout-2026-05-23T00-24-50-019e5080-d929-7c03-9692-77e01b677645.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\23\rollout-2026-05-23T00-24-50-019e5080-d929-7c03-9692-77e01b677645.jsonl
+   修改时间：2026-05-23 13:04:46
+   文件大小：2953700 bytes
+   命中关键词：万事屋, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 炼金
+
+21. 文件名：rollout-2026-05-23T00-28-20-019e5084-24e1-7923-8ea4-c7f23c1c46b1.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\23\rollout-2026-05-23T00-28-20-019e5084-24e1-7923-8ea4-c7f23c1c46b1.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\23\rollout-2026-05-23T00-28-20-019e5084-24e1-7923-8ea4-c7f23c1c46b1.jsonl
+   修改时间：2026-05-23 01:49:01
+   文件大小：577502 bytes
+   命中关键词：万事屋, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 炼金
+
+22. 文件名：rollout-2026-05-23T15-01-21-019e53a3-5d62-79c0-9ce9-e4c089e02d0f.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\23\rollout-2026-05-23T15-01-21-019e53a3-5d62-79c0-9ce9-e4c089e02d0f.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\23\rollout-2026-05-23T15-01-21-019e53a3-5d62-79c0-9ce9-e4c089e02d0f.jsonl
+   修改时间：2026-05-23 16:24:00
+   文件大小：4730925 bytes
+   命中关键词：万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 委托对话, 主场景, 炼金
+
+23. 文件名：rollout-2026-05-23T15-11-34-019e53ac-b994-7143-b87b-1ba4dc21406d.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\23\rollout-2026-05-23T15-11-34-019e53ac-b994-7143-b87b-1ba4dc21406d.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\23\rollout-2026-05-23T15-11-34-019e53ac-b994-7143-b87b-1ba4dc21406d.jsonl
+   修改时间：2026-05-23 16:22:49
+   文件大小：357197 bytes
+   命中关键词：万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 主场景, 炼金
+
+24. 文件名：rollout-2026-05-24T15-56-00-019e58fb-c564-70d1-b0fb-2d59002ff9e6.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\24\rollout-2026-05-24T15-56-00-019e58fb-c564-70d1-b0fb-2d59002ff9e6.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\24\rollout-2026-05-24T15-56-00-019e58fb-c564-70d1-b0fb-2d59002ff9e6.jsonl
+   修改时间：2026-05-24 19:23:26
+   文件大小：1815379 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 主场景, 炼金
+
+25. 文件名：rollout-2026-05-24T15-58-56-019e58fe-83f9-7290-9bc7-ff350d3fe11a.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\24\rollout-2026-05-24T15-58-56-019e58fe-83f9-7290-9bc7-ff350d3fe11a.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\24\rollout-2026-05-24T15-58-56-019e58fe-83f9-7290-9bc7-ff350d3fe11a.jsonl
+   修改时间：2026-05-24 19:22:55
+   文件大小：285461 bytes
+   命中关键词：万事屋, 短期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 炼金
+
+26. 文件名：rollout-2026-05-25T19-02-50-019e5ecd-2f88-7fc1-9813-4aa1e84d8436.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\25\rollout-2026-05-25T19-02-50-019e5ecd-2f88-7fc1-9813-4aa1e84d8436.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\25\rollout-2026-05-25T19-02-50-019e5ecd-2f88-7fc1-9813-4aa1e84d8436.jsonl
+   修改时间：2026-05-25 19:47:34
+   文件大小：1834735 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 炼金
+
+27. 文件名：rollout-2026-05-25T19-05-35-019e5ecf-c529-7b80-9b2a-7d087c08edef.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\25\rollout-2026-05-25T19-05-35-019e5ecf-c529-7b80-9b2a-7d087c08edef.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\25\rollout-2026-05-25T19-05-35-019e5ecf-c529-7b80-9b2a-7d087c08edef.jsonl
+   修改时间：2026-05-25 19:43:35
+   文件大小：143487 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 炼金
+
+28. 文件名：rollout-2026-05-25T22-27-59-019e5f89-0c31-7ea3-b18e-11e1aedaa249.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\25\rollout-2026-05-25T22-27-59-019e5f89-0c31-7ea3-b18e-11e1aedaa249.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\25\rollout-2026-05-25T22-27-59-019e5f89-0c31-7ea3-b18e-11e1aedaa249.jsonl
+   修改时间：2026-05-26 20:33:44
+   文件大小：9252743 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 主场景, 炼金, 家具素材
+
+29. 文件名：rollout-2026-05-25T22-33-15-019e5f8d-e434-7b03-8281-1ccf2b48eb90.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\25\rollout-2026-05-25T22-33-15-019e5f8d-e434-7b03-8281-1ccf2b48eb90.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\25\rollout-2026-05-25T22-33-15-019e5f8d-e434-7b03-8281-1ccf2b48eb90.jsonl
+   修改时间：2026-05-25 22:33:25
+   文件大小：60579 bytes
+   命中关键词：万事屋, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 炼金
+
+30. 文件名：rollout-2026-05-26T12-25-51-019e6288-16a3-71f1-8d6a-4482e6f18351.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\26\rollout-2026-05-26T12-25-51-019e6288-16a3-71f1-8d6a-4482e6f18351.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\26\rollout-2026-05-26T12-25-51-019e6288-16a3-71f1-8d6a-4482e6f18351.jsonl
+   修改时间：2026-05-26 20:31:47
+   文件大小：1099094 bytes
+   命中关键词：万事屋, 游戏项目, 短期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 主场景, 炼金, 家具素材
+
+31. 文件名：rollout-2026-05-27T12-34-38-019e67b6-7c0f-7ad0-b7b2-8498f9507a25.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\27\rollout-2026-05-27T12-34-38-019e67b6-7c0f-7ad0-b7b2-8498f9507a25.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\27\rollout-2026-05-27T12-34-38-019e67b6-7c0f-7ad0-b7b2-8498f9507a25.jsonl
+   修改时间：2026-05-27 18:12:49
+   文件大小：7440037 bytes
+   命中关键词：万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 主场景, 炼金
+
+32. 文件名：rollout-2026-05-27T12-43-22-019e67be-7d85-71b0-945b-53da982722dc.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\27\rollout-2026-05-27T12-43-22-019e67be-7d85-71b0-945b-53da982722dc.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\27\rollout-2026-05-27T12-43-22-019e67be-7d85-71b0-945b-53da982722dc.jsonl
+   修改时间：2026-05-27 13:20:40
+   文件大小：532135 bytes
+   命中关键词：万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 炼金
+
+33. 文件名：rollout-2026-05-27T15-02-10-019e683d-9ca1-7e02-ab9c-f5d98280491a.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\27\rollout-2026-05-27T15-02-10-019e683d-9ca1-7e02-ab9c-f5d98280491a.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\27\rollout-2026-05-27T15-02-10-019e683d-9ca1-7e02-ab9c-f5d98280491a.jsonl
+   修改时间：2026-05-27 16:39:21
+   文件大小：1658840 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 主场景, 炼金
+
+34. 文件名：rollout-2026-05-27T18-13-26-019e68ec-abd1-74a3-86ef-c5d9f81565c5.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\27\rollout-2026-05-27T18-13-26-019e68ec-abd1-74a3-86ef-c5d9f81565c5.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\27\rollout-2026-05-27T18-13-26-019e68ec-abd1-74a3-86ef-c5d9f81565c5.jsonl
+   修改时间：2026-05-27 18:41:57
+   文件大小：5808555 bytes
+   命中关键词：万事屋, NPC, 炼金釜, 精魂, CodeBuddy, codex, tencent game craft, 主场景, 炼金
+
+35. 文件名：rollout-2026-05-28T11-23-26-019e6c9b-a3e7-7901-92f5-56f7517a1cb7.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\28\rollout-2026-05-28T11-23-26-019e6c9b-a3e7-7901-92f5-56f7517a1cb7.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\28\rollout-2026-05-28T11-23-26-019e6c9b-a3e7-7901-92f5-56f7517a1cb7.jsonl
+   修改时间：2026-05-28 20:38:29
+   文件大小：8333525 bytes
+   命中关键词：腾讯黑客松, 万事屋, 游戏项目, 短期委托, 长期委托, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 万事屋内部背景, 委托对话, 主场景, 炼金, 家具素材
+
+36. 文件名：rollout-2026-05-28T11-24-01-019e6c9c-2a0f-7d21-9121-2ee8fa41a987.jsonl
+   原始路径：C:\Users\Aieyr\.codex\sessions\2026\05\28\rollout-2026-05-28T11-24-01-019e6c9c-2a0f-7d21-9121-2ee8fa41a987.jsonl
+   raw_sessions 相对路径：raw_sessions\2026\05\28\rollout-2026-05-28T11-24-01-019e6c9c-2a0f-7d21-9121-2ee8fa41a987.jsonl
+   修改时间：2026-05-28 12:16:19
+   文件大小：229935 bytes
+   命中关键词：万事屋, NPC, 炼金釜, 精魂, CodeBuddy, codex, my-game-project, tencent game craft, 主场景, 炼金

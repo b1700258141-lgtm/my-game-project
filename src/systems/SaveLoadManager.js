@@ -5,6 +5,8 @@ import { normalizeTutorialFlags } from './TutorialManager';
 const SAVE_VERSION = '0.1.0';
 const SAVE_SLOT_COUNT = 30;
 const STORAGE_KEY_PREFIX = 'oddjobs_alchemy_save_slot_';
+const AUTO_SAVE_STORAGE_KEY = 'oddjobs_alchemy_auto_save';
+const AUTO_SAVE_SLOT_DISPLAY = 'auto_save';
 export const SAVE_TYPE = {
   MANUAL: 'manual',
   AUTO: 'auto'
@@ -95,25 +97,71 @@ export default class SaveLoadManager {
     }
   }
 
+  // ========== 自动存档（单固定槽位） ==========
+
+  /**
+   * 固定自动存档 key：全局只有一个自动存档，始终覆盖写入
+   */
+  static get AUTO_SAVE_SLOT_KEY() {
+    return AUTO_SAVE_STORAGE_KEY;
+  }
+
+  /**
+   * 读取唯一的自动存档数据，如果没有则返回 null
+   */
+  getAutoSave() {
+    if (!window.localStorage) return null;
+    try {
+      const raw = window.localStorage.getItem(AUTO_SAVE_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return this.normalizeSaveData(parsed, 0);
+    } catch (e) {
+      console.warn('[SaveLoadManager] 读取自动存档失败:', e);
+      return null;
+    }
+  }
+
+  /**
+   * 执行自动存档。始终写入固定 key，覆盖旧的自动存档。
+   * @param {string} reason - 'returnToMenu' | 'beforeUnload' | 'pagehide'
+   */
   autoSave(reason = 'auto') {
     if (!window.localStorage || !this.canAutoSave()) {
       return { success: false, message: '自动存档跳过' };
     }
 
-    const slotIndex = this.findAutoSaveSlot();
-    if (!slotIndex) {
-      return { success: false, message: '没有可用的自动存档位' };
+    // 只允许在真正的退出场景触发
+    const allowedReasons = ['returnToMenu', 'beforeUnload', 'pagehide'];
+    if (!allowedReasons.includes(reason)) {
+      return { success: false, message: `自动存档拒绝: reason=${reason}` };
     }
 
-    const result = this.saveGame(slotIndex, {
-      saveType: SAVE_TYPE.AUTO,
-      autoSaveReason: reason
-    });
+    try {
+      const existingAutoSave = this.getAutoSave();
+      const createdAt = existingAutoSave
+        ? (existingAutoSave.createdAt || existingAutoSave.savedAt)
+        : new Date().toISOString();
 
-    return {
-      ...result,
-      slotIndex
-    };
+      const saveData = this.buildSaveData(0, {
+        saveType: SAVE_TYPE.AUTO,
+        autoSaveReason: reason,
+        createdAt
+      });
+
+      saveData.saveSlotIndex = AUTO_SAVE_SLOT_DISPLAY;
+      saveData.displayName = '自动存档';
+
+      window.localStorage.setItem(AUTO_SAVE_STORAGE_KEY, JSON.stringify(saveData));
+
+      // 一次性清理槽位 1-30 中旧的自动存档残留
+      this._cleanupOldAutoSavesInSlots();
+
+      return { success: true, message: '自动存档成功', saveData };
+    } catch (error) {
+      console.warn('[SaveLoadManager] 自动存档失败:', error);
+      return { success: false, message: '自动存档失败' };
+    }
   }
 
   canAutoSave() {
@@ -121,23 +169,27 @@ export default class SaveLoadManager {
     return Boolean(this.gameState.getPlayerName?.() || this.gameState.playerName);
   }
 
+  /**
+   * 清理槽位 1-30 中的旧自动存档残留（仅清扫一次）
+   */
+  _cleanupOldAutoSavesInSlots() {
+    if (!window.localStorage) return;
+    try {
+      for (let i = 1; i <= this.slotCount; i++) {
+        const saveData = this.getSaveSlot(i);
+        if (saveData && saveData.saveType === SAVE_TYPE.AUTO) {
+          window.localStorage.removeItem(slotKey(i));
+          console.log(`[SaveLoadManager] 清理旧自动存档槽位 ${i}`);
+        }
+      }
+    } catch (e) {
+      console.warn('[SaveLoadManager] 清理旧自动存档异常:', e);
+    }
+  }
+
+  /** @deprecated 保留兼容 */
   findAutoSaveSlot() {
-    const slots = this.getAllSaveSlots();
-    const filledSlots = slots.filter(slot => slot.hasSave && slot.saveData);
-    const latestSlot = this.getLatestSaveSlot(filledSlots);
-    const startIndex = latestSlot?.slotIndex || 0;
-
-    const emptyBelowLatest = slots.find(slot => !slot.hasSave && slot.slotIndex > startIndex);
-    if (emptyBelowLatest) return emptyBelowLatest.slotIndex;
-
-    const emptySlot = slots.find(slot => !slot.hasSave);
-    if (emptySlot) return emptySlot.slotIndex;
-
-    const oldestAutoSlot = filledSlots
-      .filter(slot => slot.saveData.saveType === SAVE_TYPE.AUTO)
-      .sort((a, b) => this.getSavedAtMs(a.saveData) - this.getSavedAtMs(b.saveData))[0];
-
-    return oldestAutoSlot?.slotIndex || null;
+    return null;
   }
 
   getLatestSaveSlot(slots = null) {
@@ -171,10 +223,30 @@ export default class SaveLoadManager {
     }
   }
 
+  /**
+   * 读取固定自动存档
+   */
+  loadAutoSave() {
+    const saveData = this.getAutoSave();
+    if (!saveData) {
+      return { success: false, message: '没有自动存档' };
+    }
+
+    try {
+      const sanitized = sanitizeSaveData(saveData) || saveData;
+      this.applySaveData(sanitized);
+      return { success: true, message: '读取成功', saveData };
+    } catch (error) {
+      console.warn('[SaveLoadManager] 自动存档读取失败', error);
+      return { success: false, message: '读取失败' };
+    }
+  }
+
   deleteSave(slotIndex) {
     if (!this.isValidSlot(slotIndex) || !window.localStorage) {
       return { success: false, message: '删除失败' };
     }
+
     window.localStorage.removeItem(slotKey(slotIndex));
     return { success: true, message: '删除成功' };
   }
@@ -191,6 +263,8 @@ export default class SaveLoadManager {
       saveVersion: this.saveVersion,
       saveType: options.saveType === SAVE_TYPE.AUTO ? SAVE_TYPE.AUTO : SAVE_TYPE.MANUAL,
       autoSaveReason: options.saveType === SAVE_TYPE.AUTO ? (options.autoSaveReason || 'auto') : '',
+      parentManualSaveId: options.saveType === SAVE_TYPE.AUTO ? (options.parentManualSaveId || null) : null,
+      createdAt: options.createdAt || new Date().toISOString(),
       savedAt: new Date().toISOString(),
 
       currentDay: normalizeNumber(timeData.currentDay, this.gameState.day || 1),
@@ -317,6 +391,8 @@ export default class SaveLoadManager {
       saveVersion: data.saveVersion || 'legacy',
       saveType: data.saveType === SAVE_TYPE.AUTO ? SAVE_TYPE.AUTO : SAVE_TYPE.MANUAL,
       autoSaveReason: typeof data.autoSaveReason === 'string' ? data.autoSaveReason : '',
+      parentManualSaveId: data.parentManualSaveId !== undefined ? data.parentManualSaveId : null,
+      createdAt: data.createdAt || data.savedAt || '',
       savedAt: data.savedAt || '',
       currentDay,
       currentHour: normalizeNumber(data.currentHour, 8),

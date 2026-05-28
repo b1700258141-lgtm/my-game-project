@@ -7,6 +7,11 @@ import VisitorSystem from '../systems/VisitorSystem';
 import { GAME_STATE } from '../systems/GameState';
 import RandomNpcManager, { RANDOM_NPC_STATE } from '../systems/RandomNpcManager';
 import DailyLoopManager from '../systems/DailyLoopManager';
+import {
+  getCharacterAsset,
+  getCharacterAssetByPortraitId,
+  getCharacterAssetBySpeaker
+} from '../data/characterAssets.js';
 
 class DialogueScene extends Phaser.Scene {
   constructor() {
@@ -63,6 +68,7 @@ class DialogueScene extends Phaser.Scene {
     this.dialogueHistory = [];
     this.scrollOffset = 0;
     this.isViewingHistory = false;
+    this.backgroundKey = data.backgroundKey || null;
     
     // 鍒濆鍖栬儗鍖呯郴缁?
     if (window.gameState) {
@@ -79,33 +85,43 @@ class DialogueScene extends Phaser.Scene {
     // 閲嶇疆鐩告満鐘舵€侊紝闃叉娈嬬暀榛戝睆
     this.cameras.main.resetFX();
 
-    // 鍗婇€忔槑鑳屾櫙
-    this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.75);
+    // 背景：委托对话使用万事屋内部背景图，普通对话保持纯黑遮罩
+    if (this.backgroundKey && this.textures.exists(this.backgroundKey)) {
+      const bg = this.add.image(width / 2, height / 2, this.backgroundKey);
+      const iw = bg.width;
+      const ih = bg.height;
+      const scale = Math.max(width / iw, height / ih);
+      bg.setScale(scale).setDepth(0);
+      this.add.rectangle(width / 2, height / 2, width, height, 0x0a0810, 0.35).setDepth(1);
+    } else {
+      this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.75).setDepth(0);
+    }
 
-    // 瀵硅瘽妗嗗鍣?
+    // Dialog box container
     this.dialogBox = this.add.container(0, 0).setDepth(10);
 
     // NPC 绔嬬粯鍖哄煙锛堝乏渚э級
-    this.portraitContainer = this.add.container(100, height / 2 - 50).setDepth(11);
+    // 使用较低的底部位置 (= 对话框顶部附近)，让立绘至少露出大腿及以上
+    this.portraitContainer = this.add.container(width * 0.13, height - 172).setDepth(11);
     this.dialogBox.add(this.portraitContainer);
 
-    // 绔嬬粯鑳屾櫙
-    addWarmPanel(this, this.portraitContainer, 0, 0, 150, 200, {
-      fill: WARM_UI.panelAlt
-    });
+    // 閫忔槑绔嬬粯灞傦紝涓嶇粰绔嬬粯鍔犱笉閫忔槑鑳屾櫙
+    this.portraitFrame = this.add.rectangle(0, -120, width * 0.22, height * 0.75, 0x000000, 0)
+      .setVisible(false);
+    this.portraitContainer.add(this.portraitFrame);
 
-    // 绔嬬粯鍩虹搴曟澘
-    this.portraitImage = this.add.rectangle(0, 0, 130, 180, WARM_UI.panelLight)
-      .setStrokeStyle(2, WARM_UI.border);
-    this.portraitContainer.add(this.portraitImage);
+    this.portraitSprite = this.add.image(0, 0, 'character_player_portrait')
+      .setOrigin(0.5, 1)
+      .setVisible(false);
+    this.portraitContainer.add(this.portraitSprite);
 
     // 瀵硅瘽妗嗕富浣?
     addWarmPanel(this, this.dialogBox, width / 2, height - 100, width - 80, 180, {
       fill: WARM_UI.panelLight
     });
 
-    const dialogLeft = 70;
-    const dialogTextWidth = width - 180;
+    const dialogLeft = 190;
+    const dialogTextWidth = width - 300;
     const dialogTop = height - 190;
 
     // 角色名木牌
@@ -254,7 +270,8 @@ class DialogueScene extends Phaser.Scene {
       const lines = this.currentDialogue.lines;
       if (lines && this.currentLineIndex < lines.length) {
         this.dialogueText.setText(this.fullText || lines[this.currentLineIndex].text);
-        this.nameText.setText(this.getSpeakerName(this.currentDialogue.speaker || ''));
+        this.nameText.setText(this.getSpeakerName(this.resolveLineSpeaker(lines[this.currentLineIndex])));
+        this.updateDialoguePortrait(lines[this.currentLineIndex]);
         // 濡傛灉涔嬪墠鏈夐€夐」锛岄噸鏂版樉绀?
         if (this.currentLineIndex >= lines.length - 1 && this.currentChoices && this.currentChoices.length > 0) {
           this.showChoices();
@@ -292,6 +309,10 @@ class DialogueScene extends Phaser.Scene {
     return speaker.replaceAll('【玩家id】', playerName);
   }
 
+  resolveLineSpeaker(line = null) {
+    return line?.speaker || line?.speakerId || this.currentDialogue?.speaker || '';
+  }
+
   loadDialogue(dialogueId) {
     const dialogueData = dialogues.dialogues[dialogueId];
     if (!dialogueData) {
@@ -313,11 +334,7 @@ class DialogueScene extends Phaser.Scene {
     this.historyHint.setVisible(false);
     this.dialogueText.setAlpha(1.0);
 
-    // 璁剧疆绔嬬粯棰滆壊
-    if (dialogueData.portrait) {
-      this.portraitImage.setFillStyle(WARM_UI.button);
-      this.portraitImage.setStrokeStyle(2, WARM_UI.buttonHover);
-    }
+    this.updateDialoguePortrait();
 
     // 鏄剧ず绗竴琛?
     this.showCurrentLine();
@@ -334,9 +351,10 @@ class DialogueScene extends Phaser.Scene {
     
     // 娓呴櫎涔嬪墠鐨勯€夐」
     this.clearChoices();
+    this.updateDialoguePortrait(line);
 
     // 显示角色名
-    const speakerName = this.getSpeakerName(this.currentDialogue.speaker || '');
+    const speakerName = this.getSpeakerName(this.resolveLineSpeaker(line));
     this.nameText.setText(speakerName);
     if (this.dialogueText?.setMaxLines) {
       this.dialogueText.setMaxLines(3);
@@ -428,6 +446,48 @@ class DialogueScene extends Phaser.Scene {
       const btn = this.createChoiceButton(choice.text, y, index);
       this.choiceButtons.push(btn);
     });
+  }
+
+  updateDialoguePortrait(line = null) {
+    const asset = this.resolvePortraitAsset(line);
+    if (!asset?.portraitKey || !this.textures.exists(asset.portraitKey)) {
+      this.portraitSprite?.setVisible(false);
+      return;
+    }
+
+    const texture = this.textures.get(asset.portraitKey);
+    texture?.setFilter?.(Phaser.Textures.FilterMode.NEAREST);
+
+    this.portraitSprite
+      .setTexture(asset.portraitKey)
+      .setVisible(true);
+
+    const maxW = this.cameras.main.width * 0.22;
+    const maxH = this.cameras.main.height * 0.74;
+    const source = this.portraitSprite.texture.getSourceImage();
+    const scale = Math.min(maxW / source.width, maxH / source.height);
+    this.portraitSprite.setScale(scale);
+  }
+
+  resolvePortraitAsset(line = null) {
+    const speakerId = line?.speakerId || line?.speaker || this.currentDialogue?.speakerId;
+    if (speakerId) {
+      const bySpeakerId = getCharacterAsset(speakerId) || getCharacterAssetBySpeaker(speakerId);
+      if (bySpeakerId) return bySpeakerId;
+    }
+
+    const portraitId = line?.portrait || this.currentDialogue?.portrait;
+    if (portraitId) {
+      const byPortrait = getCharacterAssetByPortraitId(portraitId);
+      if (byPortrait) return byPortrait;
+    }
+
+    if (this.npcId) {
+      const byNpcId = getCharacterAsset(this.npcId);
+      if (byNpcId) return byNpcId;
+    }
+
+    return null;
   }
 
   createChoiceButton(text, y, index) {

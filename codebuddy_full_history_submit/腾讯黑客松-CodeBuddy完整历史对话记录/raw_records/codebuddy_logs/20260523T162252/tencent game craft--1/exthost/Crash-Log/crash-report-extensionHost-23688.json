@@ -1,0 +1,52 @@
+{
+  "launchedAt": "2026-05-23T08:23:30.639Z",
+  "pid": 23688,
+  "processName": "extensionHost",
+  "versions": {
+    "node": "20.19.0",
+    "electron": "34.5.1",
+    "chrome": "132.0.6834.210",
+    "v8": "13.2.152.41-electron.0"
+  },
+  "platform": "win32",
+  "arch": "x64",
+  "appVersion": "1.100.0",
+  "entries": [
+    {
+      "timestamp": "2026-05-23T10:06:12.366Z",
+      "type": "unhandled_rejection",
+      "errorName": "Error",
+      "errorMessage": "Pending response rejected since connection got disposed",
+      "stack": "Error: Pending response rejected since connection got disposed\n    at Object.dispose (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:475202)\n    at Object.dispose (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:57678)\n    at R.handleConnectionClosed (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:58077)\n    at R.handleConnectionClosed (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:587084)\n    at g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:57822\n    at s.invoke (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:392098)\n    at a.fire (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:392916)\n    at ne (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:463449)\n    at s.invoke (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:392098)\n    at a.fire (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:392916)\n    at m.fireClose (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:112300)\n    at ChildProcess.<anonymous> (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:122315)\n    at ChildProcess.emit (node:events:536:35)\n    at maybeClose (node:internal/child_process:1104:16)\n    at Socket.<anonymous> (node:internal/child_process:456:11)\n    at Socket.emit (node:events:524:28)\n    at Pipe.<anonymous> (node:net:343:12)\n    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)"
+    },
+    {
+      "timestamp": "2026-05-23T10:06:12.375Z",
+      "type": "unhandled_rejection",
+      "errorName": "Error",
+      "errorMessage": "Client is not running and can't be stopped. It's current state is: starting",
+      "stack": "Error: Client is not running and can't be stopped. It's current state is: starting\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52822)\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:586681)\n    at R.stop (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52394)\n    at R.doInitialize (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52213)\n    at R.start (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:48793)"
+    },
+    {
+      "timestamp": "2026-05-23T10:06:12.589Z",
+      "type": "unhandled_rejection",
+      "errorName": "Error",
+      "errorMessage": "Client is not running and can't be stopped. It's current state is: startFailed",
+      "stack": "Error: Client is not running and can't be stopped. It's current state is: startFailed\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52822)\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:586681)\n    at R.stop (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52394)\n    at R.doInitialize (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52213)\n    at R.start (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:48793)"
+    },
+    {
+      "timestamp": "2026-05-23T10:06:12.811Z",
+      "type": "unhandled_rejection",
+      "errorName": "Error",
+      "errorMessage": "Client is not running and can't be stopped. It's current state is: startFailed",
+      "stack": "Error: Client is not running and can't be stopped. It's current state is: startFailed\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52822)\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:586681)\n    at R.stop (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52394)\n    at R.doInitialize (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52213)\n    at R.start (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:48793)"
+    },
+    {
+      "timestamp": "2026-05-23T10:06:12.996Z",
+      "type": "unhandled_rejection",
+      "errorName": "Error",
+      "errorMessage": "Client is not running and can't be stopped. It's current state is: startFailed",
+      "stack": "Error: Client is not running and can't be stopped. It's current state is: startFailed\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52822)\n    at R.shutdown (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:586681)\n    at R.stop (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52394)\n    at R.doInitialize (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:52213)\n    at R.start (g:\\CodeBuddy CN\\resources\\app\\extensions\\json-language-features\\client\\dist\\node\\jsonClientMain.js:2:48793)"
+    }
+  ],
+  "droppedCount": 0
+}

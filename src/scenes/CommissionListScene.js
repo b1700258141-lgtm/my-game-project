@@ -300,7 +300,9 @@ class CommissionListScene extends Phaser.Scene {
       this.scene.start('DialogueScene', {
         dialogueId: commission.startDialogueId,
         npcId: commission.clientNpcId,
-        returnScene: 'ShopScene'
+        returnScene: 'ShopScene',
+        // 委托对话显示万事屋内部背景图
+        backgroundKey: 'commissionRoomBg'
       });
     } else {
       this.scene.start('ShopScene');

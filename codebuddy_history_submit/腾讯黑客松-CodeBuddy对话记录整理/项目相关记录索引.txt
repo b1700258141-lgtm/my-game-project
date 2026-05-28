@@ -1,0 +1,78 @@
+============================================================
+项目相关记录索引
+生成时间：2026-05-28 20:45
+============================================================
+
+【CodeBuddy 用户配置/记忆数据】
+----------------------------------------------------------
+1. 文件路径：C:\Users\Aieyr\.codebuddy\expert-history.json
+   文件名：expert-history.json
+   大小：68 bytes
+   关键词：CodeBuddy 会话记录
+   说明：CodeBuddy 会话索引文件，sessions 字段为空，未保留完整对话
+
+2. 文件路径：C:\Users\Aieyr\.codebuddy\settings.json
+   文件名：settings.json
+   大小：288 bytes
+   关键词：CodeBuddy 配置、插件列表
+   说明：CodeBuddy 已启用的官方插件列表（pptx/pdf/docx/xlsx 等）
+
+3. 文件路径：C:\Users\Aieyr\.codebuddy\mcp.json
+   文件名：mcp.json
+   关键词：MCP 服务配置
+   说明：MCP 工具服务连接配置
+
+4. 文件路径：C:\Users\Aieyr\.codebuddy\memery\7809083a-cc55-4122-a630-d7f5bc0cef19_memery.md
+   文件名：7809083a-cc55-4122-a630-d7f5bc0cef19_memery.md
+   大小：~6 KB
+   关键词：万事屋炼金物语、腾讯黑客松、Vite、Phaser 3、安全模块、CloudBase
+   说明：CodeBuddy 用户记忆档案，包含项目背景、技术栈、开发规范、近期动态
+
+5. 文件路径：C:\Users\Aieyr\.codebuddy\memery\user-memery-state.json
+   文件名：user-memery-state.json
+   关键词：记忆版本管理
+   说明：记忆档案版本状态（version: 13）
+
+6. 文件路径：C:\Users\Aieyr\.codebuddy\rules\禁止大规模修改.mdc
+   文件名：禁止大规模修改.mdc
+   关键词：开发规范、禁止批量删除、禁止重构
+   说明：用户自定义规则 - 禁止大规模删除文件和代码
+
+7. 文件路径：C:\Users\Aieyr\.codebuddy\rules\禁止回退_Git_版本.mdc
+   文件名：禁止回退_Git_版本.mdc
+   关键词：Git 规则、禁止 reset、禁止 revert
+   说明：用户自定义规则 - 禁止主动回退 Git 版本
+
+【Git 版本控制记录】
+----------------------------------------------------------
+8. 文件：git_log.txt
+   内容：5 次 Git 提交简表
+   关键词：sync, game project, scene, systems, add agent guide
+
+9. 文件：git_log_detail.txt
+   内容：5 次提交的详细文件变更列表
+   关键词：项目文件新增/修改历史
+
+10. 文件：git_status.txt
+    内容：当前工作区未暂存的文件列表
+    关键词：昼夜、对话、BGM、商店、角色精灵动画
+
+11. 文件：changed_files.txt
+    内容：Git tracked 修改文件 + untracked 新增文件
+    关键词：rewroteBoot, src/, Game/
+
+【项目级 CodeBuddy 配置】
+----------------------------------------------------------
+12. 路径：F:\tencent game craft\.codebuddy\teams\
+    说明：项目级 CodeBuddy teams 目录（空）
+
+【CodeBuddy 工作区输出】
+----------------------------------------------------------
+13. 路径：C:\Users\Aieyr\CodeBuddy\20260519144219\
+    说明：CodeBuddy 工作区输出（2026-05-19），含 js/ 和 index.html
+
+14. 路径：C:\Users\Aieyr\CodeBuddy\20260526214620\
+    说明：CodeBuddy 工作区输出（2026-05-26），空目录
+
+15. 路径：C:\Users\Aieyr\CodeBuddy\Claw\
+    说明：CodeBuddy Claw 工作区，空目录

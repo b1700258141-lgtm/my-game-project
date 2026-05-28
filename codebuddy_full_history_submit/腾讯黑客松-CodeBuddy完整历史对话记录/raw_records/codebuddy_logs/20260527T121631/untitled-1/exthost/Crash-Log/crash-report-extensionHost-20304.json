@@ -1,0 +1,24 @@
+{
+  "launchedAt": "2026-05-27T04:16:33.619Z",
+  "pid": 20304,
+  "processName": "extensionHost",
+  "versions": {
+    "node": "20.19.0",
+    "electron": "34.5.1",
+    "chrome": "132.0.6834.210",
+    "v8": "13.2.152.41-electron.0"
+  },
+  "platform": "win32",
+  "arch": "x64",
+  "appVersion": "1.100.0",
+  "entries": [
+    {
+      "timestamp": "2026-05-27T04:16:44.746Z",
+      "type": "unhandled_rejection",
+      "errorName": "Canceled",
+      "errorMessage": "Canceled",
+      "stack": "Canceled: Canceled\n    at cc (file:///g:/CodeBuddy%20CN/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:7:1368)\n    at file:///g:/CodeBuddy%20CN/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:121209\n    at Array.forEach (<anonymous>)\n    at ES.dispose (file:///g:/CodeBuddy%20CN/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:121115)\n    at dJ.terminate (file:///g:/CodeBuddy%20CN/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:123:14923)\n    at MR.terminate (file:///g:/CodeBuddy%20CN/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:124:1602)\n    at gs (file:///g:/CodeBuddy%20CN/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:225:9963)\n    at MessagePortMain.<anonymous> (file:///g:/CodeBuddy%20CN/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:225:5909)\n    at MessagePortMain.emit (node:events:524:28)\n    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:2949)\n    at Object.callbackTrampoline (node:internal/async_hooks:130:17)"
+    }
+  ],
+  "droppedCount": 0
+}

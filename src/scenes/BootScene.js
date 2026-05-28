@@ -1,6 +1,7 @@
 // 启动场景 - 加载所有场景资源
 import gameConfig from '../data/gameConfig.json';
 import itemsData from '../data/items.json';
+import { getAllUniqueCharacterAssetFiles } from '../data/characterAssets.js';
 
 class BootScene extends Phaser.Scene {
   constructor() {
@@ -63,10 +64,23 @@ class BootScene extends Phaser.Scene {
     this.load.image('furnitureLantern2', `/assets/scene-pieces/${F}Lantern2.png`);
     this.load.image('furnitureWindow', `/assets/scene-pieces/${F}Window.png`);
     this.load.image('openingBg', '/assets/backgrounds/opening_general_store_bg.png');
+    // 委托对话背景：来自 pix/万事屋内部背景.png
+    this.load.image('commissionRoomBg', '/assets/backgrounds/commission_room_bg.png');
 
     this.loadInteriorAssets();
     this.loadItemPreviewAssets();
+    this.loadCharacterAssets();
     this.createPlaceholderAssets();
+  }
+
+  loadCharacterAssets() {
+    const { spritesheets, portraits } = getAllUniqueCharacterAssetFiles();
+    spritesheets.forEach(({ key, path }) => {
+      this.load.image(key, path);
+    });
+    portraits.forEach(({ key, path }) => {
+      this.load.image(key, path);
+    });
   }
 
   loadItemPreviewAssets() {
